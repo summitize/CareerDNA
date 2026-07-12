@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #2563eb;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-surface: #f8fafc;
+}
+
+@theme inline {
+  --font-sans: "Inter", "Poppins", "Segoe UI", sans-serif;
+  --font-display: "Poppins", "Inter", "Segoe UI", sans-serif;
+}
+
+body {
+  font-family: "Inter", "Poppins", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #eff6ff 0%, #f8fafc 35%, #f8fafc 100%);
+}
+
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px -20px rgba(15, 23, 42, 0.45);
+}
