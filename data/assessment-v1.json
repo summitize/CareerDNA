@@ -1,0 +1,1159 @@
+{
+  "assessmentVersion": "1.0",
+  "title": "CareerDNA Assessment - Grades 9-12",
+  "durationInMinutes": 30,
+  "sections": [
+    {
+      "id": "personality",
+      "title": "Personality & Behaviour",
+      "description": "Understanding your personality traits and behavioral patterns"
+    },
+    {
+      "id": "interests",
+      "title": "Interests",
+      "description": "Exploring your areas of interest and passion"
+    },
+    {
+      "id": "learning",
+      "title": "Learning & Aptitude",
+      "description": "Assessing your learning preferences and natural abilities"
+    },
+    {
+      "id": "situational",
+      "title": "Situational Judgement",
+      "description": "How you approach real-world scenarios"
+    },
+    {
+      "id": "values",
+      "title": "Career Values",
+      "description": "What matters most to you in your future career"
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "section": "personality",
+      "type": "likert",
+      "text": "I enjoy taking charge and leading group projects.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Leadership", "Decision Making"],
+      "weight": 1
+    },
+    {
+      "id": 2,
+      "section": "personality",
+      "type": "likert",
+      "text": "I prefer to work alone rather than in a team.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Communication", "Empathy"],
+      "weight": 1
+    },
+    {
+      "id": 3,
+      "section": "personality",
+      "type": "likert",
+      "text": "I often come up with creative solutions to problems.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Creativity", "Analytical Ability"],
+      "weight": 1
+    },
+    {
+      "id": 4,
+      "section": "personality",
+      "type": "likert",
+      "text": "I stay calm under pressure and tight deadlines.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Resilience", "Decision Making"],
+      "weight": 1
+    },
+    {
+      "id": 5,
+      "section": "personality",
+      "type": "likert",
+      "text": "I am comfortable speaking in front of large groups.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Communication", "Leadership"],
+      "weight": 1
+    },
+    {
+      "id": 6,
+      "section": "personality",
+      "type": "likert",
+      "text": "I quickly adapt to new situations and changes.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Learning Agility", "Resilience"],
+      "weight": 1
+    },
+    {
+      "id": 7,
+      "section": "personality",
+      "type": "likert",
+      "text": "I find it easy to understand and share others' feelings.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Empathy", "Communication"],
+      "weight": 1
+    },
+    {
+      "id": 8,
+      "section": "personality",
+      "type": "likert",
+      "text": "I set clear goals and follow through until completion.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Discipline", "Decision Making"],
+      "weight": 1
+    },
+    {
+      "id": 9,
+      "section": "personality",
+      "type": "likert",
+      "text": "I enjoy trying new things even if they involve risk.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Risk Taking", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 10,
+      "section": "personality",
+      "type": "likert",
+      "text": "I pay close attention to details in my work.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Analytical Ability", "Discipline"],
+      "weight": 1
+    },
+    {
+      "id": 11,
+      "section": "personality",
+      "type": "likert",
+      "text": "I actively seek feedback to improve myself.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Learning Agility", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 12,
+      "section": "personality",
+      "type": "likert",
+      "text": "I can persuade others to see things from my perspective.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Communication", "Leadership"],
+      "weight": 1
+    },
+    {
+      "id": 13,
+      "section": "personality",
+      "type": "likert",
+      "text": "I remain optimistic even when facing setbacks.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Resilience", "Decision Making"],
+      "weight": 1
+    },
+    {
+      "id": 14,
+      "section": "personality",
+      "type": "likert",
+      "text": "I enjoy brainstorming and generating new ideas.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Creativity", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 15,
+      "section": "personality",
+      "type": "likert",
+      "text": "I prefer structured routines over spontaneous activities.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Discipline", "Analytical Ability"],
+      "weight": 1
+    },
+    {
+      "id": 16,
+      "section": "personality",
+      "type": "likert",
+      "text": "I take initiative without waiting for instructions.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Entrepreneurship", "Leadership"],
+      "weight": 1
+    },
+    {
+      "id": 17,
+      "section": "personality",
+      "type": "likert",
+      "text": "I listen carefully and consider everyone's input before deciding.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Empathy", "Decision Making"],
+      "weight": 1
+    },
+    {
+      "id": 18,
+      "section": "personality",
+      "type": "likert",
+      "text": "I bounce back quickly from disappointments.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Resilience", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 19,
+      "section": "personality",
+      "type": "likert",
+      "text": "I enjoy organizing events and coordinating activities.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Leadership", "Communication"],
+      "weight": 1
+    },
+    {
+      "id": 20,
+      "section": "personality",
+      "type": "likert",
+      "text": "I'm comfortable making important decisions with incomplete information.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Decision Making", "Risk Taking"],
+      "weight": 1
+    },
+    {
+      "id": 21,
+      "section": "interests",
+      "type": "likert",
+      "text": "I enjoy solving mathematical problems and puzzles.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Logical Thinking", "Analytical Ability"],
+      "weight": 1
+    },
+    {
+      "id": 22,
+      "section": "interests",
+      "type": "likert",
+      "text": "I like reading about scientific discoveries and experiments.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Scientific Thinking", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 23,
+      "section": "interests",
+      "type": "likert",
+      "text": "I find pleasure in writing stories, poems, or articles.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Creativity", "Communication"],
+      "weight": 1
+    },
+    {
+      "id": 24,
+      "section": "interests",
+      "type": "likert",
+      "text": "I enjoy working with technology and gadgets.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Logical Thinking", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 25,
+      "section": "interests",
+      "type": "likert",
+      "text": "I'm interested in understanding how businesses work and make money.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Commercial Orientation", "Entrepreneurship"],
+      "weight": 1
+    },
+    {
+      "id": 26,
+      "section": "interests",
+      "type": "likert",
+      "text": "I like helping people solve their problems.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Empathy", "Communication"],
+      "weight": 1
+    },
+    {
+      "id": 27,
+      "section": "interests",
+      "type": "likert",
+      "text": "I enjoy creating art, music, or design projects.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Creativity", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 28,
+      "section": "interests",
+      "type": "likert",
+      "text": "I'm fascinated by how the human mind and behavior work.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Empathy", "Scientific Thinking"],
+      "weight": 1
+    },
+    {
+      "id": 29,
+      "section": "interests",
+      "type": "likert",
+      "text": "I like participating in debates and discussions.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Communication", "Logical Thinking"],
+      "weight": 1
+    },
+    {
+      "id": 30,
+      "section": "interests",
+      "type": "likert",
+      "text": "I'm interested in learning about different cultures and languages.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Curiosity", "Empathy"],
+      "weight": 1
+    },
+    {
+      "id": 31,
+      "section": "interests",
+      "type": "likert",
+      "text": "I enjoy analyzing data and finding patterns.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Analytical Ability", "Logical Thinking"],
+      "weight": 1
+    },
+    {
+      "id": 32,
+      "section": "interests",
+      "type": "likert",
+      "text": "I'm curious about environmental issues and sustainability.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Scientific Thinking", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 33,
+      "section": "interests",
+      "type": "likert",
+      "text": "I like exploring historical events and their impact.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Curiosity", "Analytical Ability"],
+      "weight": 1
+    },
+    {
+      "id": 34,
+      "section": "interests",
+      "type": "likert",
+      "text": "I enjoy physical activities and sports.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Discipline", "Resilience"],
+      "weight": 1
+    },
+    {
+      "id": 35,
+      "section": "interests",
+      "type": "likert",
+      "text": "I'm interested in entrepreneurship and starting my own venture.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Entrepreneurship", "Risk Taking"],
+      "weight": 1
+    },
+    {
+      "id": 36,
+      "section": "interests",
+      "type": "multiple_choice",
+      "text": "Which activity would you most enjoy in your free time?",
+      "options": [
+        "Reading books or articles",
+        "Building or fixing things",
+        "Creating digital content or art",
+        "Playing strategic games",
+        "Volunteering for social causes"
+      ],
+      "competencies": ["Curiosity", "Creativity"],
+      "weight": 1
+    },
+    {
+      "id": 37,
+      "section": "interests",
+      "type": "multiple_choice",
+      "text": "Which subject area interests you most?",
+      "options": [
+        "Science and Technology",
+        "Arts and Humanities",
+        "Business and Economics",
+        "Social Sciences",
+        "Healthcare and Medicine"
+      ],
+      "competencies": ["Curiosity", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 38,
+      "section": "interests",
+      "type": "multiple_choice",
+      "text": "What type of content do you prefer to create or share?",
+      "options": [
+        "Videos and visual content",
+        "Written articles or blogs",
+        "Code or technical projects",
+        "Music or audio content",
+        "Data analysis and reports"
+      ],
+      "competencies": ["Creativity", "Communication"],
+      "weight": 1
+    },
+    {
+      "id": 39,
+      "section": "interests",
+      "type": "likert",
+      "text": "I enjoy planning and managing budgets or finances.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Commercial Orientation", "Analytical Ability"],
+      "weight": 1
+    },
+    {
+      "id": 40,
+      "section": "interests",
+      "type": "likert",
+      "text": "I like conducting experiments and testing hypotheses.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Scientific Thinking", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 41,
+      "section": "learning",
+      "type": "likert",
+      "text": "I learn best by doing rather than just reading or listening.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Learning Agility", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 42,
+      "section": "learning",
+      "type": "likert",
+      "text": "I can quickly grasp complex concepts and ideas.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Logical Thinking", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 43,
+      "section": "learning",
+      "type": "likert",
+      "text": "I prefer visual aids like diagrams and charts to understand information.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Analytical Ability", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 44,
+      "section": "learning",
+      "type": "likert",
+      "text": "I enjoy learning through group discussions and collaboration.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Communication", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 45,
+      "section": "learning",
+      "type": "likert",
+      "text": "I can remember information better when I write it down.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Discipline", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 46,
+      "section": "learning",
+      "type": "likert",
+      "text": "I'm good at identifying logical flaws in arguments.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Logical Thinking", "Analytical Ability"],
+      "weight": 1
+    },
+    {
+      "id": 47,
+      "section": "learning",
+      "type": "likert",
+      "text": "I can easily connect new information to what I already know.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Learning Agility", "Logical Thinking"],
+      "weight": 1
+    },
+    {
+      "id": 48,
+      "section": "learning",
+      "type": "likert",
+      "text": "I enjoy tackling challenging problems that require deep thinking.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Analytical Ability", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 49,
+      "section": "learning",
+      "type": "likert",
+      "text": "I can focus on studying for long periods without getting distracted.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Discipline", "Resilience"],
+      "weight": 1
+    },
+    {
+      "id": 50,
+      "section": "learning",
+      "type": "likert",
+      "text": "I actively seek out new learning opportunities beyond school.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Curiosity", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 51,
+      "section": "learning",
+      "type": "multiple_choice",
+      "text": "How do you best retain information?",
+      "options": [
+        "Through visual materials (videos, images)",
+        "Through reading and note-taking",
+        "Through hands-on practice",
+        "Through listening and discussion",
+        "Through teaching others"
+      ],
+      "competencies": ["Learning Agility", "Communication"],
+      "weight": 1
+    },
+    {
+      "id": 52,
+      "section": "learning",
+      "type": "likert",
+      "text": "I'm skilled at breaking down complex problems into smaller parts.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Analytical Ability", "Logical Thinking"],
+      "weight": 1
+    },
+    {
+      "id": 53,
+      "section": "learning",
+      "type": "likert",
+      "text": "I can work effectively on multiple subjects or projects simultaneously.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Learning Agility", "Discipline"],
+      "weight": 1
+    },
+    {
+      "id": 54,
+      "section": "learning",
+      "type": "likert",
+      "text": "I learn well from my mistakes and rarely repeat them.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Learning Agility", "Resilience"],
+      "weight": 1
+    },
+    {
+      "id": 55,
+      "section": "learning",
+      "type": "likert",
+      "text": "I can easily explain complex topics to others in simple terms.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Communication", "Logical Thinking"],
+      "weight": 1
+    },
+    {
+      "id": 56,
+      "section": "learning",
+      "type": "multiple_choice",
+      "text": "When faced with a difficult concept, you typically:",
+      "options": [
+        "Research independently until you understand",
+        "Ask teachers or peers for explanation",
+        "Try to apply it practically to learn",
+        "Look for alternative resources (videos, articles)",
+        "Join a study group"
+      ],
+      "competencies": ["Learning Agility", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 57,
+      "section": "learning",
+      "type": "likert",
+      "text": "I'm good at spotting patterns and trends in data or information.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Analytical Ability", "Logical Thinking"],
+      "weight": 1
+    },
+    {
+      "id": 58,
+      "section": "learning",
+      "type": "likert",
+      "text": "I can concentrate well even in noisy or busy environments.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Discipline", "Resilience"],
+      "weight": 1
+    },
+    {
+      "id": 59,
+      "section": "learning",
+      "type": "likert",
+      "text": "I understand abstract concepts more easily than concrete facts.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Logical Thinking", "Creativity"],
+      "weight": 1
+    },
+    {
+      "id": 60,
+      "section": "learning",
+      "type": "likert",
+      "text": "I retain information better when I create mind maps or summaries.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Analytical Ability", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 61,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "Your group project is due tomorrow, but one member hasn't completed their part. What do you do?",
+      "options": [
+        "Complete their part myself to ensure timely submission",
+        "Contact them immediately to understand the issue and help",
+        "Inform the teacher about the situation",
+        "Redistribute their work among other team members",
+        "Submit what we have and explain the circumstances"
+      ],
+      "competencies": ["Leadership", "Decision Making", "Empathy"],
+      "weight": 1
+    },
+    {
+      "id": 62,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "You have an opportunity to participate in a competition, but you're unsure of your abilities. What do you do?",
+      "options": [
+        "Participate regardless, it's a learning opportunity",
+        "Decline and prepare better for next time",
+        "Seek advice from mentors or teachers first",
+        "Partner with someone more experienced",
+        "Research past competitions thoroughly before deciding"
+      ],
+      "competencies": ["Risk Taking", "Decision Making", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 63,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "You notice a classmate struggling with a subject you're good at. What do you do?",
+      "options": [
+        "Offer to help them understand the concepts",
+        "Share your notes and study materials",
+        "Suggest they seek help from the teacher",
+        "Form a study group including them",
+        "Focus on my own studies"
+      ],
+      "competencies": ["Empathy", "Communication", "Leadership"],
+      "weight": 1
+    },
+    {
+      "id": 64,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "You're assigned to lead a team, but one member disagrees with your approach. How do you handle it?",
+      "options": [
+        "Listen to their concerns and adjust if valid",
+        "Explain my reasoning and seek consensus",
+        "Let the team vote on the best approach",
+        "Stick with my plan as the leader",
+        "Ask a teacher or mentor to mediate"
+      ],
+      "competencies": ["Leadership", "Communication", "Decision Making"],
+      "weight": 1
+    },
+    {
+      "id": 65,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "You failed an important exam despite studying hard. What's your next step?",
+      "options": [
+        "Analyze what went wrong and adjust my study methods",
+        "Seek additional help from teachers or tutors",
+        "Study harder with the same approach",
+        "Take a short break and return with fresh perspective",
+        "Discuss with peers who did well to learn their strategies"
+      ],
+      "competencies": ["Resilience", "Learning Agility", "Decision Making"],
+      "weight": 1
+    },
+    {
+      "id": 66,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "You have multiple deadlines approaching and feel overwhelmed. What do you do?",
+      "options": [
+        "Create a priority list and tackle high-impact tasks first",
+        "Work on everything simultaneously",
+        "Ask for extensions on some assignments",
+        "Delegate parts to friends or study partners",
+        "Focus on what I'm most confident completing well"
+      ],
+      "competencies": ["Decision Making", "Discipline", "Resilience"],
+      "weight": 1
+    },
+    {
+      "id": 67,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "You discover a more efficient way to solve a problem than what's taught in class. What do you do?",
+      "options": [
+        "Share it with the teacher and classmates",
+        "Use it for myself to gain an advantage",
+        "Document it and present it as a project",
+        "Verify with the teacher that it's correct first",
+        "Continue with the taught method to avoid confusion"
+      ],
+      "competencies": ["Creativity", "Communication", "Curiosity"],
+      "weight": 1
+    },
+    {
+      "id": 68,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "Your team can't agree on a direction for your project. What do you suggest?",
+      "options": [
+        "List all options and vote democratically",
+        "Evaluate each option based on project goals",
+        "Let the most experienced person decide",
+        "Combine elements from different suggestions",
+        "Seek teacher's guidance on the best approach"
+      ],
+      "competencies": ["Decision Making", "Leadership", "Analytical Ability"],
+      "weight": 1
+    },
+    {
+      "id": 69,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "You're asked to present on a topic you're not confident about. How do you prepare?",
+      "options": [
+        "Research extensively until I'm comfortable",
+        "Prepare thoroughly and practice multiple times",
+        "Focus on creating engaging visual aids",
+        "Ask to present on a different topic",
+        "Collaborate with someone knowledgeable"
+      ],
+      "competencies": ["Discipline", "Communication", "Learning Agility"],
+      "weight": 1
+    },
+    {
+      "id": 70,
+      "section": "situational",
+      "type": "multiple_choice",
+      "text": "You have an innovative idea for a school event but lack resources. What do you do?",
+      "options": [
+        "Present the idea to authorities and seek support",
+        "Modify the idea to work within available resources",
+        "Seek sponsors or external funding",
+        "Rally peers to contribute resources collectively",
+        "Wait for better circumstances to implement it"
+      ],
+      "competencies": ["Entrepreneurship", "Creativity", "Risk Taking"],
+      "weight": 1
+    },
+    {
+      "id": 71,
+      "section": "values",
+      "type": "multiple_choice",
+      "text": "What matters most to you in a future career?",
+      "options": [
+        "Making a positive impact on society",
+        "Financial stability and growth",
+        "Creative freedom and innovation",
+        "Work-life balance and flexibility",
+        "Recognition and leadership opportunities"
+      ],
+      "competencies": ["Empathy", "Commercial Orientation", "Creativity", "Leadership"],
+      "weight": 1
+    },
+    {
+      "id": 72,
+      "section": "values",
+      "type": "multiple_choice",
+      "text": "Which work environment would you prefer?",
+      "options": [
+        "Fast-paced and dynamic",
+        "Structured and predictable",
+        "Collaborative and team-oriented",
+        "Independent with minimal supervision",
+        "Flexible with remote options"
+      ],
+      "competencies": ["Risk Taking", "Discipline", "Communication", "Entrepreneurship"],
+      "weight": 1
+    },
+    {
+      "id": 73,
+      "section": "values",
+      "type": "multiple_choice",
+      "text": "What type of challenges excite you most?",
+      "options": [
+        "Solving complex technical problems",
+        "Leading and inspiring teams",
+        "Creating something new and original",
+        "Helping people overcome difficulties",
+        "Analyzing data to make strategic decisions"
+      ],
+      "competencies": ["Logical Thinking", "Leadership", "Creativity", "Empathy", "Analytical Ability"],
+      "weight": 1
+    },
+    {
+      "id": 74,
+      "section": "values",
+      "type": "likert",
+      "text": "Job security is more important to me than high earning potential.",
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "competencies": ["Risk Taking", "Commercial Orientation"],
+      "weight": 1
+    },
+    {
+      "id": 75,
+      "section": "values",
+      "type": "multiple_choice",
+      "text": "In 10 years, you'd most like to be known for:",
+      "options": [
+        "Expertise in your field",
+        "Building successful ventures or projects",
+        "Mentoring and developing others",
+        "Making significant social contributions",
+        "Achieving work-life harmony"
+      ],
+      "competencies": ["Learning Agility", "Entrepreneurship", "Leadership", "Empathy", "Discipline"],
+      "weight": 1
+    }
+  ]
+}
