@@ -1,0 +1,2158 @@
+{
+    "assessmentTitle": "Career Discovery Assessment for Grades 9-12",
+    "assessmentType": "Career Discovery Assessment",
+    "version": "3.0-final",
+    "status": "Final Production Version",
+    "targetGroup": "Students studying in Grades 9-12 across ICSE, CBSE, ISC and State Boards",
+    "recommendedDurationMinutes": 35,
+    "totalQuestions": 110,
+    "coreQuestions": 100,
+    "validityAndReverseScoredQuestions": 10,
+    "languageTone": "Student-friendly, neutral, culturally appropriate, non-judgemental",
+    "assessmentPurpose": "To help students discover hidden strengths, behavioural tendencies, interests, thinking style, work style, motivation, leadership potential, entrepreneurial mindset, emotional intelligence, AI readiness and future career suitability.",
+    "assessmentDisclaimer": "This is not an exam, IQ test, personality test, diagnostic test or admission test. There are no right or wrong answers. The assessment is designed to support career exploration and self-awareness.",
+    "studentInstructions": "Read each question carefully and choose the response that feels closest to how you would naturally think, feel or act. Do not choose what sounds ideal. Choose what feels most true for you.",
+    "sections": [
+        {
+            "sectionId": "PB",
+            "sectionName": "Personality & Behaviour",
+            "questionCount": 12
+        },
+        {
+            "sectionId": "IN",
+            "sectionName": "Interests",
+            "questionCount": 12
+        },
+        {
+            "sectionId": "TP",
+            "sectionName": "Thinking & Problem Solving",
+            "questionCount": 12
+        },
+        {
+            "sectionId": "LS",
+            "sectionName": "Learning Style",
+            "questionCount": 10
+        },
+        {
+            "sectionId": "EI",
+            "sectionName": "Emotional Intelligence",
+            "questionCount": 12
+        },
+        {
+            "sectionId": "LD",
+            "sectionName": "Leadership",
+            "questionCount": 12
+        },
+        {
+            "sectionId": "EM",
+            "sectionName": "Entrepreneurial Mindset",
+            "questionCount": 10
+        },
+        {
+            "sectionId": "CV",
+            "sectionName": "Career Values",
+            "questionCount": 10
+        },
+        {
+            "sectionId": "RF",
+            "sectionName": "Reflection",
+            "questionCount": 10
+        },
+        {
+            "sectionId": "RS",
+            "sectionName": "Validity & Reverse Scored Items",
+            "questionCount": 10
+        }
+    ],
+    "questionTypesUsed": [
+        "Likert Scale",
+        "Situational Judgement",
+        "Forced Choice",
+        "Ranking",
+        "Multiple Choice",
+        "Reflection",
+        "School-life Scenario",
+        "Ethics Scenario",
+        "Innovation Scenario"
+    ],
+    "scaleOptions": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+    ],
+    "competencyFramework": [
+        "Logical Thinking",
+        "Analytical Thinking",
+        "Creativity",
+        "Innovation",
+        "Leadership",
+        "Communication",
+        "Empathy",
+        "Discipline",
+        "Resilience",
+        "Curiosity",
+        "Learning Agility",
+        "Entrepreneurship",
+        "Commercial Orientation",
+        "Scientific Thinking",
+        "Decision Making",
+        "Risk Taking",
+        "Research Orientation",
+        "Service Orientation",
+        "AI Readiness",
+        "Adaptability",
+        "Attention to Detail",
+        "Execution Reliability",
+        "Verbal Reasoning",
+        "Spatial Thinking",
+        "Systems Thinking",
+        "Digital Ethics",
+        "Collaboration",
+        "Autonomy",
+        "Future Orientation",
+        "Career Values"
+    ],
+    "careerClusters": [
+        "Engineering & Technology",
+        "Medicine & Health Sciences",
+        "Business, Commerce & Entrepreneurship",
+        "Design, Media & Creative Arts",
+        "Law, Governance & Public Policy",
+        "Psychology, Counselling & Human Behaviour",
+        "Education, Training & Social Impact",
+        "Data, Research & Analytics",
+        "AI, Digital & Future Technologies",
+        "Sustainability, Environment & Civic Innovation",
+        "Communication, Journalism & Humanities",
+        "Operations, Management & Organisational Roles"
+    ],
+    "scoringModel": {
+        "scoreType": "Competency-based weighted scoring",
+        "scoreRange": "0-100",
+        "questionWeightRange": "1-3",
+        "reverseScoringApplied": true,
+        "rankingQuestionScoring": "Higher rank receives higher competency contribution",
+        "reflectionQuestionScoring": "Human or AI-assisted rubric scoring recommended",
+        "forcedChoiceScoring": "Each option maps to different competency signals; no option should be treated as universally correct",
+        "situationalJudgementScoring": "Options should be scored based on behavioural maturity, competency relevance and career-fit signal"
+    },
+    "competencyBands": {
+        "Emerging": {
+            "range": "0-39",
+            "interpretation": "The student may still be developing this competency or may not naturally prefer situations requiring it."
+        },
+        "Developing": {
+            "range": "40-59",
+            "interpretation": "The student shows some positive signals but may need practice, exposure or guidance."
+        },
+        "Strong": {
+            "range": "60-79",
+            "interpretation": "The student shows consistent strength or interest in this competency area."
+        },
+        "Exceptional": {
+            "range": "80-100",
+            "interpretation": "The student shows very strong and repeated signals in this competency area."
+        }
+    },
+    "validityChecks": {
+        "reverseScoredItemsIncluded": true,
+        "socialDesirabilityRiskCheck": true,
+        "extremeResponsePatternCheck": true,
+        "straightLiningCheck": true,
+        "responseConsistencyCheck": true,
+        "speedingCheck": true,
+        "reflectionQualityCheck": true
+    },
+    "validityFlags": {
+        "tooManyExtremePositiveResponses": "May indicate socially desirable responding",
+        "tooManyNeutralResponses": "May indicate low engagement or uncertainty",
+        "veryFastCompletion": "May indicate random or careless answering",
+        "contradictoryResponses": "May indicate inconsistency or confusion",
+        "lowReflectionDetail": "May indicate low engagement in open-ended questions"
+    },
+    "resultOutputGuidelines": {
+        "doNotGiveRigidCareerLabels": true,
+        "doNotSay": [
+            "You should become an engineer",
+            "You are not suitable for science",
+            "You are only fit for commerce",
+            "You cannot do creative careers"
+        ],
+        "preferredLanguage": [
+            "Your responses show strong signals in...",
+            "You may enjoy exploring...",
+            "These career clusters may be worth exploring...",
+            "These are not final decisions, but useful directions for career discovery."
+        ],
+        "recommendedOutputSections": [
+            "Top Strengths",
+            "Thinking Style",
+            "Learning Style",
+            "Work Style",
+            "Motivation Drivers",
+            "Leadership & Collaboration Style",
+            "Future Readiness",
+            "Suggested Career Clusters",
+            "Careers to Explore",
+            "Development Suggestions",
+            "Parent/Counsellor Notes"
+        ]
+    },
+    "questionBank": [
+        [
+            {
+                "id": "PB001",
+                "section": "Personality & Behaviour",
+                "questionType": "Situational Judgement",
+                "question": "Your class has been asked to prepare a presentation in three days. The group is confused and waiting for someone to start. What would you most likely do?",
+                "options": [
+                    "Suggest a quick plan and divide the work",
+                    "Wait until someone else takes charge",
+                    "Start researching quietly and share notes later",
+                    "Ask the teacher for clearer instructions first"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Communication",
+                    "Decision Making",
+                    "Discipline"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals how the student behaves when structure is missing and action is needed."
+            },
+            {
+                "id": "PB002",
+                "section": "Personality & Behaviour",
+                "questionType": "Forced Choice",
+                "question": "Which situation feels more natural to you?",
+                "options": [
+                    "Working steadily on one task until it is complete",
+                    "Exploring several ideas before choosing one direction"
+                ],
+                "hiddenCompetencies": [
+                    "Discipline",
+                    "Creativity",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This identifies whether the student prefers focused execution or exploratory thinking."
+            },
+            {
+                "id": "PB003",
+                "section": "Personality & Behaviour",
+                "questionType": "Likert Scale",
+                "question": "When I make a mistake in schoolwork, I usually try to understand what went wrong instead of only feeling bad about it.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Resilience",
+                    "Learning Agility",
+                    "Analytical Thinking"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures whether the student converts failure into learning."
+            },
+            {
+                "id": "PB004",
+                "section": "Personality & Behaviour",
+                "questionType": "Multiple Choice",
+                "question": "During a long project, what usually keeps you going?",
+                "options": [
+                    "Seeing visible progress",
+                    "Getting appreciation from others",
+                    "Learning something new",
+                    "Not wanting to disappoint the team",
+                    "Finishing what I started"
+                ],
+                "hiddenCompetencies": [
+                    "Motivation",
+                    "Discipline",
+                    "Curiosity",
+                    "Service Orientation"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This uncovers the student’s dominant source of motivation."
+            },
+            {
+                "id": "PB005",
+                "section": "Personality & Behaviour",
+                "questionType": "Ranking",
+                "question": "Rank these from most like you to least like you when working on a school task.",
+                "options": [
+                    "Plan first and then act",
+                    "Try quickly and improve later",
+                    "Discuss with others before starting",
+                    "Observe quietly and then contribute"
+                ],
+                "hiddenCompetencies": [
+                    "Decision Making",
+                    "Communication",
+                    "Adaptability",
+                    "Analytical Thinking"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This shows the student’s natural work approach in practical situations."
+            },
+            {
+                "id": "PB006",
+                "section": "Personality & Behaviour",
+                "questionType": "School-life Scenario",
+                "question": "A classmate forgets an important notebook before an internal assessment. You have limited time to revise. What would you do?",
+                "options": [
+                    "Share key points quickly and continue revising",
+                    "Give the notebook and manage without it",
+                    "Say sorry because you also need to study",
+                    "Help only if the classmate has helped you before"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Service Orientation",
+                    "Decision Making",
+                    "Discipline"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This balances helpfulness, boundaries, and practical decision-making."
+            },
+            {
+                "id": "PB007",
+                "section": "Personality & Behaviour",
+                "questionType": "Likert Scale",
+                "question": "I can usually continue working even when the task is boring but important.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Discipline",
+                    "Resilience",
+                    "Career Values"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This identifies persistence in low-excitement but high-responsibility work."
+            },
+            {
+                "id": "PB008",
+                "section": "Personality & Behaviour",
+                "questionType": "Multiple Choice",
+                "question": "If a teacher gives unexpected feedback that your work is incomplete, your first reaction is usually:",
+                "options": [
+                    "Ask what exactly needs improvement",
+                    "Feel upset but try again later",
+                    "Defend what you submitted",
+                    "Compare your work with others",
+                    "Start correcting it immediately"
+                ],
+                "hiddenCompetencies": [
+                    "Learning Agility",
+                    "Resilience",
+                    "Communication",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals openness to feedback and emotional response to correction."
+            },
+            {
+                "id": "PB009",
+                "section": "Personality & Behaviour",
+                "questionType": "Forced Choice",
+                "question": "Which role would you rather take in a class activity?",
+                "options": [
+                    "Organising tasks so everyone knows what to do",
+                    "Finding a new and interesting way to present the work"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Creativity",
+                    "Communication"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This distinguishes coordination strengths from idea-generation strengths."
+            },
+            {
+                "id": "PB010",
+                "section": "Personality & Behaviour",
+                "questionType": "Ethics",
+                "question": "You notice your friend has copied part of an assignment from the internet without understanding it. What would you do?",
+                "options": [
+                    "Tell them to rewrite it in their own words",
+                    "Ignore it because it is not your issue",
+                    "Inform the teacher immediately",
+                    "Help them understand the topic and correct it"
+                ],
+                "hiddenCompetencies": [
+                    "Integrity",
+                    "Empathy",
+                    "Communication",
+                    "Service Orientation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This shows ethical judgment combined with social sensitivity."
+            },
+            {
+                "id": "PB011",
+                "section": "Personality & Behaviour",
+                "questionType": "Likert Scale",
+                "question": "When plans change suddenly, I can usually adjust without losing too much energy.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Adaptability",
+                    "Resilience",
+                    "Decision Making"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This measures flexibility in uncertain conditions."
+            },
+            {
+                "id": "PB012",
+                "section": "Personality & Behaviour",
+                "questionType": "Reflection",
+                "question": "Describe one school situation where you continued despite difficulty. What helped you continue?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Resilience",
+                    "Self-awareness",
+                    "Discipline",
+                    "Motivation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This gives qualitative evidence of persistence and coping style."
+            },
+            {
+                "id": "IN001",
+                "section": "Interests",
+                "questionType": "Multiple Choice",
+                "question": "If your school announces a one-week activity period, which project would you choose first?",
+                "options": [
+                    "Build a simple science model",
+                    "Create a short film or poster campaign",
+                    "Organise a community clean-up drive",
+                    "Design a small business stall",
+                    "Research a current global issue"
+                ],
+                "hiddenCompetencies": [
+                    "Scientific Thinking",
+                    "Creativity",
+                    "Service Orientation",
+                    "Entrepreneurship",
+                    "Research Orientation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals interest clusters through preferred real-world activities."
+            },
+            {
+                "id": "IN002",
+                "section": "Interests",
+                "questionType": "Ranking",
+                "question": "Rank these school experiences from most enjoyable to least enjoyable.",
+                "options": [
+                    "Solving a tricky puzzle",
+                    "Explaining an idea to classmates",
+                    "Designing something attractive",
+                    "Helping someone learn",
+                    "Finding facts from multiple sources"
+                ],
+                "hiddenCompetencies": [
+                    "Logical Thinking",
+                    "Communication",
+                    "Creativity",
+                    "Empathy",
+                    "Research Orientation"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This maps interest preferences to career-relevant competency areas."
+            },
+            {
+                "id": "IN003",
+                "section": "Interests",
+                "questionType": "Forced Choice",
+                "question": "Which would you rather spend an afternoon doing?",
+                "options": [
+                    "Understanding how something works",
+                    "Understanding why people behave the way they do"
+                ],
+                "hiddenCompetencies": [
+                    "Scientific Thinking",
+                    "Empathy",
+                    "Curiosity"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This differentiates systems curiosity from human-behaviour curiosity."
+            },
+            {
+                "id": "IN004",
+                "section": "Interests",
+                "questionType": "Likert Scale",
+                "question": "I enjoy activities where there is no single correct answer and I can create my own approach.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Creativity",
+                    "Innovation",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This identifies comfort with open-ended and creative work."
+            },
+            {
+                "id": "IN005",
+                "section": "Interests",
+                "questionType": "School-life Scenario",
+                "question": "Your school asks students to improve the canteen experience. Which part would interest you most?",
+                "options": [
+                    "Collecting student feedback",
+                    "Calculating cost and pricing",
+                    "Designing the menu board",
+                    "Improving queue management",
+                    "Promoting healthier food choices"
+                ],
+                "hiddenCompetencies": [
+                    "Research Orientation",
+                    "Commercial Orientation",
+                    "Creativity",
+                    "Analytical Thinking",
+                    "Service Orientation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This links everyday school problems to practical career interests."
+            },
+            {
+                "id": "IN006",
+                "section": "Interests",
+                "questionType": "Multiple Choice",
+                "question": "Which type of YouTube or online content would you most likely watch for learning?",
+                "options": [
+                    "Science experiments",
+                    "Business stories",
+                    "Technology and AI tools",
+                    "Art, design, or filmmaking",
+                    "Psychology and relationships",
+                    "History, politics, or society"
+                ],
+                "hiddenCompetencies": [
+                    "Scientific Thinking",
+                    "Entrepreneurship",
+                    "AI Readiness",
+                    "Creativity",
+                    "Empathy",
+                    "Research Orientation"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This captures natural learning interests outside formal academics."
+            },
+            {
+                "id": "IN007",
+                "section": "Interests",
+                "questionType": "Forced Choice",
+                "question": "Which challenge sounds more exciting?",
+                "options": [
+                    "Making a machine or app work better",
+                    "Making a group of people work better together"
+                ],
+                "hiddenCompetencies": [
+                    "Innovation",
+                    "Leadership",
+                    "Communication",
+                    "AI Readiness"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This distinguishes technical-system interest from people-system interest."
+            },
+            {
+                "id": "IN008",
+                "section": "Interests",
+                "questionType": "Likert Scale",
+                "question": "I often feel curious about how money, markets, brands, or businesses work.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Commercial Orientation",
+                    "Entrepreneurship",
+                    "Curiosity"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This identifies early business and commerce inclination."
+            },
+            {
+                "id": "IN009",
+                "section": "Interests",
+                "questionType": "Multiple Choice",
+                "question": "If you had to choose a school magazine role, which would you prefer?",
+                "options": [
+                    "Writer or editor",
+                    "Designer or illustrator",
+                    "Data collector for student opinions",
+                    "Interview coordinator",
+                    "Technology support"
+                ],
+                "hiddenCompetencies": [
+                    "Communication",
+                    "Creativity",
+                    "Research Orientation",
+                    "Empathy",
+                    "AI Readiness"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This links communication, design, research, and technology preferences to real roles."
+            },
+            {
+                "id": "IN010",
+                "section": "Interests",
+                "questionType": "Ranking",
+                "question": "Rank these problems based on which you would most like to solve.",
+                "options": [
+                    "Reducing plastic waste",
+                    "Helping students manage stress",
+                    "Creating a useful mobile app",
+                    "Improving traffic near school",
+                    "Starting a student-run store"
+                ],
+                "hiddenCompetencies": [
+                    "Service Orientation",
+                    "Empathy",
+                    "AI Readiness",
+                    "Analytical Thinking",
+                    "Entrepreneurship"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals problem domains that naturally attract the student."
+            },
+            {
+                "id": "IN011",
+                "section": "Interests",
+                "questionType": "School-life Scenario",
+                "question": "A career fair allows you to shadow one professional for a day. Whom would you choose?",
+                "options": [
+                    "Doctor or psychologist",
+                    "Engineer or product designer",
+                    "Entrepreneur or marketer",
+                    "Scientist or researcher",
+                    "Teacher or social worker",
+                    "Lawyer, civil servant, or policy maker"
+                ],
+                "hiddenCompetencies": [
+                    "Service Orientation",
+                    "Innovation",
+                    "Commercial Orientation",
+                    "Scientific Thinking",
+                    "Communication",
+                    "Decision Making"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This shows attraction toward broad professional environments."
+            },
+            {
+                "id": "IN012",
+                "section": "Interests",
+                "questionType": "Reflection",
+                "question": "Name one topic you have explored on your own without being asked by school. What made it interesting?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Curiosity",
+                    "Learning Agility",
+                    "Research Orientation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "Self-driven exploration is a strong indicator of genuine interest."
+            },
+            {
+                "id": "TP001",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Situational Judgement",
+                "question": "Your group’s science model is not working one day before submission. What is your first step?",
+                "options": [
+                    "Check each part to locate the issue",
+                    "Search online for a similar model",
+                    "Ask a knowledgeable friend or teacher",
+                    "Change the idea to something simpler",
+                    "Divide troubleshooting among team members"
+                ],
+                "hiddenCompetencies": [
+                    "Analytical Thinking",
+                    "Scientific Thinking",
+                    "Resourcefulness",
+                    "Decision Making"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals how the student approaches failure in practical problem-solving."
+            },
+            {
+                "id": "TP002",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Forced Choice",
+                "question": "When solving a tough problem, which do you trust more initially?",
+                "options": [
+                    "Breaking it into smaller parts",
+                    "Trying a new angle quickly"
+                ],
+                "hiddenCompetencies": [
+                    "Analytical Thinking",
+                    "Creativity",
+                    "Innovation"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This differentiates structured analysis from intuitive experimentation."
+            },
+            {
+                "id": "TP003",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Likert Scale",
+                "question": "I enjoy finding patterns in marks, sports scores, habits, or daily observations.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Analytical Thinking",
+                    "Logical Thinking",
+                    "Research Orientation"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "Pattern-finding is linked to analytical and data-oriented thinking."
+            },
+            {
+                "id": "TP004",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Multiple Choice",
+                "question": "A school club has low participation. What question would you ask first?",
+                "options": [
+                    "Do students know the club exists?",
+                    "Are activities useful or enjoyable?",
+                    "Is the timing inconvenient?",
+                    "Are leaders welcoming enough?",
+                    "Is there a better way to promote it?"
+                ],
+                "hiddenCompetencies": [
+                    "Research Orientation",
+                    "Empathy",
+                    "Analytical Thinking",
+                    "Communication"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This shows the student’s instinct for diagnosing root causes."
+            },
+            {
+                "id": "TP005",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Ranking",
+                "question": "Rank these steps in the order you would use to solve a new problem.",
+                "options": [
+                    "Understand the problem",
+                    "Collect information",
+                    "Think of possible solutions",
+                    "Test one solution",
+                    "Improve based on results"
+                ],
+                "hiddenCompetencies": [
+                    "Scientific Thinking",
+                    "Logical Thinking",
+                    "Decision Making",
+                    "Learning Agility"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This indicates whether the student follows an effective problem-solving sequence."
+            },
+            {
+                "id": "TP006",
+                "section": "Thinking & Problem Solving",
+                "questionType": "School-life Scenario",
+                "question": "Your class wants to reduce noise during free periods. Which solution would you suggest?",
+                "options": [
+                    "Create quiet zones and discussion zones",
+                    "Assign monitors every day",
+                    "Use a reward system for quiet groups",
+                    "Find out why students are noisy first",
+                    "Allow structured activities during free time"
+                ],
+                "hiddenCompetencies": [
+                    "Analytical Thinking",
+                    "Innovation",
+                    "Leadership",
+                    "Empathy"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals whether the student prefers control, incentives, research, or design solutions."
+            },
+            {
+                "id": "TP007",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Likert Scale",
+                "question": "Before accepting information, I usually like to know where it came from.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Research Orientation",
+                    "Scientific Thinking",
+                    "Decision Making"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures evidence-seeking and source awareness."
+            },
+            {
+                "id": "TP008",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Multiple Choice",
+                "question": "If two classmates suggest opposite solutions, how do you decide?",
+                "options": [
+                    "Compare evidence for both",
+                    "Try a small test of each",
+                    "Ask the majority",
+                    "Choose the simpler one",
+                    "Combine both if possible"
+                ],
+                "hiddenCompetencies": [
+                    "Decision Making",
+                    "Scientific Thinking",
+                    "Collaboration",
+                    "Innovation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This identifies the student’s decision strategy under disagreement."
+            },
+            {
+                "id": "TP009",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Forced Choice",
+                "question": "Which task would you prefer?",
+                "options": [
+                    "Finding the most accurate answer",
+                    "Finding the most useful answer"
+                ],
+                "hiddenCompetencies": [
+                    "Scientific Thinking",
+                    "Practical Judgment",
+                    "Career Values"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This separates precision orientation from practical outcome orientation."
+            },
+            {
+                "id": "TP010",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Innovation",
+                "question": "Your school library has fewer visitors now. Which idea would you try first?",
+                "options": [
+                    "Student book recommendation wall",
+                    "Monthly theme-based reading challenge",
+                    "Digital catalogue with reviews",
+                    "Quiet study plus group discussion hours",
+                    "Invite students to redesign the space"
+                ],
+                "hiddenCompetencies": [
+                    "Innovation",
+                    "Service Orientation",
+                    "AI Readiness",
+                    "Empathy",
+                    "Creativity"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals user-focused innovation preferences."
+            },
+            {
+                "id": "TP011",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Likert Scale",
+                "question": "I like problems where I need to connect ideas from different subjects.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Creativity",
+                    "Learning Agility",
+                    "Analytical Thinking"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This measures interdisciplinary thinking."
+            },
+            {
+                "id": "TP012",
+                "section": "Thinking & Problem Solving",
+                "questionType": "Reflection",
+                "question": "Describe a time when you solved a problem differently from others. What was your approach?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Innovation",
+                    "Analytical Thinking",
+                    "Decision Making",
+                    "Creativity"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This gives evidence of original problem-solving behaviour."
+            },
+            {
+                "id": "LS001",
+                "section": "Learning Style",
+                "questionType": "Multiple Choice",
+                "question": "When learning a difficult chapter, what helps you most?",
+                "options": [
+                    "Reading and underlining",
+                    "Watching an explanation video",
+                    "Solving examples step by step",
+                    "Discussing with a friend",
+                    "Making diagrams or mind maps"
+                ],
+                "hiddenCompetencies": [
+                    "Learning Agility",
+                    "Analytical Thinking",
+                    "Communication"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This identifies preferred learning input and processing style."
+            },
+            {
+                "id": "LS002",
+                "section": "Learning Style",
+                "questionType": "Ranking",
+                "question": "Rank these revision methods from most useful to least useful for you.",
+                "options": [
+                    "Practice tests",
+                    "Teaching someone else",
+                    "Short notes",
+                    "Flashcards",
+                    "Group discussion"
+                ],
+                "hiddenCompetencies": [
+                    "Learning Agility",
+                    "Communication",
+                    "Discipline"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals how students consolidate and retain learning."
+            },
+            {
+                "id": "LS003",
+                "section": "Learning Style",
+                "questionType": "Likert Scale",
+                "question": "I learn better when I understand the reason behind a concept, not just the formula or rule.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Curiosity",
+                    "Scientific Thinking",
+                    "Analytical Thinking"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures depth-oriented learning."
+            },
+            {
+                "id": "LS004",
+                "section": "Learning Style",
+                "questionType": "Forced Choice",
+                "question": "Which learning environment suits you better?",
+                "options": [
+                    "Clear instructions and examples",
+                    "Freedom to explore and discover"
+                ],
+                "hiddenCompetencies": [
+                    "Discipline",
+                    "Curiosity",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This distinguishes structured learners from exploratory learners."
+            },
+            {
+                "id": "LS005",
+                "section": "Learning Style",
+                "questionType": "School-life Scenario",
+                "question": "You missed two classes and need to catch up. What would you do first?",
+                "options": [
+                    "Ask a friend for notes",
+                    "Watch videos on the topic",
+                    "Read the textbook carefully",
+                    "Ask the teacher what is most important",
+                    "Try solving questions to find gaps"
+                ],
+                "hiddenCompetencies": [
+                    "Learning Agility",
+                    "Resourcefulness",
+                    "Decision Making"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals how students recover from learning gaps."
+            },
+            {
+                "id": "LS006",
+                "section": "Learning Style",
+                "questionType": "Likert Scale",
+                "question": "I can learn a new digital tool if I have a useful reason to use it.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "AI Readiness",
+                    "Learning Agility",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures readiness to learn technology with purpose."
+            },
+            {
+                "id": "LS007",
+                "section": "Learning Style",
+                "questionType": "Multiple Choice",
+                "question": "When a topic feels confusing, your usual response is:",
+                "options": [
+                    "Break it into smaller parts",
+                    "Look for another explanation",
+                    "Ask someone to explain",
+                    "Leave it and return later",
+                    "Try examples until it becomes clear"
+                ],
+                "hiddenCompetencies": [
+                    "Resilience",
+                    "Learning Agility",
+                    "Analytical Thinking"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This shows learning persistence and strategy selection."
+            },
+            {
+                "id": "LS008",
+                "section": "Learning Style",
+                "questionType": "Forced Choice",
+                "question": "Which feedback helps you more?",
+                "options": [
+                    "Specific correction on what to improve",
+                    "Encouragement that builds confidence"
+                ],
+                "hiddenCompetencies": [
+                    "Self-awareness",
+                    "Resilience",
+                    "Learning Agility"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This helps understand the feedback style that supports growth."
+            },
+            {
+                "id": "LS009",
+                "section": "Learning Style",
+                "questionType": "Likert Scale",
+                "question": "I regularly change my study method if the current method is not working.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Adaptability",
+                    "Learning Agility",
+                    "Self-awareness"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures metacognitive flexibility."
+            },
+            {
+                "id": "LS010",
+                "section": "Learning Style",
+                "questionType": "Reflection",
+                "question": "What is one subject or skill you improved in over time? What changed in your method?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Learning Agility",
+                    "Resilience",
+                    "Self-awareness"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This captures evidence of improvement through adaptive learning."
+            },
+            {
+                "id": "EI001",
+                "section": "Emotional Intelligence",
+                "questionType": "Situational Judgement",
+                "question": "A teammate is unusually quiet during group work and misses their part. What would you do?",
+                "options": [
+                    "Ask privately if something is wrong",
+                    "Remind them firmly about responsibility",
+                    "Do their part to save the project",
+                    "Tell the group leader or teacher",
+                    "Give them a smaller task"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Communication",
+                    "Leadership",
+                    "Decision Making"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals sensitivity to others while balancing responsibility."
+            },
+            {
+                "id": "EI002",
+                "section": "Emotional Intelligence",
+                "questionType": "Likert Scale",
+                "question": "I usually notice when someone is uncomfortable even if they do not say it directly.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Communication",
+                    "Social Awareness"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This measures ability to read social and emotional cues."
+            },
+            {
+                "id": "EI003",
+                "section": "Emotional Intelligence",
+                "questionType": "Multiple Choice",
+                "question": "When you feel stressed before an exam or submission, what do you usually do?",
+                "options": [
+                    "Make a small action plan",
+                    "Talk to someone",
+                    "Take a short break",
+                    "Push harder without stopping",
+                    "Avoid thinking about it"
+                ],
+                "hiddenCompetencies": [
+                    "Resilience",
+                    "Self-regulation",
+                    "Decision Making"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This identifies stress-management patterns."
+            },
+            {
+                "id": "EI004",
+                "section": "Emotional Intelligence",
+                "questionType": "Forced Choice",
+                "question": "In a disagreement, what matters more to you first?",
+                "options": [
+                    "Finding the correct solution",
+                    "Making sure everyone feels heard"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Decision Making",
+                    "Communication"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This shows whether the student prioritises outcome or emotional inclusion."
+            },
+            {
+                "id": "EI005",
+                "section": "Emotional Intelligence",
+                "questionType": "School-life Scenario",
+                "question": "A classmate is being laughed at for giving a wrong answer. What would you most likely do?",
+                "options": [
+                    "Say that mistakes happen and move on",
+                    "Check on them after class",
+                    "Ask others to stop laughing",
+                    "Stay quiet but feel bad",
+                    "Distract the class with another point"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Courage",
+                    "Communication",
+                    "Service Orientation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals compassionate action in socially uncomfortable situations."
+            },
+            {
+                "id": "EI006",
+                "section": "Emotional Intelligence",
+                "questionType": "Likert Scale",
+                "question": "When I am angry, I can usually pause before saying something hurtful.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Self-regulation",
+                    "Communication",
+                    "Resilience"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures emotional control during conflict."
+            },
+            {
+                "id": "EI007",
+                "section": "Emotional Intelligence",
+                "questionType": "Multiple Choice",
+                "question": "If your close friend scores higher than you, your most honest reaction is usually:",
+                "options": [
+                    "Feel happy and ask how they studied",
+                    "Feel disappointed but stay respectful",
+                    "Compare yourself silently",
+                    "Use it as motivation",
+                    "Avoid discussing marks"
+                ],
+                "hiddenCompetencies": [
+                    "Self-awareness",
+                    "Resilience",
+                    "Learning Agility"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals response to comparison and achievement pressure."
+            },
+            {
+                "id": "EI008",
+                "section": "Emotional Intelligence",
+                "questionType": "Ranking",
+                "question": "Rank what you value most in a friend or teammate.",
+                "options": [
+                    "Honesty",
+                    "Supportiveness",
+                    "Reliability",
+                    "Good ideas",
+                    "Sense of humour"
+                ],
+                "hiddenCompetencies": [
+                    "Career Values",
+                    "Empathy",
+                    "Communication"
+                ],
+                "suggestedWeight": 1,
+                "whyItHelps": "This shows the student’s social expectations and relationship values."
+            },
+            {
+                "id": "EI009",
+                "section": "Emotional Intelligence",
+                "questionType": "Ethics",
+                "question": "A popular student makes a rude comment about someone’s background. Others laugh. What would you do?",
+                "options": [
+                    "Say calmly that it is not okay",
+                    "Support the affected student later",
+                    "Report it to a teacher",
+                    "Stay silent to avoid conflict",
+                    "Change the topic immediately"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Integrity",
+                    "Communication",
+                    "Courage"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This tests inclusive behaviour and moral courage."
+            },
+            {
+                "id": "EI010",
+                "section": "Emotional Intelligence",
+                "questionType": "Likert Scale",
+                "question": "I can accept that two people may have different views without either person being bad.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Adaptability",
+                    "Communication"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This measures tolerance for differing perspectives."
+            },
+            {
+                "id": "EI011",
+                "section": "Emotional Intelligence",
+                "questionType": "Multiple Choice",
+                "question": "When someone gives you harsh feedback, what helps you respond better?",
+                "options": [
+                    "Time to cool down",
+                    "Specific examples",
+                    "A calm tone",
+                    "Knowing the person means well",
+                    "Opportunity to explain your side"
+                ],
+                "hiddenCompetencies": [
+                    "Self-awareness",
+                    "Communication",
+                    "Resilience"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This identifies emotional needs during feedback."
+            },
+            {
+                "id": "EI012",
+                "section": "Emotional Intelligence",
+                "questionType": "Reflection",
+                "question": "Describe one situation where you understood someone’s feelings without them clearly saying it.",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Social Awareness",
+                    "Communication"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This provides evidence of real-life emotional perception."
+            },
+            {
+                "id": "LD001",
+                "section": "Leadership",
+                "questionType": "Situational Judgement",
+                "question": "Your group has two strong opinions and the discussion is becoming tense. What would you do?",
+                "options": [
+                    "Ask each side to explain briefly",
+                    "Vote immediately",
+                    "Suggest testing both ideas quickly",
+                    "Ask the teacher to decide",
+                    "Propose a combined solution"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Communication",
+                    "Decision Making",
+                    "Empathy"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals conflict-resolution and facilitation style."
+            },
+            {
+                "id": "LD002",
+                "section": "Leadership",
+                "questionType": "Likert Scale",
+                "question": "People often come to me when they need help organising something.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Discipline",
+                    "Communication"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This indicates perceived reliability and informal leadership."
+            },
+            {
+                "id": "LD003",
+                "section": "Leadership",
+                "questionType": "Forced Choice",
+                "question": "Which leadership style feels closer to you?",
+                "options": [
+                    "Set direction and keep everyone on track",
+                    "Encourage ideas and bring people together"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Communication",
+                    "Empathy",
+                    "Discipline"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This differentiates task leadership from collaborative leadership."
+            },
+            {
+                "id": "LD004",
+                "section": "Leadership",
+                "questionType": "Multiple Choice",
+                "question": "If you are made captain of a school event team, what would you do first?",
+                "options": [
+                    "Understand everyone’s strengths",
+                    "Create a task timeline",
+                    "Discuss the goal with the team",
+                    "Start with the most urgent work",
+                    "Ask seniors for advice"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Planning",
+                    "Communication",
+                    "Learning Agility"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This shows the student’s first instinct as a leader."
+            },
+            {
+                "id": "LD005",
+                "section": "Leadership",
+                "questionType": "School-life Scenario",
+                "question": "A hardworking teammate is not confident to speak during the final presentation. What would you do?",
+                "options": [
+                    "Give them a smaller speaking part",
+                    "Practice with them before the presentation",
+                    "Let someone else present",
+                    "Ask them what role they prefer",
+                    "Encourage them to try the main section"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Leadership",
+                    "Communication",
+                    "Talent Development"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This identifies whether the student develops others or only focuses on output."
+            },
+            {
+                "id": "LD006",
+                "section": "Leadership",
+                "questionType": "Ranking",
+                "question": "Rank these leadership responsibilities from easiest to hardest for you.",
+                "options": [
+                    "Making decisions",
+                    "Motivating others",
+                    "Handling conflict",
+                    "Planning work",
+                    "Speaking in front of people"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Communication",
+                    "Decision Making",
+                    "Self-awareness"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals leadership comfort zones and development areas."
+            },
+            {
+                "id": "LD007",
+                "section": "Leadership",
+                "questionType": "Likert Scale",
+                "question": "I can take responsibility for a result even when the mistake was not only mine.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Integrity",
+                    "Resilience"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures accountability, a core leadership quality."
+            },
+            {
+                "id": "LD008",
+                "section": "Leadership",
+                "questionType": "Multiple Choice",
+                "question": "In a team, which role do you naturally take?",
+                "options": [
+                    "Planner",
+                    "Motivator",
+                    "Idea generator",
+                    "Quality checker",
+                    "Peacekeeper",
+                    "Presenter"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Creativity",
+                    "Communication",
+                    "Empathy",
+                    "Discipline"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This identifies natural team contribution style."
+            },
+            {
+                "id": "LD009",
+                "section": "Leadership",
+                "questionType": "Ethics",
+                "question": "Your team wins a competition, but one quiet member did a lot of background work. What would you do?",
+                "options": [
+                    "Mention their contribution publicly",
+                    "Thank them privately",
+                    "Assume everyone knows",
+                    "Ask the teacher to acknowledge them",
+                    "Share credit equally without details"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Empathy",
+                    "Integrity",
+                    "Communication"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals fairness and recognition behaviour."
+            },
+            {
+                "id": "LD010",
+                "section": "Leadership",
+                "questionType": "Likert Scale",
+                "question": "I can speak up respectfully when I think a group decision may go wrong.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Communication",
+                    "Decision Making",
+                    "Courage"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures constructive assertiveness."
+            },
+            {
+                "id": "LD011",
+                "section": "Leadership",
+                "questionType": "Forced Choice",
+                "question": "What would you rather be known for?",
+                "options": [
+                    "Someone who gets things done",
+                    "Someone who brings out the best in people"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Discipline",
+                    "Empathy"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This shows whether achievement or people development is more motivating."
+            },
+            {
+                "id": "LD012",
+                "section": "Leadership",
+                "questionType": "Reflection",
+                "question": "Describe a time when others followed your suggestion. Why do you think they trusted you?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Leadership",
+                    "Communication",
+                    "Self-awareness"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This captures authentic examples of influence."
+            },
+            {
+                "id": "EM001",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "School-life Scenario",
+                "question": "Your class wants to raise funds for an event. Which idea would you suggest first?",
+                "options": [
+                    "Food stall during break",
+                    "Handmade product sale",
+                    "Paid workshop by students",
+                    "Sponsorship from local businesses",
+                    "Online campaign with clear purpose"
+                ],
+                "hiddenCompetencies": [
+                    "Entrepreneurship",
+                    "Commercial Orientation",
+                    "Creativity",
+                    "Communication"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals business thinking and opportunity recognition."
+            },
+            {
+                "id": "EM002",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Likert Scale",
+                "question": "When I see an everyday problem, I often think of a better way to solve it.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Innovation",
+                    "Entrepreneurship",
+                    "Curiosity"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures opportunity-seeking mindset."
+            },
+            {
+                "id": "EM003",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Forced Choice",
+                "question": "Which would you choose?",
+                "options": [
+                    "Improve an existing idea to make it successful",
+                    "Create a completely new idea even if uncertain"
+                ],
+                "hiddenCompetencies": [
+                    "Innovation",
+                    "Risk Taking",
+                    "Commercial Orientation"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This distinguishes optimisation mindset from invention mindset."
+            },
+            {
+                "id": "EM004",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Multiple Choice",
+                "question": "If students are not buying from your school stall, what would you check first?",
+                "options": [
+                    "Price",
+                    "Product usefulness",
+                    "Display and promotion",
+                    "Location of the stall",
+                    "What students actually want"
+                ],
+                "hiddenCompetencies": [
+                    "Commercial Orientation",
+                    "Research Orientation",
+                    "Analytical Thinking",
+                    "Customer Focus"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals market diagnosis and customer orientation."
+            },
+            {
+                "id": "EM005",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Ranking",
+                "question": "Rank these in importance for a student-run business.",
+                "options": [
+                    "Solving a real need",
+                    "Keeping costs low",
+                    "Attractive presentation",
+                    "Team reliability",
+                    "Good promotion"
+                ],
+                "hiddenCompetencies": [
+                    "Commercial Orientation",
+                    "Entrepreneurship",
+                    "Leadership",
+                    "Creativity"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This identifies how the student prioritises business success factors."
+            },
+            {
+                "id": "EM006",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Situational Judgement",
+                "question": "You launch a small project, but the first attempt fails. What would you do next?",
+                "options": [
+                    "Ask users what went wrong",
+                    "Change the idea completely",
+                    "Improve one feature and retry",
+                    "Stop because the idea may not work",
+                    "Find a partner with better skills"
+                ],
+                "hiddenCompetencies": [
+                    "Resilience",
+                    "Entrepreneurship",
+                    "Learning Agility",
+                    "Research Orientation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures response to failure in venture-like situations."
+            },
+            {
+                "id": "EM007",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Likert Scale",
+                "question": "I am comfortable trying something new even if there is a chance it may not work.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Risk Taking",
+                    "Resilience",
+                    "Innovation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures constructive risk appetite."
+            },
+            {
+                "id": "EM008",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Multiple Choice",
+                "question": "If you had Rs. 500 to create value for school students, what would you do?",
+                "options": [
+                    "Buy materials and create useful products",
+                    "Run a mini learning session",
+                    "Create digital notes or templates",
+                    "Start a small service like organising bags or books",
+                    "Survey students before deciding"
+                ],
+                "hiddenCompetencies": [
+                    "Entrepreneurship",
+                    "Service Orientation",
+                    "AI Readiness",
+                    "Research Orientation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals resourcefulness and value-creation thinking."
+            },
+            {
+                "id": "EM009",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Forced Choice",
+                "question": "Which sounds more satisfying?",
+                "options": [
+                    "Building something many people use",
+                    "Solving a difficult problem deeply"
+                ],
+                "hiddenCompetencies": [
+                    "Commercial Orientation",
+                    "Scientific Thinking",
+                    "Innovation"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This differentiates scale orientation from depth orientation."
+            },
+            {
+                "id": "EM010",
+                "section": "Entrepreneurial Mindset",
+                "questionType": "Reflection",
+                "question": "If you could start a small student project that helps others, what would it be and who would benefit?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Entrepreneurship",
+                    "Innovation",
+                    "Service Orientation",
+                    "Communication"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This captures original value-creation ideas and social awareness."
+            },
+            {
+                "id": "CV001",
+                "section": "Career Values",
+                "questionType": "Ranking",
+                "question": "Rank these future work values from most important to least important.",
+                "options": [
+                    "High income",
+                    "Helping people",
+                    "Learning continuously",
+                    "Creative freedom",
+                    "Job stability",
+                    "Recognition"
+                ],
+                "hiddenCompetencies": [
+                    "Career Values",
+                    "Motivation",
+                    "Service Orientation",
+                    "Learning Agility"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This identifies the values likely to influence career satisfaction."
+            },
+            {
+                "id": "CV002",
+                "section": "Career Values",
+                "questionType": "Forced Choice",
+                "question": "Which future job would you prefer?",
+                "options": [
+                    "Stable role with clear growth path",
+                    "Dynamic role with new challenges often"
+                ],
+                "hiddenCompetencies": [
+                    "Career Values",
+                    "Adaptability",
+                    "Risk Taking"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This shows preference for stability versus variety."
+            },
+            {
+                "id": "CV003",
+                "section": "Career Values",
+                "questionType": "Likert Scale",
+                "question": "I would enjoy a career where I need to keep learning new tools and methods.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Learning Agility",
+                    "AI Readiness",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This measures readiness for rapidly changing careers."
+            },
+            {
+                "id": "CV004",
+                "section": "Career Values",
+                "questionType": "Multiple Choice",
+                "question": "Which work environment sounds most appealing?",
+                "options": [
+                    "Research lab or innovation centre",
+                    "Corporate office or business team",
+                    "Hospital, counselling, or care setting",
+                    "Design studio or media space",
+                    "Court, public service, or policy setting",
+                    "Technology product team"
+                ],
+                "hiddenCompetencies": [
+                    "Scientific Thinking",
+                    "Commercial Orientation",
+                    "Empathy",
+                    "Creativity",
+                    "Decision Making",
+                    "AI Readiness"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This connects environmental preference with career clusters."
+            },
+            {
+                "id": "CV005",
+                "section": "Career Values",
+                "questionType": "School-life Scenario",
+                "question": "You are offered two school responsibilities. Which one would you choose?",
+                "options": [
+                    "Manage event budget",
+                    "Mentor younger students",
+                    "Create promotional material",
+                    "Analyse event feedback",
+                    "Coordinate volunteers"
+                ],
+                "hiddenCompetencies": [
+                    "Commercial Orientation",
+                    "Service Orientation",
+                    "Creativity",
+                    "Analytical Thinking",
+                    "Leadership"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals career-value alignment through role preference."
+            },
+            {
+                "id": "CV006",
+                "section": "Career Values",
+                "questionType": "Likert Scale",
+                "question": "Doing meaningful work matters to me even if it takes longer to see rewards.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "Service Orientation",
+                    "Resilience",
+                    "Career Values"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This measures purpose orientation."
+            },
+            {
+                "id": "CV007",
+                "section": "Career Values",
+                "questionType": "Forced Choice",
+                "question": "Which success story inspires you more?",
+                "options": [
+                    "Someone who becomes an expert in one field",
+                    "Someone who builds many skills across fields"
+                ],
+                "hiddenCompetencies": [
+                    "Research Orientation",
+                    "Learning Agility",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This identifies specialist versus generalist attraction."
+            },
+            {
+                "id": "CV008",
+                "section": "Career Values",
+                "questionType": "Multiple Choice",
+                "question": "Which type of recognition would feel most meaningful?",
+                "options": [
+                    "Best problem solver",
+                    "Most helpful teammate",
+                    "Most innovative idea",
+                    "Most reliable contributor",
+                    "Best speaker or presenter",
+                    "Best researcher"
+                ],
+                "hiddenCompetencies": [
+                    "Career Values",
+                    "Logical Thinking",
+                    "Empathy",
+                    "Innovation",
+                    "Discipline",
+                    "Communication",
+                    "Research Orientation"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals identity-linked strengths and motivation."
+            },
+            {
+                "id": "CV009",
+                "section": "Career Values",
+                "questionType": "Likert Scale",
+                "question": "I would prefer work where technology and human judgement are both important.",
+                "options": [
+                    "Strongly Disagree",
+                    "Disagree",
+                    "Neutral",
+                    "Agree",
+                    "Strongly Agree"
+                ],
+                "hiddenCompetencies": [
+                    "AI Readiness",
+                    "Decision Making",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This identifies readiness for AI-augmented future careers."
+            },
+            {
+                "id": "CV010",
+                "section": "Career Values",
+                "questionType": "Reflection",
+                "question": "Imagine yourself at age 25. What kind of problem would you feel proud to be solving?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Career Values",
+                    "Purpose",
+                    "Service Orientation",
+                    "Innovation"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This captures long-term aspiration and meaning orientation."
+            },
+            {
+                "id": "RF001",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "What is one activity where you lose track of time because you are deeply involved?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Intrinsic Motivation",
+                    "Curiosity",
+                    "Career Values"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "Deep engagement often indicates natural interest and potential strength."
+            },
+            {
+                "id": "RF002",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "What do classmates usually ask you for help with?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Peer-recognised Strength",
+                    "Communication",
+                    "Leadership",
+                    "Empathy"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "Peer requests often reveal visible strengths the student may overlook."
+            },
+            {
+                "id": "RF003",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "What kind of task makes you feel drained even if you can do it well?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Self-awareness",
+                    "Career Values",
+                    "Work Style"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This helps distinguish ability from sustainable interest."
+            },
+            {
+                "id": "RF004",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "Describe a compliment you received that stayed with you. Why did it matter?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Self-awareness",
+                    "Motivation",
+                    "Career Values"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "Meaningful compliments reveal identity and valued strengths."
+            },
+            {
+                "id": "RF005",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "If marks were not considered for one month, what would you choose to learn or build?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Curiosity",
+                    "Creativity",
+                    "Innovation",
+                    "Learning Agility"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This reveals interest independent of academic pressure."
+            },
+            {
+                "id": "RF006",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "What is one problem in your home, school, or city that you wish someone would solve?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Empathy",
+                    "Innovation",
+                    "Service Orientation",
+                    "Analytical Thinking"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "Problem awareness indicates social sensitivity and opportunity recognition."
+            },
+            {
+                "id": "RF007",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "When you work in a team, what do you think others appreciate most about you?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Self-awareness",
+                    "Leadership",
+                    "Communication",
+                    "Discipline"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This captures perceived contribution style in teams."
+            },
+            {
+                "id": "RF008",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "Which future technology or change in the world makes you curious or excited?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "AI Readiness",
+                    "Curiosity",
+                    "Future Orientation",
+                    "Adaptability"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This identifies openness to emerging careers and technologies."
+            },
+            {
+                "id": "RF009",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "What is one decision you made recently that you are proud of?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Decision Making",
+                    "Self-awareness",
+                    "Resilience"
+                ],
+                "suggestedWeight": 2,
+                "whyItHelps": "This reveals decision confidence and personal values."
+            },
+            {
+                "id": "RF010",
+                "section": "Reflection",
+                "questionType": "Reflection",
+                "question": "If a mentor could help you with one thing this year, what would you ask for?",
+                "options": [
+                    "Open-ended response"
+                ],
+                "hiddenCompetencies": [
+                    "Self-awareness",
+                    "Learning Agility",
+                    "Career Readiness"
+                ],
+                "suggestedWeight": 3,
+                "whyItHelps": "This identifies developmental needs and readiness for guidance."
+            }
+        ]
+    ]
+}
