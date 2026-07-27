@@ -2076,39 +2076,64 @@ document.addEventListener('DOMContentLoaded', function () {
     /* -------------------------------------------------------
        4️⃣  Form submit → collect data & show JSON
        ------------------------------------------------------- */
-    document.getElementById('studentForm').addEventListener('submit', function (e) {
-        e.preventDefault();
+    document.getElementById('studentForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const fullName = document.getElementById('fullName').value;
+    const email = document.getElementById('email').value;
+    const mobileNumber = document.getElementById('mobileNumber').value;
+    const grade = document.getElementById('grade').value;
 
-        // ---- Personal details ----
-        const fullName    = document.getElementById('fullName').value.trim();
-        const email       = document.getElementById('email').value.trim();
-        const mobileNumber= document.getElementById('mobileNumber').value.trim();
-        const grade       = document.getElementById('grade').value;
-        if (!fullName || !email || !mobileNumber || !grade) {
-            alert('Please fill all fields.');
-            return;
-        }
-
-        // ---- Gather every answer (name="answer_<questionId>") ----
-        const answers = {};
-        document.querySelectorAll('input[name^="answer_"], textarea[name^="answer_"]').forEach(el => {
-            const id = el.name.replace('answer_', '');
-            answers[id] = el.value.trim();
-        });
-
-        // ---- Build final JSON payload ----
-        const data = {
+    // Simulate form submission
+    fetch('/submit-assessment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
             fullName,
             email,
             mobileNumber,
-            grade,
-            answers,
-            analysis: {
-                message: "Analysis pending. In a full application, this would be generated based on the assessment responses."
-            }
-        };
-
-        // ---- Show it ------------------------------------------------+
+            grade
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
         document.getElementById('outputJson').textContent = JSON.stringify(data, null, 2);
+        updateProgress(currentStep);
+        currentStep++;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.');
     });
 });
+
+let currentStep = 1;
+
+function updateProgress(step) {
+    const progressText = document.getElementById('progressText');
+    const progressBarFill = document.getElementById('progressFill');
+
+    switch (step) {
+        case 1:
+            progressText.textContent = 'Step 1 of 5';
+            progressBarFill.style.width = '20%';
+            break;
+        case 2:
+            progressText.textContent = 'Step 2 of 5';
+            progressBarFill.style.width = '40%';
+            break;
+        case 3:
+            progressText.textContent = 'Step 3 of 5';
+            progressBarFill.style.width = '60%';
+            break;
+        case 4:
+            progressText.textContent = 'Step 4 of 5';
+            progressBarFill.style.width = '80%';
+            break;
+        case 5:
+            progressText.textContent = 'Step 5 of 5';
+            progressBarFill.style.width = '100%';
+            break;
+    }
+}

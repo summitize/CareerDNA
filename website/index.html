@@ -2,53 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Career DNA – Student Assessment</title>
     <style>
-        body {font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;margin:0;padding:0;}
-        .container {max-width:720px;margin:auto;background:#fff;padding:20px;
-                    border-radius:8px;box-shadow:0 0 12px rgba(0,0,0,.1);}
-        h1 {color:#2c3e50;margin-bottom:1rem;}
-        label {display:block;margin-top:12px;}
-        input, select, textarea {width:100%;padding:8px;margin-top:5px;
-                border:1px solid #ccc;border-radius:4px;}
-        button {margin-top:16px;padding:10px 20px;background:#2980b9;
-                color:#fff;border:none;border-radius:4px;cursor:pointer;}
-        button:hover {background:#1c5980;}
-        #questionsContainer {margin-top:20px;}
-        .question {margin-bottom:18px;}
-        #outputJson {background:#f0f0f0;padding:10px;margin-top:20px;
-                    white-space:pre-wrap;word-break:break-all;}
+        body {font-family: Arial, Helvetica, sans-serif; background: #f5f5f5; margin: 0; padding: 0;}
+        .container {max-width: 720px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 12px rgba(0, 0, 0, .1);}
+        h1 {color: #2c3e50; margin-bottom: 1rem;}
+        section {margin-bottom: 2rem;}
+        label {display: block; margin-top: 12px;}
+        input, select, textarea {width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;}
+        button {margin-top: 16px; padding: 10px 20px; background: #2980b9; color: #fff; border: none; border-radius: 4px; cursor: pointer;}
+        button:hover {background: #1c5980;}
+        .progress-container {display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
+        .progress-bar {width: 80%; background: #ddd; height: 10px; border-radius: 5px; overflow: hidden;}
+        .progress-fill {height: 100%; background: #2980b9; width: 0; transition: width 0.3s ease-in-out;}
+
+        /* Grid layout for form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Colorful styles */
+        .container {background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 12px rgba(0, 0, 0, .1); color: #333;}
+        h1, label {color: #2980b9;}
+        input, select, textarea {border-color: #2980b9; color: #333;}
+        button {background: #2980b9; border-color: #2980b9;}
+        button:hover {background: #1c5980; border-color: #1c5980;}
+
+        /* Logger */
+        .logger {
+            margin-top: 2rem;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Career DNA – Student Assessment</h1>
 
-    <!-- ==== FORM ==== -->
-    <form id="studentForm">
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" required placeholder="Your full name">
+    <!-- ==== FORM SECTIONS ==== -->
+    <section id="personalInfoSection">
+        <h2>Personal Information</h2>
+        <form id="studentForm" class="form-grid">
+            <div>
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" required placeholder="Your full name">
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" required placeholder="you@example.com">
+            </div>
+            <div>
+                <label for="mobileNumber">Mobile Number</label>
+                <input type="tel" id="mobileNumber" required placeholder="9876543210">
+            </div>
+        </form>
+    </section>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" required placeholder="you@example.com">
+    <section id="educationSection">
+        <h2>Education Details</h2>
+        <form class="form-grid">
+            <div>
+                <label for="grade">Grade</label>
+                <select id="grade" required>
+                    <option value="">Select Grade</option>
+                    <option>9</option><option>10</option><option>11</option><option>12</option>
+                </select>
+            </div>
+        </form>
+    </section>
 
-        <label for="mobileNumber">Mobile Number</label>
-        <input type="tel" id="mobileNumber" required placeholder="9876543210">
-
-        <label for="grade">Grade</label>
-        <select id="grade" required>
-            <option value="">Select Grade</option>
-            <option>9</option><option>10</option><option>11</option><option>12</option>
-        </select>
-
-        <button type="submit">Generate Analysis</button>
-    </form>
+    <!-- ==== PROGRESS CONTAINER ==== -->
+    <div class="progress-container">
+        <span id="progressText">Step 1 of 5</span>
+        <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+    </div>
 
     <!-- ==== DYNAMIC QUESTIONS WILL BE INSERTED HERE ==== -->
     <div id="questionsContainer"></div>
 
     <h2>Submitted Data (JSON)</h2>
     <pre id="outputJson">-- JSON will appear here --</pre>
+
+    <!-- Logger -->
+    <div class="logger" id="logger">
+        Sumeet
+    </div>
 </div>
 
 <!-- Load the script that contains the embedded questionnaire -->
