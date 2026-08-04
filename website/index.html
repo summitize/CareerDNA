@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerDNA - Career Discovery Assessment</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">CareerDNA</div>
+                <div class="header-tagline">Career Discovery Assessment</div>
+            </div>
+            <div id="progress-bar" class="progress-bar hidden">
+                <div id="progress-fill" class="progress-fill"></div>
+                <span id="progress-text" class="progress-text">Question 1 of 110</span>
+            </div>
+        </header>
+
+        <main id="main" class="main">
+            <!-- Welcome Screen -->
+            <section id="welcome-screen" class="screen active">
+                <div class="card welcome-card">
+                    <h1>Welcome to CareerDNA</h1>
+                    <p class="subtitle">Discover your hidden strengths, interests, and career directions</p>
+                    
+                    <div class="info-box">
+                        <h3>About this Assessment</h3>
+                        <ul>
+                            <li><strong>110 questions</strong> across 10 sections</li>
+                            <li>Takes approximately <strong>35 minutes</strong></li>
+                            <li>No right or wrong answers - just your honest responses</li>
+                            <li>Covers personality, interests, thinking style, emotional intelligence, leadership, and more</li>
+                        </ul>
+                    </div>
+
+                    <div class="disclaimer-box">
+                        <strong>Disclaimer:</strong> This is not an exam, IQ test, personality test, or diagnostic tool. There are no right or wrong answers. The assessment is designed to support career exploration and self-awareness.
+                    </div>
+
+                    <form id="student-info-form" class="student-form">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="mobileNumber">Mobile Number *</label>
+                            <input type="tel" id="mobileNumber" name="mobileNumber" required placeholder="10-digit mobile number" maxlength="10" pattern="[6-9]\d{9}">
+                        </div>
+                        <div class="form-group">
+                            <label for="grade">Grade *</label>
+                            <select id="grade" name="grade" required>
+                                <option value="">Select your grade</option>
+                                <option value="9">Grade 9</option>
+                                <option value="10">Grade 10</option>
+                                <option value="11">Grade 11</option>
+                                <option value="12">Grade 12</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">Start Assessment</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Assessment Screen -->
+            <section id="assessment-screen" class="screen hidden">
+                <form id="assessment-form">
+                    <div id="questions-container" class="questions-container"></div>
+                    <div class="form-actions">
+                        <button type="button" id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                        <button type="button" id="next-btn" class="btn btn-primary">Next</button>
+                        <button type="submit" id="submit-btn" class="btn btn-success hidden">Submit Assessment</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Results Screen -->
+            <section id="results-screen" class="screen hidden">
+                <div class="card results-card">
+                    <h2>Assessment Complete!</h2>
+                    <p class="subtitle">Your responses have been recorded. Here's a summary:</p>
+                    
+                    <div id="results-summary" class="results-summary"></div>
+                    
+                    <div class="results-actions">
+                        <button id="download-btn" class="btn btn-primary">Download Results (JSON)</button>
+                        <button id="restart-btn" class="btn btn-secondary">Take Assessment Again</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Screen -->
+            <section id="loading-screen" class="screen hidden">
+                <div class="loading-spinner"></div>
+                <p>Loading assessment...</p>
+            </section>
+
+            <!-- Error Screen -->
+            <section id="error-screen" class="screen hidden">
+                <div class="card error-card">
+                    <h2>Unable to Load Assessment</h2>
+                    <p id="error-message"></p>
+                    <button id="retry-btn" class="btn btn-primary">Retry</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>CareerDNA Career Discovery Assessment &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+<task_progress>
+- [x] Analyze website code and structure
+- [x] Identify bugs and areas for improvement
+- [x] Fix issues in HTML, CSS, and JS
+- [ ] Verify website functionality
+- [ ] Final review for deployment readiness
+</task_progress>
+</write_to_file>

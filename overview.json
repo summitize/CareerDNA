@@ -1,0 +1,861 @@
+{
+  "rootFolder": "c:\\GitHubWS\\CareerDNA",
+  "analyzedAt": "2026-07-28T10:02:53.880Z",
+  "rootStructure": [
+    {
+      "name": ".gitignore",
+      "type": "file",
+      "size": 521,
+      "lines": 42
+    },
+    {
+      "name": "app",
+      "type": "dir"
+    },
+    {
+      "name": "CareerDNA.code-workspace",
+      "type": "file",
+      "size": 100,
+      "lines": 9
+    },
+    {
+      "name": "CareerDNACursor",
+      "type": "dir"
+    },
+    {
+      "name": "components",
+      "type": "dir"
+    },
+    {
+      "name": "data",
+      "type": "dir"
+    },
+    {
+      "name": "docker-compose.yml",
+      "type": "file",
+      "size": 101,
+      "lines": 8
+    },
+    {
+      "name": "Dockerfile",
+      "type": "file",
+      "size": 141,
+      "lines": 9
+    },
+    {
+      "name": "docs",
+      "type": "dir"
+    },
+    {
+      "name": "eslint.config.mjs",
+      "type": "file",
+      "size": 332,
+      "lines": 15
+    },
+    {
+      "name": "features",
+      "type": "dir"
+    },
+    {
+      "name": "HelloWorld.java",
+      "type": "file",
+      "size": 123,
+      "lines": 5
+    },
+    {
+      "name": "lib",
+      "type": "dir"
+    },
+    {
+      "name": "next.config.ts",
+      "type": "file",
+      "size": 140,
+      "lines": 8
+    },
+    {
+      "name": "node_modules",
+      "type": "dir"
+    },
+    {
+      "name": "package-lock.json",
+      "type": "file",
+      "size": 278587,
+      "lines": 7661
+    },
+    {
+      "name": "package.json",
+      "type": "file",
+      "size": 1052,
+      "lines": 42
+    },
+    {
+      "name": "postcss.config.mjs",
+      "type": "file",
+      "size": 101,
+      "lines": 8
+    },
+    {
+      "name": "prisma",
+      "type": "dir"
+    },
+    {
+      "name": "public",
+      "type": "dir"
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "size": 704,
+      "lines": 36
+    },
+    {
+      "name": "text.txt",
+      "type": "file",
+      "size": 19,
+      "lines": 1
+    },
+    {
+      "name": "tsconfig.json",
+      "type": "file",
+      "size": 755,
+      "lines": 43
+    },
+    {
+      "name": "types",
+      "type": "dir"
+    },
+    {
+      "name": "website",
+      "type": "dir"
+    }
+  ],
+  "rootFileSnippets": {
+    "CareerDNA.code-workspace": [
+      "{",
+      "\"folders\": [",
+      "{",
+      "\"name\": \"CareerDNA\",",
+      "\"path\": \"CareerDNA\"",
+      "}",
+      "],",
+      "\"settings\": {}",
+      "}"
+    ],
+    "docker-compose.yml": [
+      "services:",
+      "app:",
+      "build: .",
+      "ports:",
+      "- \"3000:3000\"",
+      "env_file:",
+      "- .env.local",
+      ""
+    ],
+    "Dockerfile": [
+      "FROM node:20-alpine",
+      "WORKDIR /app",
+      "COPY package*.json ./",
+      "RUN npm ci",
+      "COPY . .",
+      "RUN npm run build",
+      "EXPOSE 3000",
+      "CMD [\"npm\", \"run\", \"start\"]",
+      ""
+    ],
+    "eslint.config.mjs": [
+      "import { FlatCompat } from \"@eslint/eslintrc\";",
+      "",
+      "const compat = new FlatCompat({",
+      "baseDirectory: import.meta.dirname,",
+      "});",
+      "",
+      "const eslintConfig = [",
+      "...compat.extends(\"next/core-web-vitals\", \"next/typescript\"),",
+      "{",
+      "ignores: [\".next/**\", \"out/**\", \"build/**\", \"next-env.d.ts\"],"
+    ],
+    "HelloWorld.java": [
+      "public class HelloWorld {",
+      "public static void main(String[] args) {",
+      "System.out.println(\"Hello, World!\");",
+      "}",
+      "}"
+    ],
+    "next.config.ts": [
+      "import type { NextConfig } from \"next\";",
+      "",
+      "const nextConfig: NextConfig = {",
+      "/* config options here */",
+      "};",
+      "",
+      "export default nextConfig;",
+      ""
+    ],
+    "package-lock.json": [
+      "{",
+      "\"name\": \"careerdna-app\",",
+      "\"version\": \"0.1.0\",",
+      "\"lockfileVersion\": 3,",
+      "\"requires\": true,",
+      "\"packages\": {",
+      "\"\": {",
+      "\"name\": \"careerdna-app\",",
+      "\"version\": \"0.1.0\",",
+      "\"dependencies\": {"
+    ],
+    "package.json": [
+      "{",
+      "\"name\": \"careerdna-app\",",
+      "\"version\": \"0.1.0\",",
+      "\"private\": true,",
+      "\"scripts\": {",
+      "\"dev\": \"next dev\",",
+      "\"build\": \"next build\",",
+      "\"start\": \"next start\",",
+      "\"lint\": \"eslint\"",
+      "},"
+    ],
+    "postcss.config.mjs": [
+      "const config = {",
+      "plugins: {",
+      "\"@tailwindcss/postcss\": {},",
+      "},",
+      "};",
+      "",
+      "export default config;",
+      ""
+    ],
+    "README.md": [
+      "# CareerDNA™",
+      "",
+      "Premium, student-friendly SaaS web app built with Next.js 15, TypeScript and Tailwind CSS.",
+      "",
+      "## Tech Stack",
+      "",
+      "- Next.js 15 + React",
+      "- Tailwind CSS",
+      "- Framer Motion",
+      "- ShadCN-style reusable UI components"
+    ],
+    "text.txt": [
+      "2026-07-13 15:48:32"
+    ],
+    "tsconfig.json": [
+      "{",
+      "\"compilerOptions\": {",
+      "\"target\": \"ES2017\",",
+      "\"lib\": [",
+      "\"dom\",",
+      "\"dom.iterable\",",
+      "\"esnext\"",
+      "],",
+      "\"allowJs\": true,",
+      "\"skipLibCheck\": true,"
+    ]
+  },
+  "importantFolders": [
+    {
+      "path": "app",
+      "category": "frontend",
+      "fileCount": 14,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "app\\api",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "app\\api\\score",
+      "category": "core",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "components",
+      "category": "frontend",
+      "fileCount": 3,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "components\\ui",
+      "category": "frontend",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "docs",
+      "category": "docs",
+      "fileCount": 0
+    },
+    {
+      "path": "features\\dashboard\\components",
+      "category": "frontend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "features\\landing\\components",
+      "category": "frontend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "lib",
+      "category": "core",
+      "fileCount": 3,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "public",
+      "category": "assets",
+      "fileCount": 5
+    },
+    {
+      "path": "website",
+      "category": "frontend",
+      "fileCount": 2,
+      "primaryLanguage": "JavaScript"
+    }
+  ],
+  "readmeParagraphs": {
+    "CareerDNACursor": "# CareerDNA Assessment (Quick Site)\r\n\r\nA standalone career discovery assessment with **Google Sign-In** and first-login mobile number collection.\r",
+    "root": "# CareerDNA™\r\n\r\nPremium, student-friendly SaaS web app built with Next.js 15, TypeScript and Tailwind CSS.\r"
+  },
+  "totals": {
+    "numFiles": 56,
+    "numDirs": 35,
+    "totalSizeBytes": 800308,
+    "totalLinesOfCode": 4236
+  },
+  "fileCategories": {
+    "other": 16,
+    "source": 28,
+    "config": 9,
+    "documentation": 3
+  },
+  "linesOfCodePerLanguage": {
+    "TypeScript": 882,
+    "JavaScript": 3349,
+    "Java": 5
+  },
+  "filesPerLanguage": {
+    "TypeScript": 22,
+    "JavaScript": 5,
+    "Java": 1
+  },
+  "projectTypes": [
+    "JavaScript/Node.js"
+  ],
+  "frameworks": [
+    "React",
+    "Next.js"
+  ],
+  "entryPoints": [],
+  "ciCdTools": [
+    "Docker"
+  ],
+  "packageManagers": [
+    "npm/yarn"
+  ],
+  "topLevelDirectories": [
+    {
+      "name": "website",
+      "numFiles": 2,
+      "totalLoc": 2139,
+      "dominantLanguage": "JavaScript"
+    },
+    {
+      "name": "CareerDNACursor",
+      "numFiles": 11,
+      "totalLoc": 1210,
+      "dominantLanguage": "JavaScript"
+    },
+    {
+      "name": "app",
+      "numFiles": 14,
+      "totalLoc": 565,
+      "dominantLanguage": "TypeScript"
+    },
+    {
+      "name": "lib",
+      "numFiles": 3,
+      "totalLoc": 114,
+      "dominantLanguage": "TypeScript"
+    },
+    {
+      "name": "types",
+      "numFiles": 1,
+      "totalLoc": 77,
+      "dominantLanguage": "TypeScript"
+    },
+    {
+      "name": "components",
+      "numFiles": 3,
+      "totalLoc": 70,
+      "dominantLanguage": "TypeScript"
+    },
+    {
+      "name": "features",
+      "numFiles": 2,
+      "totalLoc": 48,
+      "dominantLanguage": "TypeScript"
+    },
+    {
+      "name": "data",
+      "numFiles": 1,
+      "totalLoc": 0
+    },
+    {
+      "name": "prisma",
+      "numFiles": 1,
+      "totalLoc": 0
+    },
+    {
+      "name": "public",
+      "numFiles": 5,
+      "totalLoc": 0
+    }
+  ],
+  "detailedDirectories": [
+    {
+      "path": "website",
+      "name": "website",
+      "level": 1,
+      "numFiles": 2,
+      "totalLoc": 2139,
+      "dominantLanguage": "JavaScript",
+      "category": "Web/UI",
+      "description": "Web/UI module with 2 files (JavaScript)",
+      "subdirectories": [
+        {
+          "path": "website\\data",
+          "name": "data",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "Data",
+          "description": "Data module with 1 files",
+          "subdirectories": []
+        }
+      ]
+    },
+    {
+      "path": "CareerDNACursor",
+      "name": "CareerDNACursor",
+      "level": 1,
+      "numFiles": 11,
+      "totalLoc": 1210,
+      "dominantLanguage": "JavaScript",
+      "category": "General",
+      "description": "# CareerDNA Assessment (Quick Site)\r",
+      "subdirectories": [
+        {
+          "path": "CareerDNACursor\\js",
+          "name": "js",
+          "level": 2,
+          "numFiles": 3,
+          "totalLoc": 973,
+          "dominantLanguage": "JavaScript",
+          "category": "General",
+          "description": "General module with 3 files (JavaScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "CareerDNACursor\\css",
+          "name": "css",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": []
+        },
+        {
+          "path": "CareerDNACursor\\data",
+          "name": "data",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "Data",
+          "description": "Data module with 1 files",
+          "subdirectories": []
+        }
+      ]
+    },
+    {
+      "path": "app",
+      "name": "app",
+      "level": 1,
+      "numFiles": 14,
+      "totalLoc": 565,
+      "dominantLanguage": "TypeScript",
+      "category": "Application",
+      "description": "Application module with 14 files (TypeScript)",
+      "subdirectories": [
+        {
+          "path": "app\\assessment",
+          "name": "assessment",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 245,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 1 files (TypeScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "app\\careers",
+          "name": "careers",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 26,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 1 files (TypeScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "app\\admin",
+          "name": "admin",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 25,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 1 files (TypeScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "app\\counsellor",
+          "name": "counsellor",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 25,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 1 files (TypeScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "app\\api",
+          "name": "api",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 20,
+          "dominantLanguage": "TypeScript",
+          "category": "Service",
+          "description": "Service module with 1 files (TypeScript)",
+          "subdirectories": [
+            {
+              "path": "app\\api\\score",
+              "name": "score",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 20,
+              "dominantLanguage": "TypeScript",
+              "category": "Core/Business",
+              "description": "Core/Business module with 1 files (TypeScript)",
+              "subdirectories": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "lib",
+      "name": "lib",
+      "level": 1,
+      "numFiles": 3,
+      "totalLoc": 114,
+      "dominantLanguage": "TypeScript",
+      "category": "Library",
+      "description": "Library module with 3 files (TypeScript)",
+      "subdirectories": []
+    },
+    {
+      "path": "types",
+      "name": "types",
+      "level": 1,
+      "numFiles": 1,
+      "totalLoc": 77,
+      "dominantLanguage": "TypeScript",
+      "category": "General",
+      "description": "General module with 1 files (TypeScript)",
+      "subdirectories": []
+    },
+    {
+      "path": "components",
+      "name": "components",
+      "level": 1,
+      "numFiles": 3,
+      "totalLoc": 70,
+      "dominantLanguage": "TypeScript",
+      "category": "General",
+      "description": "General module with 3 files (TypeScript)",
+      "subdirectories": [
+        {
+          "path": "components\\ui",
+          "name": "ui",
+          "level": 2,
+          "numFiles": 2,
+          "totalLoc": 40,
+          "dominantLanguage": "TypeScript",
+          "category": "Web/UI",
+          "description": "Web/UI module with 2 files (TypeScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "components\\charts",
+          "name": "charts",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 30,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 1 files (TypeScript)",
+          "subdirectories": []
+        }
+      ]
+    },
+    {
+      "path": "features",
+      "name": "features",
+      "level": 1,
+      "numFiles": 2,
+      "totalLoc": 48,
+      "dominantLanguage": "TypeScript",
+      "category": "General",
+      "description": "General module with 2 files (TypeScript)",
+      "subdirectories": [
+        {
+          "path": "features\\landing",
+          "name": "landing",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 37,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 1 files (TypeScript)",
+          "subdirectories": [
+            {
+              "path": "features\\landing\\components",
+              "name": "components",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 37,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 1 files (TypeScript)",
+              "subdirectories": []
+            }
+          ]
+        },
+        {
+          "path": "features\\dashboard",
+          "name": "dashboard",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 11,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 1 files (TypeScript)",
+          "subdirectories": [
+            {
+              "path": "features\\dashboard\\components",
+              "name": "components",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 11,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 1 files (TypeScript)",
+              "subdirectories": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "public",
+      "name": "public",
+      "level": 1,
+      "numFiles": 5,
+      "totalLoc": 0,
+      "category": "General",
+      "description": "General module with 5 files",
+      "subdirectories": []
+    },
+    {
+      "path": "data",
+      "name": "data",
+      "level": 1,
+      "numFiles": 1,
+      "totalLoc": 0,
+      "category": "Data",
+      "description": "Data module with 1 files",
+      "subdirectories": []
+    },
+    {
+      "path": "prisma",
+      "name": "prisma",
+      "level": 1,
+      "numFiles": 1,
+      "totalLoc": 0,
+      "category": "General",
+      "description": "General module with 1 files",
+      "subdirectories": []
+    }
+  ],
+  "architecturalInsights": {
+    "coreApplications": [
+      {
+        "path": "app",
+        "name": "app",
+        "level": 1,
+        "numFiles": 14,
+        "totalLoc": 565,
+        "dominantLanguage": "TypeScript",
+        "category": "Application",
+        "description": "Application module with 14 files (TypeScript)",
+        "subdirectories": [
+          {
+            "path": "app\\assessment",
+            "name": "assessment",
+            "level": 2,
+            "numFiles": 1,
+            "totalLoc": 245,
+            "dominantLanguage": "TypeScript",
+            "category": "General",
+            "description": "General module with 1 files (TypeScript)",
+            "subdirectories": []
+          },
+          {
+            "path": "app\\careers",
+            "name": "careers",
+            "level": 2,
+            "numFiles": 1,
+            "totalLoc": 26,
+            "dominantLanguage": "TypeScript",
+            "category": "General",
+            "description": "General module with 1 files (TypeScript)",
+            "subdirectories": []
+          },
+          {
+            "path": "app\\admin",
+            "name": "admin",
+            "level": 2,
+            "numFiles": 1,
+            "totalLoc": 25,
+            "dominantLanguage": "TypeScript",
+            "category": "General",
+            "description": "General module with 1 files (TypeScript)",
+            "subdirectories": []
+          },
+          {
+            "path": "app\\counsellor",
+            "name": "counsellor",
+            "level": 2,
+            "numFiles": 1,
+            "totalLoc": 25,
+            "dominantLanguage": "TypeScript",
+            "category": "General",
+            "description": "General module with 1 files (TypeScript)",
+            "subdirectories": []
+          },
+          {
+            "path": "app\\api",
+            "name": "api",
+            "level": 2,
+            "numFiles": 1,
+            "totalLoc": 20,
+            "dominantLanguage": "TypeScript",
+            "category": "Service",
+            "description": "Service module with 1 files (TypeScript)",
+            "subdirectories": [
+              {
+                "path": "app\\api\\score",
+                "name": "score",
+                "level": 3,
+                "numFiles": 1,
+                "totalLoc": 20,
+                "dominantLanguage": "TypeScript",
+                "category": "Core/Business",
+                "description": "Core/Business module with 1 files (TypeScript)",
+                "subdirectories": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "entryPointDetails": [],
+    "serviceArchitecture": {
+      "microservices": [],
+      "monoliths": [],
+      "libraries": [
+        "lib"
+      ]
+    },
+    "layeredArchitecture": {
+      "presentation": [
+        "website"
+      ],
+      "business": [],
+      "data": [
+        "data"
+      ],
+      "infrastructure": []
+    }
+  },
+  "largeFiles": [],
+  "dependencies": {
+    "production": [
+      "@hookform/resolvers",
+      "@prisma/client",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "chart.js",
+      "class-variance-authority",
+      "clsx",
+      "framer-motion",
+      "jspdf",
+      "lucide-react",
+      "next",
+      "prisma",
+      "react",
+      "react-chartjs-2",
+      "react-dom",
+      "react-hook-form",
+      "tailwind-merge",
+      "zod"
+    ],
+    "development": [
+      "@tailwindcss/postcss",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "eslint",
+      "eslint-config-next",
+      "tailwindcss",
+      "typescript"
+    ],
+    "total": 26
+  },
+  "complexity": {
+    "averageFileSize": 75.64285714285714,
+    "maxFileSize": 0,
+    "nestedDepth": 0,
+    "estimatedComplexity": "medium"
+  },
+  "gitRepo": {
+    "firstCommitDate": "2026-07-28",
+    "totalCommits": 14,
+    "numContributors": 0,
+    "currentBranch": "main",
+    "remoteUrls": [
+      "https://github.com/summitize/CareerDNA.git"
+    ]
+  }
+}
