@@ -176,6 +176,19 @@ app.get("/api/config", (_req, res) => {
   res.json({ googleClientId: GOOGLE_CLIENT_ID });
 });
 
+app.get("/api/health", async (_req, res) => {
+  if (!supabase) {
+    return res.status(503).json({ status: "unhealthy", storage: "local", error: "Supabase is not configured." });
+  }
+
+  const { error } = await supabase.from("students").select("email", { head: true });
+  if (error) {
+    return res.status(503).json({ status: "unhealthy", storage: "supabase", error: error.message });
+  }
+
+  res.json({ status: "ok", storage: "supabase" });
+});
+
 app.get("/api/auth/session", (req, res) => {
   getSessionUser(req).then((user) => {
   if (!user) return res.status(401).json({ error: "Not authenticated." });
