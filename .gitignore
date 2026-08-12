@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# Standalone assessment runtime data
+CareerDNACursor/data/users.json
+CareerDNACursor/results/*.json
 
 # vercel
 .vercel
