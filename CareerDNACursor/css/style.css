@@ -49,9 +49,12 @@ body {
   font-weight: 700;
   font-size: 1.1rem;
   color: var(--primary);
+  text-decoration: none;
 }
 
 .logo img { width: 1.75rem; height: 1.75rem; border-radius: .45rem; object-fit: cover; }
+.logo:hover { color: var(--primary-dark); }
+.logo:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: .3rem; }
 
 .header-right {
   display: flex;
