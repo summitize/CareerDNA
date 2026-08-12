@@ -86,6 +86,41 @@ body {
   text-align: center;
 }
 
+.welcome-hero {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  padding: 2.25rem 2rem;
+  border-radius: var(--radius);
+  color: #fff;
+  background: linear-gradient(125deg, #075985, #2563eb 52%, #059669);
+  box-shadow: var(--shadow);
+}
+
+.welcome-hero::after {
+  content: "";
+  position: absolute;
+  right: -4rem;
+  top: -5rem;
+  width: 15rem;
+  height: 15rem;
+  border: 2rem solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+}
+
+.welcome-hero h1 {
+  position: relative;
+  max-width: 42rem;
+  margin: 0.35rem 0 0.75rem;
+  font-size: clamp(1.8rem, 4vw, 2.55rem);
+  line-height: 1.18;
+}
+
+.welcome-hero > p:not(.eyebrow) { position: relative; max-width: 42rem; color: #dbeafe; }
+.welcome-hero .badge { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.24); color: #fff; }
+.eyebrow { position: relative; font-size: .72rem; font-weight: 700; letter-spacing: .08em; color: #bfdbfe; }
+.welcome-card { padding-top: 1.4rem; }
+
 .login-card h1 { margin-bottom: 0.5rem; }
 
 .login-icon {
@@ -301,10 +336,8 @@ textarea { min-height: 120px; resize: vertical; }
   border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
-  cursor: grab;
 }
 
-.ranking-item.dragging { opacity: 0.5; }
 .ranking-rank {
   width: 1.75rem;
   height: 1.75rem;
@@ -317,6 +350,23 @@ textarea { min-height: 120px; resize: vertical; }
   font-weight: 700;
   flex-shrink: 0;
 }
+
+.ranking-text { flex: 1; }
+.rank-actions { display: flex; gap: 0.35rem; }
+.rank-button {
+  min-width: 2.8rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 0.35rem 0.45rem;
+  color: var(--primary-dark);
+  background: #f8fbff;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rank-button:hover:not(:disabled) { border-color: var(--primary); background: #eff6ff; }
+.rank-button:disabled { opacity: .45; cursor: not-allowed; }
 
 .actions {
   display: flex;
@@ -405,4 +455,7 @@ textarea { min-height: 120px; resize: vertical; }
   .form-grid { grid-template-columns: 1fr; }
   .main { padding-top: 1.25rem; }
   .card { padding: 1.25rem; }
+  .welcome-hero { padding: 1.7rem 1.25rem; }
+  .ranking-item { align-items: flex-start; }
+  .rank-actions { flex-direction: column; }
 }

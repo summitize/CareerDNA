@@ -34,6 +34,30 @@ async function loadAssessment() {
   state.questions = state.assessment.questionBank.flat();
 }
 
+async function loadProgress() {
+  const res = await fetch("/api/progress");
+  if (!res.ok) return null;
+  return res.json();
+}
+
+async function saveProgress() {
+  if (!state.student || !state.startedAt) return;
+  await fetch("/api/progress", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      student: state.student,
+      answers: state.answers,
+      currentIndex: state.currentIndex,
+      startedAt: state.startedAt,
+    }),
+  });
+}
+
+async function clearProgress() {
+  await fetch("/api/progress", { method: "DELETE" });
+}
+
 function updateUserMenu() {
   if (!state.user) {
     userMenu.classList.add("hidden");
@@ -143,21 +167,25 @@ function renderMobileForm() {
 
 function renderWelcome() {
   const a = state.assessment;
+  const hasProgress = Boolean(state.student && state.startedAt);
   main.innerHTML = `
-    <div class="card">
+    <div class="welcome-hero">
+      <p class="eyebrow">CAREER DISCOVERY FOR GRADES 9-12</p>
       <h1>${a.assessmentTitle}</h1>
-      <p class="subtitle">${a.assessmentPurpose}</p>
+      <p>${a.assessmentPurpose}</p>
       <div class="badge-row">
         <span class="badge">${a.totalQuestions} Questions</span>
         <span class="badge">~${a.recommendedDurationMinutes} min</span>
-        <span class="badge">${a.targetGroup}</span>
+        <span class="badge">Save and resume anytime</span>
       </div>
+    </div>
+    <div class="card welcome-card">
       <div class="info-box">
-        <strong>Before you begin</strong>
+        <strong>Designed for reflection, not right answers</strong>
         ${a.assessmentDisclaimer}
       </div>
       <div class="info-box">
-        <strong>Instructions</strong>
+        <strong>How to respond</strong>
         ${a.studentInstructions}
       </div>
       <h2>Sections</h2>
@@ -170,15 +198,25 @@ function renderWelcome() {
         `).join("")}
       </div>
       <div class="actions">
-        <span></span>
-        <button class="btn btn-primary" id="start-btn">Start Assessment</button>
+        ${hasProgress ? '<button class="btn btn-secondary" id="restart-btn">Start over</button>' : '<span></span>'}
+        <button class="btn btn-primary" id="start-btn">${hasProgress ? "Resume assessment" : "Begin assessment"}</button>
       </div>
     </div>
   `;
   document.getElementById("start-btn").onclick = () => {
-    state.view = "student";
+    state.view = hasProgress ? "question" : "student";
     render();
   };
+  if (hasProgress) {
+    document.getElementById("restart-btn").onclick = async () => {
+      await clearProgress();
+      state.answers = {};
+      state.currentIndex = 0;
+      state.student = null;
+      state.startedAt = null;
+      render();
+    };
+  }
 }
 
 function renderStudentForm() {
@@ -232,7 +270,7 @@ function renderStudentForm() {
     render();
   };
 
-  document.getElementById("continue-btn").onclick = () => {
+  document.getElementById("continue-btn").onclick = async () => {
     const form = document.getElementById("student-form");
     const data = Object.fromEntries(new FormData(form));
     const errorEl = document.getElementById("form-error");
@@ -254,6 +292,7 @@ function renderStudentForm() {
     state.startedAt = new Date().toISOString();
     state.view = "question";
     state.currentIndex = 0;
+    await saveProgress();
     render();
   };
 }
@@ -281,12 +320,16 @@ function renderQuestionInput(question, currentAnswer) {
   if (isRanking(question.questionType)) {
     const ranked = currentAnswer || [...question.options];
     return `
-      <p class="meta">Drag to rank from most like you (top) to least like you (bottom).</p>
+      <p class="meta">Place the option most like you at the top. Use the arrows to reorder.</p>
       <ul class="ranking-list" id="ranking-list">
         ${ranked.map((opt, i) => `
-          <li class="ranking-item" draggable="true" data-option="${escapeHtml(opt)}">
+          <li class="ranking-item" data-option="${escapeAttr(opt)}">
             <span class="ranking-rank">${i + 1}</span>
-            <span>${escapeHtml(opt)}</span>
+            <span class="ranking-text">${escapeHtml(opt)}</span>
+            <div class="rank-actions">
+              <button class="rank-button" type="button" data-move="up" aria-label="Move up" ${i === 0 ? "disabled" : ""}>Up</button>
+              <button class="rank-button" type="button" data-move="down" aria-label="Move down" ${i === ranked.length - 1 ? "disabled" : ""}>Down</button>
+            </div>
           </li>
         `).join("")}
       </ul>
@@ -305,43 +348,20 @@ function renderQuestionInput(question, currentAnswer) {
   `;
 }
 
-function setupRankingDrag() {
+function setupRankingControls() {
   const list = document.getElementById("ranking-list");
   if (!list) return;
 
-  let dragged = null;
-
-  list.querySelectorAll(".ranking-item").forEach((item) => {
-    item.addEventListener("dragstart", () => {
-      dragged = item;
-      item.classList.add("dragging");
+  list.querySelectorAll(".rank-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const item = button.closest(".ranking-item");
+      if (button.dataset.move === "up") list.insertBefore(item, item.previousElementSibling);
+      else list.insertBefore(item.nextElementSibling, item);
+      const question = state.questions[state.currentIndex];
+      state.answers[question.id] = [...list.querySelectorAll(".ranking-item")].map((entry) => entry.dataset.option);
+      renderQuestion();
+      saveProgress();
     });
-    item.addEventListener("dragend", () => {
-      item.classList.remove("dragging");
-      updateRankNumbers();
-    });
-    item.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      const after = getDragAfterElement(list, e.clientY);
-      if (after == null) list.appendChild(dragged);
-      else list.insertBefore(dragged, after);
-    });
-  });
-}
-
-function getDragAfterElement(container, y) {
-  const elements = [...container.querySelectorAll(".ranking-item:not(.dragging)")];
-  return elements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-    if (offset < 0 && offset > closest.offset) return { offset, element: child };
-    return closest;
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
-
-function updateRankNumbers() {
-  document.querySelectorAll(".ranking-item").forEach((item, i) => {
-    item.querySelector(".ranking-rank").textContent = i + 1;
   });
 }
 
@@ -385,7 +405,6 @@ function renderQuestion() {
         <div class="question-meta">
           <span class="tag">${question.section}</span>
           <span class="tag">${question.questionType}</span>
-          <span class="tag">${question.id}</span>
         </div>
         <p class="question-text">${escapeHtml(question.question)}</p>
       </div>
@@ -408,11 +427,12 @@ function renderQuestion() {
     });
   });
 
-  setupRankingDrag();
+  setupRankingControls();
 
-  document.getElementById("prev-btn").onclick = () => {
+  document.getElementById("prev-btn").onclick = async () => {
     saveCurrentAnswer();
     state.currentIndex--;
+    await saveProgress();
     render();
   };
 
@@ -426,6 +446,7 @@ function renderQuestion() {
 
     if (state.currentIndex < state.questions.length - 1) {
       state.currentIndex++;
+      await saveProgress();
       render();
     } else {
       await submitAssessment();
@@ -536,6 +557,7 @@ function renderResult() {
   `;
 
   document.getElementById("restart-btn").onclick = () => {
+    clearProgress();
     state.answers = {};
     state.currentIndex = 0;
     state.student = null;
@@ -587,7 +609,18 @@ async function init() {
     const session = await getSession().catch(() => null);
     if (session) {
       state.user = session;
-      state.view = session.profileComplete ? "welcome" : "mobile";
+      if (session.profileComplete) {
+        const progress = await loadProgress();
+        if (progress) {
+          state.student = progress.student;
+          state.answers = progress.answers || {};
+          state.currentIndex = Math.min(progress.currentIndex || 0, state.questions.length - 1);
+          state.startedAt = progress.startedAt;
+        }
+        state.view = "welcome";
+      } else {
+        state.view = "mobile";
+      }
     } else {
       state.view = "login";
     }

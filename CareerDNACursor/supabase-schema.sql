@@ -20,3 +20,12 @@ create table if not exists public.assessment_results (
 
 create index if not exists assessment_results_student_email_created_at_idx
   on public.assessment_results (student_email, created_at desc);
+
+create table if not exists public.assessment_progress (
+  student_email text primary key references public.students(email) on delete cascade,
+  student jsonb not null,
+  answers jsonb not null default '{}'::jsonb,
+  current_index integer not null default 0 check (current_index >= 0),
+  started_at timestamptz not null,
+  updated_at timestamptz not null default now()
+);

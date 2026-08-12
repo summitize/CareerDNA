@@ -18,6 +18,7 @@ const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_K
 
 const usersFile = path.join(ROOT, "data", "users.json");
 const sessions = new Map();
+const progressSessions = new Map();
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.static(ROOT));
@@ -261,6 +262,56 @@ app.get("/api/assessment", (_req, res) => {
   res.json(data);
 });
 
+app.get("/api/progress", requireAuth, async (req, res) => {
+  if (!supabase) return res.json(progressSessions.get(req.user.email) || null);
+
+  const { data, error } = await supabase.from("assessment_progress")
+    .select("student, answers, current_index, started_at, updated_at")
+    .eq("student_email", req.user.email)
+    .maybeSingle();
+  if (error) return res.status(500).json({ error: "Could not load assessment progress." });
+  res.json(data ? {
+    student: data.student,
+    answers: data.answers,
+    currentIndex: data.current_index,
+    startedAt: data.started_at,
+    updatedAt: data.updated_at,
+  } : null);
+});
+
+app.put("/api/progress", requireAuth, async (req, res) => {
+  const { student, answers, currentIndex, startedAt } = req.body || {};
+  if (!student || !answers || !Number.isInteger(currentIndex) || !startedAt) {
+    return res.status(400).json({ error: "Invalid assessment progress." });
+  }
+
+  const progress = { student, answers, currentIndex, startedAt, updatedAt: new Date().toISOString() };
+  if (!supabase) {
+    progressSessions.set(req.user.email, progress);
+    return res.json({ success: true, updatedAt: progress.updatedAt });
+  }
+
+  const { error } = await supabase.from("assessment_progress").upsert({
+    student_email: req.user.email,
+    student,
+    answers,
+    current_index: currentIndex,
+    started_at: startedAt,
+    updated_at: progress.updatedAt,
+  });
+  if (error) return res.status(500).json({ error: "Could not save assessment progress." });
+  res.json({ success: true, updatedAt: progress.updatedAt });
+});
+
+app.delete("/api/progress", requireAuth, async (req, res) => {
+  progressSessions.delete(req.user.email);
+  if (supabase) {
+    const { error } = await supabase.from("assessment_progress").delete().eq("student_email", req.user.email);
+    if (error) return res.status(500).json({ error: "Could not clear assessment progress." });
+  }
+  res.json({ success: true });
+});
+
 app.post("/api/submit", requireAuth, async (req, res) => {
   const result = req.body;
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
@@ -285,9 +336,11 @@ app.post("/api/submit", requireAuth, async (req, res) => {
       result,
     }).select("id, created_at").single();
     if (error) return res.status(500).json({ error: "Could not save assessment result." });
+    await supabase.from("assessment_progress").delete().eq("student_email", req.user.email);
     return res.json({ success: true, resultId: data.id, savedAt: data.created_at });
   }
 
+  progressSessions.delete(req.user.email);
   fs.writeFileSync(path.join(resultsDir, filename), JSON.stringify(result, null, 2), "utf8");
   res.json({ success: true, filename, savedAt: new Date().toISOString() });
 });
