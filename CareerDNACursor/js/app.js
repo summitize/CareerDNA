@@ -96,14 +96,20 @@ function setProgress() {
 
 function renderLogin() {
   main.innerHTML = `
-    <div class="card login-card">
-      <div class="login-icon">🎓</div>
-      <h1>Sign in to CareerDNA</h1>
-      <p class="subtitle">Use your Gmail account to access the career discovery assessment.</p>
-      <div id="google-signin-btn"></div>
-      <p class="login-note">Only Google sign-in is supported. Your email will be used to save your results.</p>
-      <div id="login-error" class="error hidden"></div>
-    </div>
+    <section class="login-layout">
+      <div class="login-hero-media">
+        <img src="/public/careerdna-hero.png" alt="Students exploring their future careers with CareerDNA" />
+      </div>
+      <div class="card login-card">
+        <img class="login-brand-mark" src="/public/careerdna-icon.png" alt="CareerDNA" />
+        <p class="eyebrow login-eyebrow">YOUR CAREER JOURNEY STARTS HERE</p>
+        <h1>Discover the path that fits you</h1>
+        <p class="subtitle">Sign in to begin a thoughtful career discovery assessment built for students in grades 9-12.</p>
+        <div id="google-signin-btn"></div>
+        <p class="login-note">Your progress is saved securely, so you can continue whenever you are ready.</p>
+        <div id="login-error" class="error hidden"></div>
+      </div>
+    </section>
   `;
 
   signInWithGoogle()
