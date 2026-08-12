@@ -180,7 +180,7 @@ function renderWelcome() {
       <h1>${a.assessmentTitle}</h1>
       <p>${a.assessmentPurpose}</p>
       <div class="badge-row">
-        <span class="badge">${a.totalQuestions} Questions</span>
+        <span class="badge">${a.coreQuestions} core questions + ${a.validityAndReverseScoredQuestions} quality checks</span>
         <span class="badge">~${a.recommendedDurationMinutes} min</span>
         <span class="badge">Save and resume anytime</span>
       </div>
