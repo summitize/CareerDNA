@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+CareerDNACursor/node_modules
 /.pnp
 .pnp.*
 .yarn/*

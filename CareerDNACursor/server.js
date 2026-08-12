@@ -4,6 +4,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { createClient } = require("@supabase/supabase-js");
 
 const app = express();
 const PORT = process.env.PORT || 3456;
@@ -11,6 +12,9 @@ const ROOT = __dirname;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
 const SESSION_SECRET = process.env.SESSION_SECRET || "change-me-in-production";
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
+  : null;
 
 const usersFile = path.join(ROOT, "data", "users.json");
 const sessions = new Map();
@@ -44,6 +48,45 @@ function writeUsers(users) {
   fs.writeFileSync(usersFile, JSON.stringify(users, null, 2), "utf8");
 }
 
+async function findUser(email) {
+  if (!supabase) return readUsers()[email] || null;
+
+  const { data, error } = await supabase.from("students").select("*").eq("email", email).maybeSingle();
+  if (error) throw error;
+  return data ? {
+    email: data.email,
+    name: data.name,
+    picture: data.picture,
+    googleSub: data.google_sub,
+    mobileNumber: data.mobile_number,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+    lastLoginAt: data.last_login_at,
+  } : null;
+}
+
+async function saveUser(user) {
+  if (!supabase) {
+    const users = readUsers();
+    users[user.email] = user;
+    writeUsers(users);
+    return user;
+  }
+
+  const { error } = await supabase.from("students").upsert({
+    email: user.email,
+    name: user.name,
+    picture: user.picture || null,
+    google_sub: user.googleSub || null,
+    mobile_number: user.mobileNumber || null,
+    created_at: user.createdAt,
+    updated_at: user.updatedAt,
+    last_login_at: user.lastLoginAt,
+  });
+  if (error) throw error;
+  return user;
+}
+
 function createSession(user) {
   const sessionId = crypto.randomBytes(32).toString("hex");
   sessions.set(sessionId, {
@@ -54,7 +97,7 @@ function createSession(user) {
   return sessionId;
 }
 
-function getSessionUser(req) {
+async function getSessionUser(req) {
   const cookies = parseCookies(req);
   const sessionId = cookies.career_dna_session;
   if (!sessionId) return null;
@@ -65,8 +108,7 @@ function getSessionUser(req) {
     return null;
   }
 
-  const users = readUsers();
-  return users[session.email] || null;
+  return findUser(session.email);
 }
 
 function setSessionCookie(res, sessionId) {
@@ -120,8 +162,8 @@ function publicUser(user) {
   };
 }
 
-function requireAuth(req, res, next) {
-  const user = getSessionUser(req);
+async function requireAuth(req, res, next) {
+  const user = await getSessionUser(req);
   if (!user) return res.status(401).json({ error: "Not authenticated." });
   req.user = user;
   next();
@@ -135,9 +177,10 @@ app.get("/api/config", (_req, res) => {
 });
 
 app.get("/api/auth/session", (req, res) => {
-  const user = getSessionUser(req);
+  getSessionUser(req).then((user) => {
   if (!user) return res.status(401).json({ error: "Not authenticated." });
   res.json(publicUser(user));
+  }).catch(() => res.status(500).json({ error: "Could not load user session." }));
 });
 
 app.post("/api/auth/google", async (req, res) => {
@@ -151,11 +194,10 @@ app.post("/api/auth/google", async (req, res) => {
 
     const payload = await verifyGoogleToken(credential);
     const email = payload.email.toLowerCase();
-    const users = readUsers();
-    const existing = users[email];
+    const existing = await findUser(email);
     const now = new Date().toISOString();
 
-    users[email] = {
+    const user = {
       email,
       name: payload.name || existing?.name || email,
       picture: payload.picture || existing?.picture || "",
@@ -166,33 +208,31 @@ app.post("/api/auth/google", async (req, res) => {
       lastLoginAt: now,
     };
 
-    writeUsers(users);
+    await saveUser(user);
 
-    const sessionId = createSession(users[email]);
+    const sessionId = createSession(user);
     setSessionCookie(res, sessionId);
 
-    res.json(publicUser(users[email]));
+    res.json(publicUser(user));
   } catch (err) {
     res.status(401).json({ error: err.message || "Authentication failed." });
   }
 });
 
-app.post("/api/auth/profile", requireAuth, (req, res) => {
+app.post("/api/auth/profile", requireAuth, async (req, res) => {
   const mobile = String(req.body.mobileNumber || "").trim();
   if (!/^[6-9]\d{9}$/.test(mobile)) {
     return res.status(400).json({ error: "Enter a valid 10-digit Indian mobile number." });
   }
 
-  const users = readUsers();
-  const email = req.user.email;
-  users[email] = {
-    ...users[email],
+  const user = {
+    ...req.user,
     mobileNumber: mobile,
     updatedAt: new Date().toISOString(),
   };
-  writeUsers(users);
+  await saveUser(user);
 
-  res.json(publicUser(users[email]));
+  res.json(publicUser(user));
 });
 
 app.post("/api/auth/logout", (req, res) => {
@@ -208,7 +248,7 @@ app.get("/api/assessment", (_req, res) => {
   res.json(data);
 });
 
-app.post("/api/submit", requireAuth, (req, res) => {
+app.post("/api/submit", requireAuth, async (req, res) => {
   const result = req.body;
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const studentName = result?.student?.firstName || "student";
@@ -223,6 +263,17 @@ app.post("/api/submit", requireAuth, (req, res) => {
     email: req.user.email,
     mobileNumber: req.user.mobileNumber,
   };
+
+  if (supabase) {
+    const { data, error } = await supabase.from("assessment_results").insert({
+      student_email: req.user.email,
+      assessment_version: result.assessmentVersion || null,
+      completed_at: result.completedAt || null,
+      result,
+    }).select("id, created_at").single();
+    if (error) return res.status(500).json({ error: "Could not save assessment result." });
+    return res.json({ success: true, resultId: data.id, savedAt: data.created_at });
+  }
 
   fs.writeFileSync(path.join(resultsDir, filename), JSON.stringify(result, null, 2), "utf8");
   res.json({ success: true, filename, savedAt: new Date().toISOString() });
