@@ -13,64 +13,83 @@ const state = {
   user: null,
   student: null,
   answers: {},
-  currentIndex: 0,
-  startedAt: null,
-  view: "loading",
+      <section class="report" id="career-report">
+        <div class="report-hero">
+          <p class="eyebrow">CAREERDNA PROFILE</p>
+          <h1>${escapeHtml(r.student.firstName)}, here is your career discovery profile</h1>
+          <p>Your responses point to strengths and directions worth exploring. They are not final career decisions.</p>
+        </div>
+        <div class="report-meta">
+          <span>${escapeHtml(r.student.grade ? `Grade ${r.student.grade}` : "Career discovery")}</span>
+          <span>${r.durationMinutes} min</span>
+          <span>${r.totalQuestionsAnswered} responses</span>
+        </div>
+
+        <div class="report-grid report-summary-grid">
+          <article class="report-card report-card-wide">
+            <h2>Top Strengths</h2>
+            <div class="strength-bars">
+              ${topStrengths.map((strength) => `
+                <div class="strength-bar">
+                  <div><strong>${escapeHtml(strength.competency)}</strong><span>${strength.score} · ${escapeHtml(strength.band)}</span></div>
+                  <div class="score-track"><i style="width: ${strength.score}%"></i></div>
+                </div>
+              `).join("")}
+            </div>
+          </article>
+          <article class="report-card">
+            <h2>Future Readiness</h2>
+            <div class="readiness-score">${r.futureReadiness?.aiReadiness ?? 0}</div>
+            <p>${escapeHtml(r.futureReadiness?.summary || "Your future readiness profile is developing.")}</p>
+          </article>
+        </div>
 };
+        <div class="report-grid">
+          <article class="report-card"><h2>Thinking Style</h2><p>${escapeHtml(r.thinkingStyle)}</p></article>
+          <article class="report-card"><h2>Learning Style</h2><p>${escapeHtml(r.learningStyle)}</p></article>
+          <article class="report-card"><h2>Work Style</h2><p>${escapeHtml(r.workStyle)}</p></article>
+          <article class="report-card"><h2>Leadership & Collaboration</h2><p>${escapeHtml(r.leadershipAndCollaborationStyle)}</p></article>
+        </div>
 
-const main = document.getElementById("main");
-const progressBar = document.getElementById("progress-bar");
-const progressFill = document.getElementById("progress-fill");
-const progressLabel = document.getElementById("progress-label");
-const userMenu = document.getElementById("user-menu");
+        <div class="report-grid">
+          <article class="report-card">
+            <h2>Motivation Drivers</h2>
+            <div class="tag-list">${(r.motivationDrivers || []).map((driver) => `<span>${escapeHtml(driver)}</span>`).join("")}</div>
+          </article>
+          <article class="report-card">
+            <h2>Development Focus</h2>
+            <ul class="report-list">${(r.developmentSuggestions || []).map((suggestion) => `<li>${escapeHtml(suggestion)}</li>`).join("")}</ul>
+          </article>
+        </div>
 
-async function loadAssessment() {
-  let res = await fetch("/api/assessment").catch(() => null);
-  if (!res?.ok) {
-    res = await fetch("./data/assessment-v1.json");
-  }
-  if (!res.ok) throw new Error("Could not load assessment data.");
-  state.assessment = await res.json();
-  state.questions = state.assessment.questionBank.flat();
-}
+        <article class="report-card report-careers">
+          <div><h2>Career Clusters to Explore</h2><p>These directions align with your response patterns and can guide conversations, projects, and further research.</p></div>
+          <ol class="career-matches">
+            ${(r.suggestedCareerClusters || []).map((cluster, index) => `
+              <li><span>${index + 1}</span><strong>${escapeHtml(cluster.cluster)}</strong><em>${cluster.matchScore}% alignment</em></li>
+            `).join("")}
+          </ol>
+        </article>
 
-async function loadProgress() {
-  const res = await fetch("/api/progress");
-  if (!res.ok) return null;
-  return res.json();
-}
-
-async function saveProgress() {
-  if (!state.student || !state.startedAt) return;
-  await fetch("/api/progress", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      student: state.student,
-      answers: state.answers,
-      currentIndex: state.currentIndex,
-      startedAt: state.startedAt,
+        <article class="report-card parent-note">
+          <h2>For Parents and Counsellors</h2>
+          <p>${escapeHtml(r.parentCounsellorNotes)}</p>
+        </article>
     }),
   });
-}
-
-async function clearProgress() {
+          <article class="report-card response-note">
+            <h2>Response Quality Notes</h2>
+            <ul class="report-list">
   await fetch("/api/progress", { method: "DELETE" });
 }
-
+          </article>
 function updateUserMenu() {
-  if (!state.user) {
-    userMenu.classList.add("hidden");
-    userMenu.innerHTML = "";
-    return;
-  }
 
-  userMenu.classList.remove("hidden");
-  userMenu.innerHTML = `
+        <div class="actions report-actions">
     ${state.user.picture ? `<img class="user-avatar" src="${escapeAttr(state.user.picture)}" alt="" />` : ""}
-    <span class="user-email">${escapeHtml(state.user.email)}</span>
+          <button class="btn btn-primary" id="print-btn">Save / Print Report</button>
     <button class="btn btn-secondary btn-logout" id="logout-btn">Logout</button>
-  `;
+      </section>
   document.getElementById("logout-btn").onclick = async () => {
     await logout();
     state.user = null;
@@ -572,15 +591,7 @@ function renderResult() {
     render();
   };
 
-  document.getElementById("download-btn").onclick = () => {
-    const blob = new Blob([JSON.stringify(r, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `career-dna-result-${r.student.firstName}-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  document.getElementById("print-btn").onclick = () => window.print();
 }
 
 function escapeHtml(str) {

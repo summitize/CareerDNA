@@ -460,6 +460,34 @@ textarea { min-height: 120px; resize: vertical; }
   color: var(--primary-dark);
 }
 
+.report { display: grid; gap: 1rem; }
+.report-hero { padding: 2.25rem 2rem; color: #fff; border-radius: var(--radius); background: linear-gradient(125deg, #075985, #2563eb 56%, #7c3aed); box-shadow: var(--shadow); }
+.report-hero h1 { margin: .4rem 0 .75rem; font-size: clamp(1.75rem, 4vw, 2.45rem); line-height: 1.18; }
+.report-hero > p:last-child { max-width: 45rem; color: #dbeafe; }
+.report-meta { display: flex; flex-wrap: wrap; gap: .6rem; }
+.report-meta span, .tag-list span { padding: .3rem .6rem; border-radius: 999px; font-size: .78rem; font-weight: 700; color: var(--primary-dark); background: #eff6ff; border: 1px solid #bfdbfe; }
+.report-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.report-summary-grid { grid-template-columns: minmax(0, 1.6fr) minmax(12rem, .4fr); }
+.report-card { padding: 1.3rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: 0 4px 16px rgba(26, 35, 50, .05); }
+.report-card h2 { margin-bottom: .6rem; font-size: 1rem; }
+.report-card p { color: var(--muted); font-size: .92rem; }
+.strength-bars { display: grid; gap: .8rem; }
+.strength-bar > div:first-child { display: flex; justify-content: space-between; gap: .75rem; font-size: .85rem; }
+.strength-bar span { color: var(--muted); white-space: nowrap; }
+.score-track { height: .45rem; margin-top: .32rem; overflow: hidden; border-radius: 99px; background: #e5edf8; }
+.score-track i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2563eb, #06b6d4); }
+.readiness-score { margin: .25rem 0 .55rem; color: var(--primary); font-size: 2.35rem; font-weight: 800; line-height: 1; }
+.tag-list { display: flex; flex-wrap: wrap; gap: .45rem; }
+.report-list { display: grid; gap: .55rem; padding-left: 1.15rem; color: var(--muted); font-size: .9rem; }
+.report-careers { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+.career-matches { display: grid; gap: .55rem; list-style: none; counter-reset: matches; }
+.career-matches li { display: grid; grid-template-columns: 1.6rem 1fr auto; align-items: center; gap: .5rem; padding: .65rem; border: 1px solid var(--border); border-radius: 8px; font-size: .86rem; }
+.career-matches li > span { display: grid; width: 1.45rem; height: 1.45rem; place-items: center; border-radius: 50%; color: #fff; background: var(--primary); font-size: .72rem; font-weight: 800; }
+.career-matches em { color: var(--success); font-size: .75rem; font-style: normal; font-weight: 700; white-space: nowrap; }
+.parent-note { border-left: 4px solid #8b5cf6; }
+.response-note { border-left: 4px solid #f59e0b; }
+.report-actions { margin-top: .25rem; }
+
 .json-output {
   margin-top: 1rem;
   background: #0f172a;
@@ -487,9 +515,21 @@ textarea { min-height: 120px; resize: vertical; }
   .welcome-hero { padding: 1.7rem 1.25rem; }
   .ranking-item { align-items: flex-start; }
   .rank-actions { flex-direction: column; }
+  .report-grid, .report-summary-grid, .report-careers { grid-template-columns: 1fr; }
+  .report-hero { padding: 1.65rem 1.25rem; }
+  .career-matches li { grid-template-columns: 1.6rem 1fr; }
+  .career-matches em { grid-column: 2; }
 }
 
 @media (max-width: 820px) {
   .login-layout { grid-template-columns: 1fr; min-height: 0; }
   .login-hero-media { max-height: 23rem; }
+}
+
+@media print {
+  .header, .report-actions { display: none !important; }
+  body { background: #fff; }
+  .main { max-width: none; padding: 0; }
+  .report { gap: .65rem; }
+  .report-hero, .report-card { break-inside: avoid; box-shadow: none; }
 }
