@@ -246,15 +246,15 @@ function renderStudentForm() {
           <label for="grade">Grade *</label>
           <select id="grade" name="grade" required>
             <option value="">Select grade</option>
-            <option value="9">Grade 9</option>
-            <option value="10">Grade 10</option>
-            <option value="11">Grade 11</option>
-            <option value="12">Grade 12</option>
+            <option value="9" ${u.grade === "9" ? "selected" : ""}>Grade 9</option>
+            <option value="10" ${u.grade === "10" ? "selected" : ""}>Grade 10</option>
+            <option value="11" ${u.grade === "11" ? "selected" : ""}>Grade 11</option>
+            <option value="12" ${u.grade === "12" ? "selected" : ""}>Grade 12</option>
           </select>
         </div>
         <div class="form-group full">
           <label for="school">School</label>
-          <input id="school" name="school" />
+          <input id="school" name="school" value="${escapeAttr(u.school || "")}" />
         </div>
         <div id="form-error" class="error full hidden"></div>
       </form>

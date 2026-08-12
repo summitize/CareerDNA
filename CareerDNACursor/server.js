@@ -60,6 +60,8 @@ async function findUser(email) {
     picture: data.picture,
     googleSub: data.google_sub,
     mobileNumber: data.mobile_number,
+    grade: data.grade,
+    school: data.school,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
     lastLoginAt: data.last_login_at,
@@ -80,6 +82,8 @@ async function saveUser(user) {
     picture: user.picture || null,
     google_sub: user.googleSub || null,
     mobile_number: user.mobileNumber || null,
+    grade: user.grade || null,
+    school: user.school || null,
     created_at: user.createdAt,
     updated_at: user.updatedAt,
     last_login_at: user.lastLoginAt,
@@ -92,6 +96,12 @@ function createSession(user) {
   const sessionId = crypto.randomBytes(32).toString("hex");
   sessions.set(sessionId, {
     email: user.email,
+    user: {
+      email: user.email,
+      mobileNumber: user.mobileNumber || "",
+      grade: user.grade || "",
+      school: user.school || "",
+    },
     createdAt: Date.now(),
     expiresAt: Date.now() + SESSION_MAX_AGE_MS,
   });
@@ -109,7 +119,29 @@ async function getSessionUser(req) {
     return null;
   }
 
-  return findUser(session.email);
+  const user = await findUser(session.email);
+  if (user) {
+    session.user = {
+      email: user.email,
+      mobileNumber: user.mobileNumber || "",
+      grade: user.grade || "",
+      school: user.school || "",
+    };
+  }
+  return user;
+}
+
+function updateSessionUser(req, user) {
+  const sessionId = parseCookies(req).career_dna_session;
+  const session = sessions.get(sessionId);
+  if (session) {
+    session.user = {
+      email: user.email,
+      mobileNumber: user.mobileNumber || "",
+      grade: user.grade || "",
+      school: user.school || "",
+    };
+  }
 }
 
 function setSessionCookie(res, sessionId) {
@@ -158,6 +190,8 @@ function publicUser(user) {
     lastName,
     picture: user.picture || "",
     mobileNumber: user.mobileNumber || "",
+    grade: user.grade || "",
+    school: user.school || "",
     profileComplete: Boolean(user.mobileNumber),
     isFirstLogin: !user.mobileNumber,
   };
@@ -217,6 +251,8 @@ app.post("/api/auth/google", async (req, res) => {
       picture: payload.picture || existing?.picture || "",
       googleSub: payload.sub,
       mobileNumber: existing?.mobileNumber || "",
+      grade: existing?.grade || "",
+      school: existing?.school || "",
       createdAt: existing?.createdAt || now,
       updatedAt: now,
       lastLoginAt: now,
@@ -245,6 +281,7 @@ app.post("/api/auth/profile", requireAuth, async (req, res) => {
     updatedAt: new Date().toISOString(),
   };
   await saveUser(user);
+  updateSessionUser(req, user);
 
   res.json(publicUser(user));
 });
@@ -286,6 +323,14 @@ app.put("/api/progress", requireAuth, async (req, res) => {
   }
 
   const progress = { student, answers, currentIndex, startedAt, updatedAt: new Date().toISOString() };
+  const updatedUser = {
+    ...req.user,
+    grade: String(student.grade || ""),
+    school: String(student.school || ""),
+    updatedAt: progress.updatedAt,
+  };
+  await saveUser(updatedUser);
+  updateSessionUser(req, updatedUser);
   if (!supabase) {
     progressSessions.set(req.user.email, progress);
     return res.json({ success: true, updatedAt: progress.updatedAt });

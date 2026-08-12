@@ -9,6 +9,9 @@ create table if not exists public.students (
   last_login_at timestamptz not null default now()
 );
 
+alter table public.students add column if not exists grade text;
+alter table public.students add column if not exists school text;
+
 create table if not exists public.assessment_results (
   id uuid primary key default gen_random_uuid(),
   student_email text not null references public.students(email) on delete cascade,
