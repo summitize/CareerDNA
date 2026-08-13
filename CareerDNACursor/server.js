@@ -300,52 +300,62 @@ app.get("/api/assessment", (_req, res) => {
 });
 
 app.get("/api/progress", requireAuth, async (req, res) => {
-  if (!supabase) return res.json(progressSessions.get(req.user.email) || null);
+  try {
+    if (!supabase) return res.json(progressSessions.get(req.user.email) || null);
 
-  const { data, error } = await supabase.from("assessment_progress")
-    .select("student, answers, current_index, started_at, updated_at")
-    .eq("student_email", req.user.email)
-    .maybeSingle();
-  if (error) return res.status(500).json({ error: "Could not load assessment progress." });
-  res.json(data ? {
-    student: data.student,
-    answers: data.answers,
-    currentIndex: data.current_index,
-    startedAt: data.started_at,
-    updatedAt: data.updated_at,
-  } : null);
+    const { data, error } = await supabase.from("assessment_progress")
+      .select("student, answers, current_index, started_at, updated_at")
+      .eq("student_email", req.user.email)
+      .maybeSingle();
+    if (error) throw error;
+    res.json(data ? {
+      student: data.student,
+      answers: data.answers,
+      currentIndex: data.current_index,
+      startedAt: data.started_at,
+      updatedAt: data.updated_at,
+    } : null);
+  } catch (err) {
+    console.error("Could not load assessment progress:", err.message);
+    res.status(500).json({ error: "Could not load assessment progress." });
+  }
 });
 
 app.put("/api/progress", requireAuth, async (req, res) => {
-  const { student, answers, currentIndex, startedAt } = req.body || {};
-  if (!student || !answers || !Number.isInteger(currentIndex) || !startedAt) {
-    return res.status(400).json({ error: "Invalid assessment progress." });
-  }
+  try {
+    const { student, answers, currentIndex, startedAt } = req.body || {};
+    if (!student || !answers || !Number.isInteger(currentIndex) || !startedAt) {
+      return res.status(400).json({ error: "Invalid assessment progress." });
+    }
 
-  const progress = { student, answers, currentIndex, startedAt, updatedAt: new Date().toISOString() };
-  const updatedUser = {
-    ...req.user,
-    grade: String(student.grade || ""),
-    school: String(student.school || ""),
-    updatedAt: progress.updatedAt,
-  };
-  await saveUser(updatedUser);
-  updateSessionUser(req, updatedUser);
-  if (!supabase) {
-    progressSessions.set(req.user.email, progress);
-    return res.json({ success: true, updatedAt: progress.updatedAt });
-  }
+    const progress = { student, answers, currentIndex, startedAt, updatedAt: new Date().toISOString() };
+    const updatedUser = {
+      ...req.user,
+      grade: String(student.grade || ""),
+      school: String(student.school || ""),
+      updatedAt: progress.updatedAt,
+    };
+    await saveUser(updatedUser);
+    updateSessionUser(req, updatedUser);
+    if (!supabase) {
+      progressSessions.set(req.user.email, progress);
+      return res.json({ success: true, updatedAt: progress.updatedAt });
+    }
 
-  const { error } = await supabase.from("assessment_progress").upsert({
-    student_email: req.user.email,
-    student,
-    answers,
-    current_index: currentIndex,
-    started_at: startedAt,
-    updated_at: progress.updatedAt,
-  });
-  if (error) return res.status(500).json({ error: "Could not save assessment progress." });
-  res.json({ success: true, updatedAt: progress.updatedAt });
+    const { error } = await supabase.from("assessment_progress").upsert({
+      student_email: req.user.email,
+      student,
+      answers,
+      current_index: currentIndex,
+      started_at: startedAt,
+      updated_at: progress.updatedAt,
+    });
+    if (error) throw error;
+    res.json({ success: true, updatedAt: progress.updatedAt });
+  } catch (err) {
+    console.error("Could not save assessment progress:", err.message);
+    res.status(500).json({ error: "Could not save assessment progress." });
+  }
 });
 
 app.delete("/api/progress", requireAuth, async (req, res) => {

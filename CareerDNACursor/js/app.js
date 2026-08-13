@@ -24,6 +24,7 @@ const progressFill = document.getElementById("progress-fill");
 const progressLabel = document.getElementById("progress-label");
 const userMenu = document.getElementById("user-menu");
 let progressSaveTimer;
+let progressSaveQueue = Promise.resolve();
 
 async function loadAssessment() {
   let res = await fetch("/api/assessment").catch(() => null);
@@ -51,19 +52,40 @@ function findResumeIndex(answers, savedIndex) {
 
 async function saveProgress() {
   if (!state.student || !state.startedAt) return;
-  const res = await fetch("/api/progress", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ student: state.student, answers: state.answers, currentIndex: state.currentIndex, startedAt: state.startedAt }),
+  const payload = JSON.stringify({
+    student: state.student,
+    answers: state.answers,
+    currentIndex: state.currentIndex,
+    startedAt: state.startedAt,
   });
-  if (!res.ok) throw new Error("Could not save assessment progress.");
+  const request = progressSaveQueue.then(async () => {
+    const res = await fetch("/api/progress", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.error || "Could not save assessment progress.");
+    }
+  });
+  progressSaveQueue = request.catch(() => {});
+  return request;
+}
+
+function showProgressSaveError(error) {
+  const progressError = document.getElementById("progress-save-error");
+  if (progressError) {
+    progressError.textContent = error.message || "Your progress could not be saved yet.";
+    progressError.classList.remove("hidden");
+  }
 }
 
 function scheduleProgressSave() {
   window.clearTimeout(progressSaveTimer);
   progressSaveTimer = window.setTimeout(() => {
     saveCurrentAnswer();
-    saveProgress().catch(() => {});
+    saveProgress().catch(showProgressSaveError);
   }, 500);
 }
 
@@ -89,8 +111,8 @@ function updateUserMenu() {
       saveCurrentAnswer();
       try {
         await saveProgress();
-      } catch {
-        // Preserve the active session unless the draft has been saved.
+      } catch (err) {
+        showProgressSaveError(err);
         return;
       }
     }
@@ -324,13 +346,7 @@ function renderStudentForm() {
     state.currentIndex = 0;
     state.view = "question";
     render();
-    saveProgress().catch((err) => {
-      const progressError = document.getElementById("progress-save-error");
-      if (progressError) {
-        progressError.textContent = err.message || "Your progress could not be saved yet.";
-        progressError.classList.remove("hidden");
-      }
-    });
+    saveProgress().catch(showProgressSaveError);
   };
 }
 
@@ -397,7 +413,7 @@ function setupRankingControls() {
       const question = state.questions[state.currentIndex];
       state.answers[question.id] = [...list.querySelectorAll(".ranking-item")].map((entry) => entry.dataset.option);
       renderQuestion();
-      saveProgress();
+      saveProgress().catch(showProgressSaveError);
     });
   });
 }
@@ -467,7 +483,7 @@ function renderQuestion() {
       opt.classList.add("selected");
       opt.querySelector("input").checked = true;
       saveCurrentAnswer();
-      saveProgress().catch(() => {});
+      saveProgress().catch(showProgressSaveError);
     });
   });
 
@@ -478,8 +494,8 @@ function renderQuestion() {
   document.getElementById("prev-btn").onclick = async () => {
     saveCurrentAnswer();
     state.currentIndex--;
-    await saveProgress();
     render();
+    saveProgress().catch(showProgressSaveError);
   };
 
   document.getElementById("next-btn").onclick = async () => {
@@ -492,8 +508,8 @@ function renderQuestion() {
 
     if (state.currentIndex < state.questions.length - 1) {
       state.currentIndex++;
-      await saveProgress();
       render();
+      saveProgress().catch(showProgressSaveError);
     } else {
       await submitAssessment();
     }
