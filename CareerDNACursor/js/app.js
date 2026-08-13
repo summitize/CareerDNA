@@ -15,6 +15,7 @@ const state = {
   answers: {},
   currentIndex: 0,
   startedAt: null,
+  latestResult: null,
   view: "loading",
 };
 
@@ -36,6 +37,12 @@ async function loadAssessment() {
 
 async function loadProgress() {
   const res = await fetch("/api/progress");
+  if (!res.ok) return null;
+  return res.json();
+}
+
+async function loadLatestResult() {
+  const res = await fetch("/api/results/latest");
   if (!res.ok) return null;
   return res.json();
 }
@@ -267,6 +274,41 @@ function renderWelcome() {
       render();
     };
   }
+}
+
+function renderCompletedAssessment() {
+  const completedAt = state.latestResult?.completedAt || state.latestResult?.savedAt;
+  const completedDate = completedAt
+    ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date(completedAt))
+    : "earlier";
+
+  main.innerHTML = `
+    <div class="card completed-card">
+      <p class="eyebrow">ASSESSMENT COMPLETE</p>
+      <h1>You have already completed CareerDNA</h1>
+      <p class="subtitle">Your latest assessment was completed on ${escapeHtml(completedDate)}. You can review that report or begin a new attempt.</p>
+      <div class="actions completed-actions">
+        <button class="btn btn-secondary" id="view-result-btn">View last result</button>
+        <button class="btn btn-primary" id="take-again-btn">Take again</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("view-result-btn").onclick = () => {
+    state.result = state.latestResult.result;
+    state.saveInfo = { success: true, savedAt: state.latestResult.savedAt };
+    state.view = "result";
+    render();
+  };
+  document.getElementById("take-again-btn").onclick = () => {
+    state.answers = {};
+    state.currentIndex = 0;
+    state.student = null;
+    state.startedAt = null;
+    state.latestResult = null;
+    state.view = "student";
+    render();
+  };
 }
 
 function renderStudentForm() {
@@ -658,6 +700,7 @@ function render() {
   if (state.view === "login") renderLogin();
   else if (state.view === "mobile") renderMobileForm();
   else if (state.view === "welcome") renderWelcome();
+  else if (state.view === "completed") renderCompletedAssessment();
   else if (state.view === "student") renderStudentForm();
   else if (state.view === "question") renderQuestion();
   else if (state.view === "result") renderResult();
@@ -678,8 +721,11 @@ async function init() {
           state.answers = progress.answers || {};
           state.currentIndex = findResumeIndex(state.answers, progress.currentIndex);
           state.startedAt = progress.startedAt;
+          state.view = "welcome";
+        } else {
+          state.latestResult = await loadLatestResult();
+          state.view = state.latestResult ? "completed" : "welcome";
         }
-        state.view = "welcome";
       } else {
         state.view = "mobile";
       }

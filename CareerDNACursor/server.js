@@ -367,6 +367,30 @@ app.delete("/api/progress", requireAuth, async (req, res) => {
   res.json({ success: true });
 });
 
+app.get("/api/results/latest", requireAuth, async (req, res) => {
+  try {
+    if (!supabase) return res.json(null);
+
+    const { data, error } = await supabase.from("assessment_results")
+      .select("id, completed_at, created_at, result")
+      .eq("student_email", req.user.email)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+
+    res.json(data ? {
+      id: data.id,
+      completedAt: data.completed_at,
+      savedAt: data.created_at,
+      result: data.result,
+    } : null);
+  } catch (err) {
+    console.error("Could not load latest assessment result:", err.message);
+    res.status(500).json({ error: "Could not load the latest assessment result." });
+  }
+});
+
 app.post("/api/submit", requireAuth, async (req, res) => {
   const result = req.body;
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
