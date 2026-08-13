@@ -299,7 +299,7 @@ function renderStudentForm() {
       return;
     }
 
-    state.student = {
+    const student = {
       firstName: data.firstName.trim(),
       lastName: data.lastName.trim(),
       email: state.user.email,
@@ -307,11 +307,20 @@ function renderStudentForm() {
       grade: data.grade,
       school: data.school?.trim() || "",
     };
-    state.startedAt = new Date().toISOString();
-    state.view = "question";
+    const startedAt = new Date().toISOString();
+
+    state.student = student;
+    state.startedAt = startedAt;
     state.currentIndex = 0;
-    await saveProgress();
+    state.view = "question";
     render();
+    saveProgress().catch((err) => {
+      const progressError = document.getElementById("progress-save-error");
+      if (progressError) {
+        progressError.textContent = err.message || "Your progress could not be saved yet.";
+        progressError.classList.remove("hidden");
+      }
+    });
   };
 }
 
@@ -432,6 +441,7 @@ function renderQuestion() {
       </div>
       ${renderQuestionInput(question, currentAnswer)}
       <div id="q-error" class="error hidden">Please answer before continuing.</div>
+      <div id="progress-save-error" class="error hidden" role="alert"></div>
       <div class="actions">
         <button class="btn btn-secondary" id="prev-btn" ${state.currentIndex === 0 ? "disabled" : ""}>Previous</button>
         <button class="btn btn-primary" id="next-btn">
