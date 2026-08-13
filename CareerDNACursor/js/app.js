@@ -397,13 +397,17 @@ function validateAnswer(question) {
 function renderQuestion() {
   const question = state.questions[state.currentIndex];
   const currentAnswer = state.answers[question.id];
+  const completionPercent = Math.round(((state.currentIndex + 1) / state.questions.length) * 100);
 
   main.innerHTML = `
     <div class="card">
       <div class="question-header">
-        <div class="question-meta">
-          <span class="tag">${question.section}</span>
-          <span class="tag">${question.questionType}</span>
+        <div class="question-heading-row">
+          <div class="question-meta">
+            <span class="tag">${question.section}</span>
+            <span class="tag">${question.questionType}</span>
+          </div>
+          <span class="completion-badge">${completionPercent}% complete</span>
         </div>
         <p class="question-text">${escapeHtml(question.question)}</p>
       </div>
