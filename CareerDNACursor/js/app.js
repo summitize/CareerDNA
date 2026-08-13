@@ -278,6 +278,7 @@ function renderWelcome() {
 
 function renderCompletedAssessment() {
   const completedAt = state.latestResult?.completedAt || state.latestResult?.savedAt;
+  const hasRetakeProgress = Boolean(state.student && state.startedAt);
   const completedDate = completedAt
     ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date(completedAt))
     : "earlier";
@@ -286,10 +287,10 @@ function renderCompletedAssessment() {
     <div class="card completed-card">
       <p class="eyebrow">ASSESSMENT COMPLETE</p>
       <h1>You have already completed CareerDNA</h1>
-      <p class="subtitle">Your latest assessment was completed on ${escapeHtml(completedDate)}. You can review that report or begin a new attempt.</p>
+      <p class="subtitle">Your latest assessment was completed on ${escapeHtml(completedDate)}. ${hasRetakeProgress ? "A new attempt is also in progress." : "Would you like to take the assessment again?"}</p>
       <div class="actions completed-actions">
         <button class="btn btn-secondary" id="view-result-btn">View last result</button>
-        <button class="btn btn-primary" id="take-again-btn">Take again</button>
+        <button class="btn btn-primary" id="take-again-btn">${hasRetakeProgress ? "Resume new attempt" : "Take again"}</button>
       </div>
     </div>
   `;
@@ -301,6 +302,11 @@ function renderCompletedAssessment() {
     render();
   };
   document.getElementById("take-again-btn").onclick = () => {
+    if (hasRetakeProgress) {
+      state.view = "question";
+      render();
+      return;
+    }
     state.answers = {};
     state.currentIndex = 0;
     state.student = null;
@@ -592,6 +598,10 @@ async function submitAssessment() {
         savedAt: state.saveInfo.savedAt,
         result,
       };
+      state.answers = {};
+      state.currentIndex = 0;
+      state.student = null;
+      state.startedAt = null;
     } else {
       state.saveInfo = { success: false };
     }
@@ -718,17 +728,15 @@ async function init() {
     if (session) {
       state.user = session;
       if (session.profileComplete) {
-        const progress = await loadProgress();
+        const [progress, latestResult] = await Promise.all([loadProgress(), loadLatestResult()]);
+        state.latestResult = latestResult;
         if (progress) {
           state.student = progress.student;
           state.answers = progress.answers || {};
           state.currentIndex = findResumeIndex(state.answers, progress.currentIndex);
           state.startedAt = progress.startedAt;
-          state.view = "welcome";
-        } else {
-          state.latestResult = await loadLatestResult();
-          state.view = state.latestResult ? "completed" : "welcome";
         }
+        state.view = state.latestResult ? "completed" : "welcome";
       } else {
         state.view = "mobile";
       }
