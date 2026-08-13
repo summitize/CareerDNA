@@ -586,6 +586,12 @@ async function submitAssessment() {
     });
     if (res.ok) {
       state.saveInfo = await res.json();
+      state.latestResult = {
+        id: state.saveInfo.resultId,
+        completedAt: result.completedAt,
+        savedAt: state.saveInfo.savedAt,
+        result,
+      };
     } else {
       state.saveInfo = { success: false };
     }
@@ -654,19 +660,16 @@ function renderResult() {
       </div>
 
       <div class="actions">
-        <button class="btn btn-secondary" id="restart-btn">Take Again</button>
+        <button class="btn btn-secondary" id="restart-btn">Assessment options</button>
         <button class="btn btn-primary" id="download-btn">Download JSON</button>
       </div>
     </div>
   `;
 
-  document.getElementById("restart-btn").onclick = () => {
-    clearProgress();
-    state.answers = {};
-    state.currentIndex = 0;
-    state.student = null;
-    state.startedAt = null;
-    state.view = "welcome";
+  document.getElementById("restart-btn").onclick = async () => {
+    if (!state.latestResult) state.latestResult = await loadLatestResult();
+    if (!state.latestResult) return;
+    state.view = "completed";
     render();
   };
 
