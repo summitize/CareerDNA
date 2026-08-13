@@ -23,6 +23,7 @@ const progressBar = document.getElementById("progress-bar");
 const progressFill = document.getElementById("progress-fill");
 const progressLabel = document.getElementById("progress-label");
 const userMenu = document.getElementById("user-menu");
+let progressSaveTimer;
 
 async function loadAssessment() {
   let res = await fetch("/api/assessment").catch(() => null);
@@ -40,11 +41,20 @@ async function loadProgress() {
 
 async function saveProgress() {
   if (!state.student || !state.startedAt) return;
-  await fetch("/api/progress", {
+  const res = await fetch("/api/progress", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ student: state.student, answers: state.answers, currentIndex: state.currentIndex, startedAt: state.startedAt }),
   });
+  if (!res.ok) throw new Error("Could not save assessment progress.");
+}
+
+function scheduleProgressSave() {
+  window.clearTimeout(progressSaveTimer);
+  progressSaveTimer = window.setTimeout(() => {
+    saveCurrentAnswer();
+    saveProgress().catch(() => {});
+  }, 500);
 }
 
 async function clearProgress() {
@@ -65,6 +75,15 @@ function updateUserMenu() {
     <button class="btn btn-secondary btn-logout" id="logout-btn">Logout</button>
   `;
   document.getElementById("logout-btn").onclick = async () => {
+    if (state.view === "question") {
+      saveCurrentAnswer();
+      try {
+        await saveProgress();
+      } catch {
+        // Preserve the active session unless the draft has been saved.
+        return;
+      }
+    }
     await logout();
     state.user = null;
     state.student = null;
@@ -427,10 +446,14 @@ function renderQuestion() {
       document.querySelectorAll(".option").forEach((o) => o.classList.remove("selected"));
       opt.classList.add("selected");
       opt.querySelector("input").checked = true;
+      saveCurrentAnswer();
+      saveProgress().catch(() => {});
     });
   });
 
   setupRankingControls();
+
+  document.getElementById("answer-input")?.addEventListener("input", scheduleProgressSave);
 
   document.getElementById("prev-btn").onclick = async () => {
     saveCurrentAnswer();
