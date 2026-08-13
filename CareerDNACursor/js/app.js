@@ -39,6 +39,16 @@ async function loadProgress() {
   return res.json();
 }
 
+function findResumeIndex(answers, savedIndex) {
+  const firstUnansweredIndex = state.questions.findIndex((question) => {
+    const answer = answers?.[question.id];
+    return answer === undefined || answer === null || answer === "";
+  });
+
+  if (firstUnansweredIndex !== -1) return firstUnansweredIndex;
+  return Math.min(savedIndex || 0, state.questions.length - 1);
+}
+
 async function saveProgress() {
   if (!state.student || !state.startedAt) return;
   const res = await fetch("/api/progress", {
@@ -650,7 +660,7 @@ async function init() {
         if (progress) {
           state.student = progress.student;
           state.answers = progress.answers || {};
-          state.currentIndex = Math.min(progress.currentIndex || 0, state.questions.length - 1);
+          state.currentIndex = findResumeIndex(state.answers, progress.currentIndex);
           state.startedAt = progress.startedAt;
         }
         state.view = "welcome";
