@@ -19,6 +19,20 @@ const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_K
 const usersFile = path.join(ROOT, "data", "users.json");
 const sessions = new Map();
 const progressSessions = new Map();
+const ASSESSMENT_FILES = {
+  "3": "assessment-v1.json",
+  "4": "assessment-v4.json",
+};
+
+function getAssessmentVersion(value) {
+  const aliases = { "1": "3", "3.0-final": "3", "4.0": "4" };
+  const version = aliases[value] || value;
+  return Object.hasOwn(ASSESSMENT_FILES, version) ? version : "4";
+}
+
+function progressKey(email, version) {
+  return `${email}:${version}`;
+}
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.static(ROOT));
@@ -293,19 +307,22 @@ app.post("/api/auth/logout", (req, res) => {
   res.json({ success: true });
 });
 
-app.get("/api/assessment", (_req, res) => {
-  const filePath = path.join(ROOT, "data", "assessment-v1.json");
+app.get("/api/assessment", (req, res) => {
+  const version = getAssessmentVersion(req.query.version);
+  const filePath = path.join(ROOT, "data", ASSESSMENT_FILES[version]);
   const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
   res.json(data);
 });
 
 app.get("/api/progress", requireAuth, async (req, res) => {
   try {
-    if (!supabase) return res.json(progressSessions.get(req.user.email) || null);
+    const version = getAssessmentVersion(req.query.version);
+    if (!supabase) return res.json(progressSessions.get(progressKey(req.user.email, version)) || null);
 
     const { data, error } = await supabase.from("assessment_progress")
       .select("student, answers, current_index, started_at, updated_at")
       .eq("student_email", req.user.email)
+      .eq("assessment_version", version)
       .maybeSingle();
     if (error) throw error;
     res.json(data ? {
@@ -323,7 +340,8 @@ app.get("/api/progress", requireAuth, async (req, res) => {
 
 app.put("/api/progress", requireAuth, async (req, res) => {
   try {
-    const { student, answers, currentIndex, startedAt } = req.body || {};
+    const { assessmentVersion, student, answers, currentIndex, startedAt } = req.body || {};
+    const version = getAssessmentVersion(assessmentVersion);
     if (!student || !answers || !Number.isInteger(currentIndex) || !startedAt) {
       return res.status(400).json({ error: "Invalid assessment progress." });
     }
@@ -338,12 +356,13 @@ app.put("/api/progress", requireAuth, async (req, res) => {
     await saveUser(updatedUser);
     updateSessionUser(req, updatedUser);
     if (!supabase) {
-      progressSessions.set(req.user.email, progress);
+      progressSessions.set(progressKey(req.user.email, version), progress);
       return res.json({ success: true, updatedAt: progress.updatedAt });
     }
 
     const { error } = await supabase.from("assessment_progress").upsert({
       student_email: req.user.email,
+      assessment_version: version,
       student,
       answers,
       current_index: currentIndex,
@@ -359,9 +378,10 @@ app.put("/api/progress", requireAuth, async (req, res) => {
 });
 
 app.delete("/api/progress", requireAuth, async (req, res) => {
-  progressSessions.delete(req.user.email);
+  const version = getAssessmentVersion(req.query.version);
+  progressSessions.delete(progressKey(req.user.email, version));
   if (supabase) {
-    const { error } = await supabase.from("assessment_progress").delete().eq("student_email", req.user.email);
+    const { error } = await supabase.from("assessment_progress").delete().eq("student_email", req.user.email).eq("assessment_version", version);
     if (error) return res.status(500).json({ error: "Could not clear assessment progress." });
   }
   res.json({ success: true });
@@ -369,11 +389,13 @@ app.delete("/api/progress", requireAuth, async (req, res) => {
 
 app.get("/api/results/latest", requireAuth, async (req, res) => {
   try {
+    const version = getAssessmentVersion(req.query.version);
     if (!supabase) return res.json(null);
 
     const { data, error } = await supabase.from("assessment_results")
       .select("id, completed_at, created_at, result")
       .eq("student_email", req.user.email)
+      .eq("assessment_version", version)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -395,6 +417,7 @@ app.post("/api/submit", requireAuth, async (req, res) => {
   const result = req.body;
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const studentName = result?.student?.firstName || "student";
+  const version = getAssessmentVersion(String(result.assessmentVersion || ""));
   const filename = `result-${studentName}-${timestamp}.json`;
   const resultsDir = path.join(ROOT, "results");
 
@@ -410,16 +433,16 @@ app.post("/api/submit", requireAuth, async (req, res) => {
   if (supabase) {
     const { data, error } = await supabase.from("assessment_results").insert({
       student_email: req.user.email,
-      assessment_version: result.assessmentVersion || null,
+      assessment_version: version,
       completed_at: result.completedAt || null,
       result,
     }).select("id, created_at").single();
     if (error) return res.status(500).json({ error: "Could not save assessment result." });
-    await supabase.from("assessment_progress").delete().eq("student_email", req.user.email);
+    await supabase.from("assessment_progress").delete().eq("student_email", req.user.email).eq("assessment_version", version);
     return res.json({ success: true, resultId: data.id, savedAt: data.created_at });
   }
 
-  progressSessions.delete(req.user.email);
+  progressSessions.delete(progressKey(req.user.email, version));
   fs.writeFileSync(path.join(resultsDir, filename), JSON.stringify(result, null, 2), "utf8");
   res.json({ success: true, filename, savedAt: new Date().toISOString() });
 });

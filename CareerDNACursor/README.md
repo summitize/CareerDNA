@@ -54,13 +54,19 @@ With those variables present, Google profiles are stored in `students` and compl
 | `POST /api/auth/google` | Verify Google ID token, create session |
 | `POST /api/auth/profile` | Save mobile number (first login) |
 | `POST /api/auth/logout` | End session |
-| `GET /api/assessment` | Assessment JSON |
+| `GET /api/assessment?version=3\|4` | Selected assessment JSON (v4 is the default) |
 | `POST /api/submit` | Save result JSON (requires auth) |
 
 ## Data files
 
 - `data/users.json` — User profiles (email, mobile, Google info)
+- `data/assessment-v1.json` — Original production assessment (displayed as Version 3.0)
+- `data/assessment-v4.json` — Expanded assessment (displayed as Version 4.0)
 - `results/` — Assessment result JSON files
+
+## Database migration
+
+Run the updated `supabase-schema.sql` before deploying this change. It records `assessment_version` on assessment progress and changes the progress key to `(student_email, assessment_version)`, allowing the same student to independently resume v3 and v4. The migration also normalizes historic `3.0-final` results and progress to `3`.
 
 ## Note
 

@@ -9,6 +9,7 @@ import {
 
 const state = {
   assessment: null,
+  assessmentVersion: "4",
   questions: [],
   user: null,
   student: null,
@@ -28,21 +29,21 @@ let progressSaveTimer;
 let progressSaveQueue = Promise.resolve();
 
 async function loadAssessment() {
-  let res = await fetch("/api/assessment").catch(() => null);
-  if (!res?.ok) res = await fetch("./data/assessment-v1.json");
+  let res = await fetch(`/api/assessment?version=${encodeURIComponent(state.assessmentVersion)}`).catch(() => null);
+  if (!res?.ok) res = await fetch(`./data/assessment-v${state.assessmentVersion}.json`);
   if (!res.ok) throw new Error("Could not load assessment data.");
   state.assessment = await res.json();
   state.questions = state.assessment.questionBank.flat();
 }
 
 async function loadProgress() {
-  const res = await fetch("/api/progress");
+  const res = await fetch(`/api/progress?version=${encodeURIComponent(state.assessmentVersion)}`);
   if (!res.ok) return null;
   return res.json();
 }
 
 async function loadLatestResult() {
-  const res = await fetch("/api/results/latest");
+  const res = await fetch(`/api/results/latest?version=${encodeURIComponent(state.assessmentVersion)}`);
   if (!res.ok) return null;
   return res.json();
 }
@@ -60,6 +61,7 @@ function findResumeIndex(answers, savedIndex) {
 async function saveProgress() {
   if (!state.student || !state.startedAt) return;
   const payload = JSON.stringify({
+    assessmentVersion: state.assessmentVersion,
     student: state.student,
     answers: state.answers,
     currentIndex: state.currentIndex,
@@ -97,7 +99,7 @@ function scheduleProgressSave() {
 }
 
 async function clearProgress() {
-  await fetch("/api/progress", { method: "DELETE" });
+  await fetch(`/api/progress?version=${encodeURIComponent(state.assessmentVersion)}`, { method: "DELETE" });
 }
 
 function updateUserMenu() {
@@ -156,12 +158,40 @@ function renderLogin() {
         <p class="eyebrow login-eyebrow">YOUR CAREER JOURNEY STARTS HERE</p>
         <h1>Discover the path that fits you</h1>
         <p class="subtitle">Sign in to begin a thoughtful career discovery assessment built for students in grades 9-12.</p>
+        <fieldset class="assessment-version-picker">
+          <legend>Choose your assessment edition</legend>
+          <label class="version-option ${state.assessmentVersion === "4" ? "selected" : ""}">
+            <input type="radio" name="assessment-version" value="4" ${state.assessmentVersion === "4" ? "checked" : ""} />
+            <span><strong>Version 4.0</strong><small>Expanded career, academic, and digital-readiness signals</small></span>
+          </label>
+          <label class="version-option ${state.assessmentVersion === "3" ? "selected" : ""}">
+            <input type="radio" name="assessment-version" value="3" ${state.assessmentVersion === "3" ? "checked" : ""} />
+            <span><strong>Version 3.0</strong><small>Original production assessment</small></span>
+          </label>
+        </fieldset>
         <div id="google-signin-btn"></div>
         <p class="login-note">Your progress is saved securely, so you can continue whenever you are ready.</p>
         <div id="login-error" class="error hidden"></div>
       </div>
     </section>
   `;
+
+  document.querySelectorAll('input[name="assessment-version"]').forEach((input) => {
+    input.addEventListener("change", async () => {
+      state.assessmentVersion = input.value;
+      state.assessment = null;
+      state.questions = [];
+      state.latestResult = null;
+      try {
+        await loadAssessment();
+        renderLogin();
+      } catch (err) {
+        const errorEl = document.getElementById("login-error");
+        errorEl.textContent = err.message;
+        errorEl.classList.remove("hidden");
+      }
+    });
+  });
 
   signInWithGoogle()
     .then((user) => {
@@ -588,7 +618,7 @@ async function submitAssessment() {
     const res = await fetch("/api/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(result),
+      body: JSON.stringify({ ...result, assessmentVersion: state.assessment.version }),
     });
     if (res.ok) {
       state.saveInfo = await res.json();

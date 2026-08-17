@@ -169,6 +169,22 @@ body {
   margin: 1.5rem 0 0.75rem;
 }
 
+.assessment-version-picker {
+  display: grid;
+  gap: .6rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+
+.assessment-version-picker legend { margin-bottom: .25rem; font-size: .85rem; font-weight: 700; color: var(--text); }
+.version-option { display: flex; align-items: flex-start; gap: .65rem; padding: .75rem; border: 1px solid var(--border); border-radius: 8px; background: #fff; cursor: pointer; }
+.version-option.selected { border-color: var(--primary); background: #eff6ff; box-shadow: 0 0 0 2px rgba(37, 99, 235, .1); }
+.version-option input { margin-top: .25rem; accent-color: var(--primary); }
+.version-option strong, .version-option small { display: block; }
+.version-option small { margin-top: .1rem; color: var(--muted); font-size: .76rem; font-weight: 400; }
+
 .login-note {
   font-size: 0.85rem;
   color: var(--muted);
