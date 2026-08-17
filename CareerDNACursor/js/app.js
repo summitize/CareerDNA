@@ -48,6 +48,15 @@ async function loadLatestResult() {
   return res.json();
 }
 
+async function restoreAssessmentState() {
+  const [progress, latestResult] = await Promise.all([loadProgress(), loadLatestResult()]);
+  state.latestResult = latestResult;
+  state.student = progress?.student || null;
+  state.answers = progress?.answers || {};
+  state.currentIndex = progress ? findResumeIndex(state.answers, progress.currentIndex) : 0;
+  state.startedAt = progress?.startedAt || null;
+}
+
 function findResumeIndex(answers, savedIndex) {
   const firstUnansweredIndex = state.questions.findIndex((question) => {
     const answer = answers?.[question.id];
@@ -194,9 +203,14 @@ function renderLogin() {
   });
 
   signInWithGoogle()
-    .then((user) => {
+    .then(async (user) => {
       state.user = user;
-      state.view = user.profileComplete ? "welcome" : "mobile";
+      if (user.profileComplete) {
+        await restoreAssessmentState();
+        state.view = state.latestResult ? "completed" : "welcome";
+      } else {
+        state.view = "mobile";
+      }
       render();
     })
     .catch((err) => {
@@ -758,14 +772,7 @@ async function init() {
     if (session) {
       state.user = session;
       if (session.profileComplete) {
-        const [progress, latestResult] = await Promise.all([loadProgress(), loadLatestResult()]);
-        state.latestResult = latestResult;
-        if (progress) {
-          state.student = progress.student;
-          state.answers = progress.answers || {};
-          state.currentIndex = findResumeIndex(state.answers, progress.currentIndex);
-          state.startedAt = progress.startedAt;
-        }
+        await restoreAssessmentState();
         state.view = state.latestResult ? "completed" : "welcome";
       } else {
         state.view = "mobile";

@@ -34,6 +34,10 @@ function progressKey(email, version) {
   return `${email}:${version}`;
 }
 
+function versionValues(version) {
+  return version === "3" ? ["3", "3.0-final", "1"] : [version];
+}
+
 function progressStorageError(err) {
   if (err?.code === "42703" || /assessment_version/i.test(err?.message || "")) {
     return "Database update required: run the latest supabase-schema.sql, then try again.";
@@ -332,7 +336,9 @@ app.get("/api/progress", requireAuth, async (req, res) => {
     const { data, error } = await supabase.from("assessment_progress")
       .select("student, answers, current_index, started_at, updated_at")
       .eq("student_email", req.user.email)
-      .eq("assessment_version", version)
+      .in("assessment_version", versionValues(version))
+      .order("updated_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
     if (error) throw error;
     res.json(data ? {
@@ -405,7 +411,7 @@ app.get("/api/results/latest", requireAuth, async (req, res) => {
     const { data, error } = await supabase.from("assessment_results")
       .select("id, completed_at, created_at, result")
       .eq("student_email", req.user.email)
-      .eq("assessment_version", version)
+      .in("assessment_version", versionValues(version))
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
