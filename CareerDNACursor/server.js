@@ -19,23 +19,11 @@ const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_K
 const usersFile = path.join(ROOT, "data", "users.json");
 const sessions = new Map();
 const progressSessions = new Map();
-const ASSESSMENT_FILES = {
-  "3": "assessment-v1.json",
-  "4": "assessment-v4.json",
-};
+const ASSESSMENT_FILE = "assessment-v4.json";
+const ASSESSMENT_VERSION = "4";
 
-function getAssessmentVersion(value) {
-  const aliases = { "1": "3", "3.0-final": "3", "4.0": "4" };
-  const version = aliases[value] || value;
-  return Object.hasOwn(ASSESSMENT_FILES, version) ? version : "4";
-}
-
-function progressKey(email, version) {
-  return `${email}:${version}`;
-}
-
-function versionValues(version) {
-  return version === "3" ? ["3", "3.0-final", "1"] : [version];
+function progressKey(email) {
+  return email;
 }
 
 function progressStorageError(err) {
@@ -225,6 +213,10 @@ function publicUser(user) {
   };
 }
 
+function hasRequiredContactDetails(user) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(user.email || "")) && /^[6-9]\d{9}$/.test(String(user.mobileNumber || ""));
+}
+
 async function requireAuth(req, res, next) {
   const user = await getSessionUser(req);
   if (!user) return res.status(401).json({ error: "Not authenticated." });
@@ -322,8 +314,7 @@ app.post("/api/auth/logout", (req, res) => {
 });
 
 app.get("/api/assessment", (req, res) => {
-  const version = getAssessmentVersion(req.query.version);
-  const filePath = path.join(ROOT, "data", ASSESSMENT_FILES[version]);
+  const filePath = path.join(ROOT, "data", ASSESSMENT_FILE);
   const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
   res.json(data);
 });
@@ -331,10 +322,7 @@ app.get("/api/assessment", (req, res) => {
 app.get("/api/assessment/resume", requireAuth, async (req, res) => {
   try {
     if (!supabase) {
-      const savedProgress = [...progressSessions.entries()]
-        .filter(([key]) => key.startsWith(`${req.user.email}:`))
-        .sort(([, left], [, right]) => new Date(right.updatedAt) - new Date(left.updatedAt))[0];
-      return res.json({ version: savedProgress ? getAssessmentVersion(savedProgress[0].split(":").at(-1)) : "4" });
+      return res.json({ version: ASSESSMENT_VERSION });
     }
 
     const { data: progress, error: progressError } = await supabase.from("assessment_progress")
@@ -344,7 +332,7 @@ app.get("/api/assessment/resume", requireAuth, async (req, res) => {
       .limit(1)
       .maybeSingle();
     if (progressError) throw progressError;
-    if (progress) return res.json({ version: getAssessmentVersion(progress.assessment_version) });
+    if (progress) return res.json({ version: ASSESSMENT_VERSION });
 
     const { data: result, error: resultError } = await supabase.from("assessment_results")
       .select("assessment_version")
@@ -353,7 +341,7 @@ app.get("/api/assessment/resume", requireAuth, async (req, res) => {
       .limit(1)
       .maybeSingle();
     if (resultError) throw resultError;
-    res.json({ version: getAssessmentVersion(result?.assessment_version) });
+    res.json({ version: ASSESSMENT_VERSION });
   } catch (err) {
     console.error("Could not select assessment resume version:", err.message);
     res.status(500).json({ error: "Could not restore the saved assessment." });
@@ -362,13 +350,12 @@ app.get("/api/assessment/resume", requireAuth, async (req, res) => {
 
 app.get("/api/progress", requireAuth, async (req, res) => {
   try {
-    const version = getAssessmentVersion(req.query.version);
-    if (!supabase) return res.json(progressSessions.get(progressKey(req.user.email, version)) || null);
+    if (!supabase) return res.json(progressSessions.get(progressKey(req.user.email)) || null);
 
     const { data, error } = await supabase.from("assessment_progress")
       .select("student, answers, current_index, started_at, updated_at")
       .eq("student_email", req.user.email)
-      .in("assessment_version", versionValues(version))
+      .eq("assessment_version", ASSESSMENT_VERSION)
       .order("updated_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -388,8 +375,10 @@ app.get("/api/progress", requireAuth, async (req, res) => {
 
 app.put("/api/progress", requireAuth, async (req, res) => {
   try {
-    const { assessmentVersion, student, answers, currentIndex, startedAt } = req.body || {};
-    const version = getAssessmentVersion(assessmentVersion);
+    const { student, answers, currentIndex, startedAt, overwrite } = req.body || {};
+    if (!hasRequiredContactDetails(req.user)) {
+      return res.status(400).json({ error: "A valid email address and mobile number are required to save an assessment." });
+    }
     if (!student || !answers || !Number.isInteger(currentIndex) || !startedAt) {
       return res.status(400).json({ error: "Invalid assessment progress." });
     }
@@ -404,13 +393,24 @@ app.put("/api/progress", requireAuth, async (req, res) => {
     await saveUser(updatedUser);
     updateSessionUser(req, updatedUser);
     if (!supabase) {
-      progressSessions.set(progressKey(req.user.email, version), progress);
+      if (progressSessions.has(progressKey(req.user.email)) && overwrite !== true) {
+        return res.status(409).json({ error: "A saved assessment already exists." });
+      }
+      progressSessions.set(progressKey(req.user.email), progress);
       return res.json({ success: true, updatedAt: progress.updatedAt });
     }
 
+    const { data: existing, error: existingError } = await supabase.from("assessment_progress")
+      .select("updated_at")
+      .eq("student_email", req.user.email)
+      .eq("assessment_version", ASSESSMENT_VERSION)
+      .maybeSingle();
+    if (existingError) throw existingError;
+    if (existing && overwrite !== true) return res.status(409).json({ error: "A saved assessment already exists." });
+
     const { error } = await supabase.from("assessment_progress").upsert({
       student_email: req.user.email,
-      assessment_version: version,
+      assessment_version: ASSESSMENT_VERSION,
       student,
       answers,
       current_index: currentIndex,
@@ -426,10 +426,9 @@ app.put("/api/progress", requireAuth, async (req, res) => {
 });
 
 app.delete("/api/progress", requireAuth, async (req, res) => {
-  const version = getAssessmentVersion(req.query.version);
-  progressSessions.delete(progressKey(req.user.email, version));
+  progressSessions.delete(progressKey(req.user.email));
   if (supabase) {
-    const { error } = await supabase.from("assessment_progress").delete().eq("student_email", req.user.email).eq("assessment_version", version);
+    const { error } = await supabase.from("assessment_progress").delete().eq("student_email", req.user.email).eq("assessment_version", ASSESSMENT_VERSION);
     if (error) return res.status(500).json({ error: "Could not clear assessment progress." });
   }
   res.json({ success: true });
@@ -437,13 +436,12 @@ app.delete("/api/progress", requireAuth, async (req, res) => {
 
 app.get("/api/results/latest", requireAuth, async (req, res) => {
   try {
-    const version = getAssessmentVersion(req.query.version);
     if (!supabase) return res.json(null);
 
     const { data, error } = await supabase.from("assessment_results")
       .select("id, completed_at, created_at, result")
       .eq("student_email", req.user.email)
-      .in("assessment_version", versionValues(version))
+      .eq("assessment_version", ASSESSMENT_VERSION)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -462,10 +460,12 @@ app.get("/api/results/latest", requireAuth, async (req, res) => {
 });
 
 app.post("/api/submit", requireAuth, async (req, res) => {
+  if (!hasRequiredContactDetails(req.user)) {
+    return res.status(400).json({ error: "A valid email address and mobile number are required to submit an assessment." });
+  }
   const result = req.body;
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const studentName = result?.student?.firstName || "student";
-  const version = getAssessmentVersion(String(result.assessmentVersion || ""));
   const filename = `result-${studentName}-${timestamp}.json`;
   const resultsDir = path.join(ROOT, "results");
 
@@ -481,16 +481,16 @@ app.post("/api/submit", requireAuth, async (req, res) => {
   if (supabase) {
     const { data, error } = await supabase.from("assessment_results").insert({
       student_email: req.user.email,
-      assessment_version: version,
+      assessment_version: ASSESSMENT_VERSION,
       completed_at: result.completedAt || null,
       result,
     }).select("id, created_at").single();
     if (error) return res.status(500).json({ error: "Could not save assessment result." });
-    await supabase.from("assessment_progress").delete().eq("student_email", req.user.email).eq("assessment_version", version);
+    await supabase.from("assessment_progress").delete().eq("student_email", req.user.email).eq("assessment_version", ASSESSMENT_VERSION);
     return res.json({ success: true, resultId: data.id, savedAt: data.created_at });
   }
 
-  progressSessions.delete(progressKey(req.user.email, version));
+  progressSessions.delete(progressKey(req.user.email));
   fs.writeFileSync(path.join(resultsDir, filename), JSON.stringify(result, null, 2), "utf8");
   res.json({ success: true, filename, savedAt: new Date().toISOString() });
 });

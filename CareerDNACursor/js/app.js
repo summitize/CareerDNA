@@ -17,6 +17,8 @@ const state = {
   currentIndex: 0,
   startedAt: null,
   latestResult: null,
+  hasUnsavedChanges: false,
+  saveMessage: "",
   view: "loading",
 };
 
@@ -25,8 +27,6 @@ const progressBar = document.getElementById("progress-bar");
 const progressFill = document.getElementById("progress-fill");
 const progressLabel = document.getElementById("progress-label");
 const userMenu = document.getElementById("user-menu");
-let progressSaveTimer;
-let progressSaveQueue = Promise.resolve();
 
 async function loadAssessment() {
   let res = await fetch(`/api/assessment?version=${encodeURIComponent(state.assessmentVersion)}`).catch(() => null);
@@ -74,28 +74,29 @@ function findResumeIndex(answers, savedIndex) {
   return Math.min(savedIndex || 0, state.questions.length - 1);
 }
 
-async function saveProgress() {
+async function saveProgress(overwrite = false) {
   if (!state.student || !state.startedAt) return;
   const payload = JSON.stringify({
-    assessmentVersion: state.assessmentVersion,
     student: state.student,
     answers: state.answers,
     currentIndex: state.currentIndex,
     startedAt: state.startedAt,
+    overwrite,
   });
-  const request = progressSaveQueue.then(async () => {
-    const res = await fetch("/api/progress", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: payload,
-    });
-    if (!res.ok) {
-      const error = await res.json().catch(() => ({}));
-      throw new Error(error.error || "Could not save assessment progress.");
-    }
+  const res = await fetch("/api/progress", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: payload,
   });
-  progressSaveQueue = request.catch(() => {});
-  return request;
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    const saveError = new Error(error.error || "Could not save assessment progress.");
+    saveError.status = res.status;
+    throw saveError;
+  }
+  state.hasUnsavedChanges = false;
+  state.saveMessage = "Assessment saved.";
+  return res.json();
 }
 
 function showProgressSaveError(error) {
@@ -106,12 +107,24 @@ function showProgressSaveError(error) {
   }
 }
 
-function scheduleProgressSave() {
-  window.clearTimeout(progressSaveTimer);
-  progressSaveTimer = window.setTimeout(() => {
-    saveCurrentAnswer();
-    saveProgress().catch(showProgressSaveError);
-  }, 500);
+async function saveAssessment() {
+  saveCurrentAnswer();
+  try {
+    await saveProgress();
+  } catch (err) {
+    if (err.status !== 409) {
+      showProgressSaveError(err);
+      return;
+    }
+    if (!window.confirm("A saved assessment already exists. Saving now will replace that saved context with your current answers. Continue?")) return;
+    try {
+      await saveProgress(true);
+    } catch (overwriteError) {
+      showProgressSaveError(overwriteError);
+      return;
+    }
+  }
+  renderQuestion();
 }
 
 async function clearProgress() {
@@ -132,10 +145,11 @@ function updateUserMenu() {
     <button class="btn btn-secondary btn-logout" id="logout-btn">Logout</button>
   `;
   document.getElementById("logout-btn").onclick = async () => {
-    if (state.view === "question") {
+    if (state.view === "question" && state.hasUnsavedChanges) {
+      if (!window.confirm("You have unsaved answers. Save and replace the existing saved assessment before logging out?")) return;
       saveCurrentAnswer();
       try {
-        await saveProgress();
+        await saveProgress(true);
       } catch (err) {
         showProgressSaveError(err);
         return;
@@ -174,40 +188,12 @@ function renderLogin() {
         <p class="eyebrow login-eyebrow">YOUR CAREER JOURNEY STARTS HERE</p>
         <h1>Discover the path that fits you</h1>
         <p class="subtitle">Sign in to begin a thoughtful career discovery assessment built for students in grades 9-12.</p>
-        <fieldset class="assessment-version-picker">
-          <legend>Choose your assessment edition</legend>
-          <label class="version-option ${state.assessmentVersion === "4" ? "selected" : ""}">
-            <input type="radio" name="assessment-version" value="4" ${state.assessmentVersion === "4" ? "checked" : ""} />
-            <span><strong>Version 4.0</strong><small>Expanded career, academic, and digital-readiness signals</small></span>
-          </label>
-          <label class="version-option ${state.assessmentVersion === "3" ? "selected" : ""}">
-            <input type="radio" name="assessment-version" value="3" ${state.assessmentVersion === "3" ? "checked" : ""} />
-            <span><strong>Version 3.0</strong><small>Original production assessment</small></span>
-          </label>
-        </fieldset>
         <div id="google-signin-btn"></div>
-        <p class="login-note">Your progress is saved securely, so you can continue whenever you are ready.</p>
+        <p class="login-note">Your saved progress is available whenever you sign in again.</p>
         <div id="login-error" class="error hidden"></div>
       </div>
     </section>
   `;
-
-  document.querySelectorAll('input[name="assessment-version"]').forEach((input) => {
-    input.addEventListener("change", async () => {
-      state.assessmentVersion = input.value;
-      state.assessment = null;
-      state.questions = [];
-      state.latestResult = null;
-      try {
-        await loadAssessment();
-        renderLogin();
-      } catch (err) {
-        const errorEl = document.getElementById("login-error");
-        errorEl.textContent = err.message;
-        errorEl.classList.remove("hidden");
-      }
-    });
-  });
 
   signInWithGoogle()
     .then(async (user) => {
@@ -319,11 +305,14 @@ function renderWelcome() {
   };
   if (hasProgress) {
     document.getElementById("restart-btn").onclick = async () => {
+      if (!window.confirm("Starting over will permanently replace your saved assessment context. Continue?")) return;
       await clearProgress();
       state.answers = {};
       state.currentIndex = 0;
       state.student = null;
       state.startedAt = null;
+      state.hasUnsavedChanges = false;
+      state.saveMessage = "";
       render();
     };
   }
@@ -360,6 +349,7 @@ function renderCompletedAssessment() {
       render();
       return;
     }
+    if (!window.confirm("Starting a new assessment will replace your current assessment status. Continue?")) return;
     state.answers = {};
     state.currentIndex = 0;
     state.student = null;
@@ -386,11 +376,11 @@ function renderStudentForm() {
           <input id="lastName" name="lastName" value="${escapeAttr(u.lastName)}" required />
         </div>
         <div class="form-group">
-          <label for="email">Gmail</label>
+          <label for="email">Gmail *</label>
           <input id="email" name="email" type="email" value="${escapeAttr(u.email)}" readonly />
         </div>
         <div class="form-group">
-          <label for="mobileNumber">Mobile</label>
+          <label for="mobileNumber">Mobile *</label>
           <input id="mobileNumber" name="mobileNumber" type="tel" value="${escapeAttr(u.mobileNumber)}" readonly />
         </div>
         <div class="form-group">
@@ -426,8 +416,8 @@ function renderStudentForm() {
     const data = Object.fromEntries(new FormData(form));
     const errorEl = document.getElementById("form-error");
 
-    if (!data.firstName?.trim() || !data.lastName?.trim() || !data.grade) {
-      errorEl.textContent = "Please fill in all required fields.";
+    if (!data.firstName?.trim() || !data.lastName?.trim() || !data.grade || !isValidEmail(data.email) || !isValidMobileNumber(data.mobileNumber)) {
+      errorEl.textContent = "A valid email address, mobile number, and all required details are needed to begin.";
       errorEl.classList.remove("hidden");
       return;
     }
@@ -445,6 +435,8 @@ function renderStudentForm() {
     state.student = student;
     state.startedAt = startedAt;
     state.currentIndex = 0;
+    state.hasUnsavedChanges = false;
+    state.saveMessage = "";
     state.view = "question";
     render();
     saveProgress().catch(showProgressSaveError);
@@ -457,6 +449,14 @@ function isRanking(type) {
 
 function isReflection(type) {
   return type === "Reflection";
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
+}
+
+function isValidMobileNumber(value) {
+  return /^[6-9]\d{9}$/.test(String(value || "").trim());
 }
 
 function isLikert(question) {
@@ -513,8 +513,8 @@ function setupRankingControls() {
       else list.insertBefore(item.nextElementSibling, item);
       const question = state.questions[state.currentIndex];
       state.answers[question.id] = [...list.querySelectorAll(".ranking-item")].map((entry) => entry.dataset.option);
+      state.hasUnsavedChanges = true;
       renderQuestion();
-      saveProgress().catch(showProgressSaveError);
     });
   });
 }
@@ -534,7 +534,12 @@ function saveCurrentAnswer() {
   const question = state.questions[state.currentIndex];
   const answer = getCurrentAnswer(question);
   if (answer !== null && answer !== "") {
+    const previousAnswer = state.answers[question.id];
     state.answers[question.id] = answer;
+    if (JSON.stringify(previousAnswer) !== JSON.stringify(answer)) {
+      state.hasUnsavedChanges = true;
+      state.saveMessage = "";
+    }
   }
 }
 
@@ -569,8 +574,10 @@ function renderQuestion() {
       ${renderQuestionInput(question, currentAnswer)}
       <div id="q-error" class="error hidden">Please answer before continuing.</div>
       <div id="progress-save-error" class="error hidden" role="alert"></div>
+      <div id="progress-save-status" class="meta">${escapeHtml(state.saveMessage)}</div>
       <div class="actions">
         <button class="btn btn-secondary" id="prev-btn" ${state.currentIndex === 0 ? "disabled" : ""}>Previous</button>
+        <button class="btn btn-secondary" id="save-btn">Save assessment</button>
         <button class="btn btn-primary" id="next-btn">
           ${state.currentIndex === state.questions.length - 1 ? "Submit" : "Next"}
         </button>
@@ -584,20 +591,18 @@ function renderQuestion() {
       opt.classList.add("selected");
       opt.querySelector("input").checked = true;
       saveCurrentAnswer();
-      saveProgress().catch(showProgressSaveError);
     });
   });
 
   setupRankingControls();
 
-  document.getElementById("answer-input")?.addEventListener("input", scheduleProgressSave);
-
   document.getElementById("prev-btn").onclick = async () => {
     saveCurrentAnswer();
     state.currentIndex--;
     render();
-    saveProgress().catch(showProgressSaveError);
   };
+
+  document.getElementById("save-btn").onclick = saveAssessment;
 
   document.getElementById("next-btn").onclick = async () => {
     const errorEl = document.getElementById("q-error");
@@ -610,7 +615,6 @@ function renderQuestion() {
     if (state.currentIndex < state.questions.length - 1) {
       state.currentIndex++;
       render();
-      saveProgress().catch(showProgressSaveError);
     } else {
       await submitAssessment();
     }
@@ -724,6 +728,7 @@ function renderResult() {
 
       <div class="actions">
         <button class="btn btn-secondary" id="restart-btn">Assessment options</button>
+        <button class="btn btn-secondary" id="pdf-btn">Download PDF</button>
         <button class="btn btn-primary" id="download-btn">Download JSON</button>
       </div>
     </div>
@@ -745,6 +750,55 @@ function renderResult() {
     link.click();
     URL.revokeObjectURL(url);
   };
+
+  document.getElementById("pdf-btn").onclick = () => downloadResultPdf(r);
+}
+
+function downloadResultPdf(result) {
+  const jsPdf = window.jspdf?.jsPDF;
+  if (!jsPdf) {
+    window.alert("PDF export is unavailable. Please check your internet connection and try again.");
+    return;
+  }
+
+  const pdf = new jsPdf({ unit: "mm", format: "a4" });
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 16;
+  const contentWidth = pageWidth - margin * 2;
+  let cursorY = margin;
+
+  const addText = (text, size = 10, bold = false) => {
+    pdf.setFont("helvetica", bold ? "bold" : "normal");
+    pdf.setFontSize(size);
+    const lines = pdf.splitTextToSize(String(text), contentWidth);
+    lines.forEach((line) => {
+      if (cursorY > pageHeight - margin) {
+        pdf.addPage();
+        cursorY = margin;
+      }
+      pdf.text(line, margin, cursorY);
+      cursorY += size * 0.5;
+    });
+    cursorY += 2;
+  };
+
+  addText("CareerDNA Assessment Results", 18, true);
+  addText(`${result.student.firstName} ${result.student.lastName}`, 13, true);
+  addText(`Email: ${result.student.email}`);
+  addText(`Mobile: ${result.student.mobileNumber}`);
+  addText(`Completed: ${new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date(result.completedAt))}`);
+  addText(`Assessment version: ${result.assessmentVersion}`);
+  addText("Top Strengths", 14, true);
+  (result.topStrengths || []).forEach((strength) => addText(`${strength.competency}: ${strength.score} (${strength.band})`));
+  addText("Thinking Style", 14, true);
+  addText(result.thinkingStyle);
+  addText("Learning Style", 14, true);
+  addText(result.learningStyle);
+  addText("Suggested Career Clusters", 14, true);
+  (result.suggestedCareerClusters || []).forEach((cluster) => addText(`${cluster.cluster}: ${cluster.matchScore}% match`));
+
+  pdf.save(`career-dna-result-${result.student.firstName}-${Date.now()}.pdf`);
 }
 
 function escapeHtml(str) {
