@@ -34,6 +34,16 @@ function progressKey(email, version) {
   return `${email}:${version}`;
 }
 
+function progressStorageError(err) {
+  if (err?.code === "42703" || /assessment_version/i.test(err?.message || "")) {
+    return "Database update required: run the latest supabase-schema.sql, then try again.";
+  }
+  if (err?.code === "42P10") {
+    return "Database update required: run the latest supabase-schema.sql to add versioned assessment progress.";
+  }
+  return "Could not save assessment progress.";
+}
+
 app.use(express.json({ limit: "2mb" }));
 app.use(express.static(ROOT));
 
@@ -373,7 +383,7 @@ app.put("/api/progress", requireAuth, async (req, res) => {
     res.json({ success: true, updatedAt: progress.updatedAt });
   } catch (err) {
     console.error("Could not save assessment progress:", err.message);
-    res.status(500).json({ error: "Could not save assessment progress." });
+    res.status(500).json({ error: progressStorageError(err) });
   }
 });
 

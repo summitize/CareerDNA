@@ -9,7 +9,7 @@ import {
 
 const state = {
   assessment: null,
-  assessmentVersion: "4",
+  assessmentVersion: "3",
   questions: [],
   user: null,
   student: null,
