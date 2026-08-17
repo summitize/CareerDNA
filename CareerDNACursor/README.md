@@ -54,7 +54,8 @@ With those variables present, Google profiles are stored in `students` and compl
 | `POST /api/auth/google` | Verify Google ID token, create session |
 | `POST /api/auth/profile` | Save mobile number (first login) |
 | `POST /api/auth/logout` | End session |
-| `GET /api/assessment?version=3\|4` | Selected assessment JSON (v3 is the default for returning users) |
+| `GET /api/assessment?version=3\|4` | Selected assessment JSON (v4 is the default for new users) |
+| `GET /api/assessment/resume` | Selects a signed-in user's in-progress assessment, or their latest completed version |
 | `POST /api/submit` | Save result JSON (requires auth) |
 
 ## Data files

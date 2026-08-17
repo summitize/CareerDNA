@@ -328,6 +328,38 @@ app.get("/api/assessment", (req, res) => {
   res.json(data);
 });
 
+app.get("/api/assessment/resume", requireAuth, async (req, res) => {
+  try {
+    if (!supabase) {
+      const savedProgress = [...progressSessions.entries()]
+        .filter(([key]) => key.startsWith(`${req.user.email}:`))
+        .sort(([, left], [, right]) => new Date(right.updatedAt) - new Date(left.updatedAt))[0];
+      return res.json({ version: savedProgress ? getAssessmentVersion(savedProgress[0].split(":").at(-1)) : "4" });
+    }
+
+    const { data: progress, error: progressError } = await supabase.from("assessment_progress")
+      .select("assessment_version")
+      .eq("student_email", req.user.email)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (progressError) throw progressError;
+    if (progress) return res.json({ version: getAssessmentVersion(progress.assessment_version) });
+
+    const { data: result, error: resultError } = await supabase.from("assessment_results")
+      .select("assessment_version")
+      .eq("student_email", req.user.email)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (resultError) throw resultError;
+    res.json({ version: getAssessmentVersion(result?.assessment_version) });
+  } catch (err) {
+    console.error("Could not select assessment resume version:", err.message);
+    res.status(500).json({ error: "Could not restore the saved assessment." });
+  }
+});
+
 app.get("/api/progress", requireAuth, async (req, res) => {
   try {
     const version = getAssessmentVersion(req.query.version);

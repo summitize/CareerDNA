@@ -9,7 +9,7 @@ import {
 
 const state = {
   assessment: null,
-  assessmentVersion: "3",
+  assessmentVersion: "4",
   questions: [],
   user: null,
   student: null,
@@ -46,6 +46,13 @@ async function loadLatestResult() {
   const res = await fetch(`/api/results/latest?version=${encodeURIComponent(state.assessmentVersion)}`);
   if (!res.ok) return null;
   return res.json();
+}
+
+async function selectResumeAssessmentVersion() {
+  const res = await fetch("/api/assessment/resume");
+  if (!res.ok) return;
+  const resume = await res.json();
+  if (resume?.version) state.assessmentVersion = resume.version;
 }
 
 async function restoreAssessmentState() {
@@ -206,6 +213,8 @@ function renderLogin() {
     .then(async (user) => {
       state.user = user;
       if (user.profileComplete) {
+        await selectResumeAssessmentVersion();
+        await loadAssessment();
         await restoreAssessmentState();
         state.view = state.latestResult ? "completed" : "welcome";
       } else {
@@ -772,6 +781,8 @@ async function init() {
     if (session) {
       state.user = session;
       if (session.profileComplete) {
+        await selectResumeAssessmentVersion();
+        await loadAssessment();
         await restoreAssessmentState();
         state.view = state.latestResult ? "completed" : "welcome";
       } else {
