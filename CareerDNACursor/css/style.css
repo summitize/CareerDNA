@@ -62,6 +62,20 @@ body {
   gap: 0.75rem;
 }
 
+.header-button, .theme-toggle {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.header-button:hover, .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+
 .user-menu {
   display: flex;
   align-items: center;
@@ -211,6 +225,14 @@ body {
   max-width: 760px;
   margin: 0 auto;
   padding: 2rem 1.25rem 4rem;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.8rem;
 }
 
 .card {
@@ -389,6 +411,25 @@ textarea { min-height: 120px; resize: vertical; }
 }
 
 .option input { margin-top: 0.2rem; accent-color: var(--primary); }
+
+.contact-details { display: grid; gap: 0.75rem; margin-top: 1.25rem; }
+.contact-details a { display: grid; gap: 0.2rem; border: 1px solid var(--border); border-radius: 10px; padding: 1rem; color: var(--text); text-decoration: none; background: var(--surface); }
+.contact-details a:hover { border-color: var(--primary); }
+.contact-details strong { color: var(--primary); font-size: 0.8rem; }
+
+.dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #e2e8f0;
+  --muted: #cbd5e1;
+  --border: #475569;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.dark body { background: #0f172a; }
+.dark .header { background: rgba(30, 41, 59, 0.92); }
+.dark input, .dark select, .dark textarea, .dark .option, .dark .ranking-item, .dark .btn-secondary { background: var(--surface); color: var(--text); }
+.dark .option:hover, .dark .btn-secondary:hover:not(:disabled) { background: #334155; }
 
 .ranking-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
 

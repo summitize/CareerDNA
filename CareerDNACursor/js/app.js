@@ -19,6 +19,7 @@ const state = {
   latestResult: null,
   hasUnsavedChanges: false,
   saveMessage: "",
+  previousView: "welcome",
   view: "loading",
 };
 
@@ -27,6 +28,26 @@ const progressBar = document.getElementById("progress-bar");
 const progressFill = document.getElementById("progress-fill");
 const progressLabel = document.getElementById("progress-label");
 const userMenu = document.getElementById("user-menu");
+const contactButton = document.getElementById("contact-btn");
+const themeToggle = document.getElementById("theme-toggle");
+
+function setTheme(theme) {
+  const isDark = theme === "dark";
+  document.documentElement.classList.toggle("dark", isDark);
+  themeToggle.textContent = isDark ? "Day" : "Night";
+  themeToggle.setAttribute("aria-label", isDark ? "Switch to day mode" : "Switch to night mode");
+  themeToggle.title = isDark ? "Switch to day mode" : "Switch to night mode";
+  localStorage.setItem("careerdna-theme", theme);
+}
+
+setTheme(localStorage.getItem("careerdna-theme") || "light");
+
+themeToggle.onclick = () => setTheme(document.documentElement.classList.contains("dark") ? "light" : "dark");
+contactButton.onclick = () => {
+  state.previousView = state.view;
+  state.view = "contact";
+  render();
+};
 
 async function loadAssessment() {
   let res = await fetch(`/api/assessment?version=${encodeURIComponent(state.assessmentVersion)}`).catch(() => null);
@@ -360,6 +381,26 @@ function renderCompletedAssessment() {
   };
 }
 
+function renderContact() {
+  main.innerHTML = `
+    <section class="card contact-card">
+      <p class="eyebrow">CAREERDNA SUPPORT</p>
+      <h1>Contact Us</h1>
+      <p class="subtitle">Get in touch for help with CareerDNA assessments, reports, or school access.</p>
+      <div class="contact-details">
+        <a href="tel:9822320290"><strong>Phone</strong><span>9822320290</span></a>
+        <a href="mailto:sumeetboob@gmail.com"><strong>Email</strong><span>sumeetboob@gmail.com</span></a>
+      </div>
+      <div class="actions"><button class="btn btn-secondary" id="contact-back-btn">Back</button></div>
+    </section>
+  `;
+
+  document.getElementById("contact-back-btn").onclick = () => {
+    state.view = state.previousView === "contact" ? "welcome" : state.previousView;
+    render();
+  };
+}
+
 function renderStudentForm() {
   const u = state.user;
   main.innerHTML = `
@@ -464,6 +505,10 @@ function isLikert(question) {
     (question.options?.length === 5 && question.options.includes("Strongly Agree"));
 }
 
+function isMultipleChoice(question) {
+  return question.questionType === "Multiple Choice";
+}
+
 function renderQuestionInput(question, currentAnswer) {
   if (isReflection(question.questionType)) {
     return `
@@ -493,8 +538,8 @@ function renderQuestionInput(question, currentAnswer) {
   return `
     <div class="options" id="options">
       ${question.options.map((opt) => `
-        <label class="option ${currentAnswer === opt ? "selected" : ""}">
-          <input type="radio" name="answer" value="${escapeAttr(opt)}" ${currentAnswer === opt ? "checked" : ""} />
+        <label class="option ${isMultipleChoice(question) ? currentAnswer?.includes(opt) ? "selected" : "" : currentAnswer === opt ? "selected" : ""}">
+          <input type="${isMultipleChoice(question) ? "checkbox" : "radio"}" name="answer" value="${escapeAttr(opt)}" ${isMultipleChoice(question) ? currentAnswer?.includes(opt) ? "checked" : "" : currentAnswer === opt ? "checked" : ""} />
           <span>${escapeHtml(opt)}</span>
         </label>
       `).join("")}
@@ -526,6 +571,9 @@ function getCurrentAnswer(question) {
   if (isReflection(question.questionType)) {
     return document.getElementById("answer-input")?.value?.trim() || "";
   }
+  if (isMultipleChoice(question)) {
+    return [...document.querySelectorAll('input[name="answer"]:checked')].map((input) => input.value);
+  }
   const selected = document.querySelector('input[name="answer"]:checked');
   return selected?.value || null;
 }
@@ -550,6 +598,9 @@ function validateAnswer(question) {
   }
   if (isRanking(question.questionType)) {
     return Array.isArray(answer) && answer.length === question.options.length;
+  }
+  if (isMultipleChoice(question)) {
+    return Array.isArray(answer) && answer.length > 0;
   }
   return !!answer;
 }
@@ -586,10 +637,14 @@ function renderQuestion() {
   `;
 
   document.querySelectorAll(".option").forEach((opt) => {
-    opt.addEventListener("click", () => {
-      document.querySelectorAll(".option").forEach((o) => o.classList.remove("selected"));
-      opt.classList.add("selected");
-      opt.querySelector("input").checked = true;
+    opt.querySelector("input").addEventListener("change", (event) => {
+      const input = opt.querySelector("input");
+      if (input.type === "radio") {
+        document.querySelectorAll(".option").forEach((option) => option.classList.remove("selected"));
+        opt.classList.add("selected");
+      } else {
+        opt.classList.toggle("selected", event.target.checked);
+      }
       saveCurrentAnswer();
     });
   });
@@ -821,6 +876,7 @@ function render() {
   else if (state.view === "mobile") renderMobileForm();
   else if (state.view === "welcome") renderWelcome();
   else if (state.view === "completed") renderCompletedAssessment();
+  else if (state.view === "contact") renderContact();
   else if (state.view === "student") renderStudentForm();
   else if (state.view === "question") renderQuestion();
   else if (state.view === "result") renderResult();
