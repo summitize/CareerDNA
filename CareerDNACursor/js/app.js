@@ -85,6 +85,21 @@ async function restoreAssessmentState() {
   state.startedAt = progress?.startedAt || null;
 }
 
+async function selectAssessmentVersion(version) {
+  if (version === state.assessmentVersion) return;
+  state.assessmentVersion = version;
+  state.latestResult = null;
+  state.student = null;
+  state.answers = {};
+  state.currentIndex = 0;
+  state.startedAt = null;
+  state.saveMessage = "";
+  await loadAssessment();
+  await restoreAssessmentState();
+  state.view = state.latestResult ? "completed" : "welcome";
+  render();
+}
+
 function findResumeIndex(answers, savedIndex) {
   const firstUnansweredIndex = state.questions.findIndex((question) => {
     const answer = answers?.[question.id];
@@ -297,6 +312,13 @@ function renderWelcome() {
       </div>
     </div>
     <div class="card welcome-card">
+      <div class="form-group">
+        <label for="assessment-version">Assessment version</label>
+        <select id="assessment-version">
+          <option value="4" ${state.assessmentVersion === "4" ? "selected" : ""}>Version 4 (35 min)</option>
+          <option value="5" ${state.assessmentVersion === "5" ? "selected" : ""}>Version 5 (60 min)</option>
+        </select>
+      </div>
       <div class="info-box">
         <strong>Designed for reflection, not right answers</strong>
         ${a.assessmentDisclaimer}
@@ -320,6 +342,9 @@ function renderWelcome() {
       </div>
     </div>
   `;
+  document.getElementById("assessment-version").onchange = async (event) => {
+    await selectAssessmentVersion(event.target.value);
+  };
   document.getElementById("start-btn").onclick = () => {
     state.view = hasProgress ? "question" : "student";
     render();

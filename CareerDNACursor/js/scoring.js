@@ -79,6 +79,29 @@ function scoreReflection(text, weight, competencies, competencyTotals) {
   });
 }
 
+function addCompetencyScore(name, score, weight, competencyTotals) {
+  const key = normalizeCompetency(name);
+  if (!competencyTotals[key]) competencyTotals[key] = { total: 0, weight: 0 };
+  competencyTotals[key].total += score * weight;
+  competencyTotals[key].weight += weight;
+}
+
+function scoreOptionWeights(answer, question, competencyTotals) {
+  if (!question.optionWeights || !question.optionIds?.length) return;
+  const answers = Array.isArray(answer) ? answer : [answer];
+  const weight = question.suggestedWeight || 1;
+
+  answers.forEach((selectedOption) => {
+    const optionIndex = question.options.indexOf(selectedOption);
+    const optionId = question.optionIds[optionIndex];
+    const competencyWeights = question.optionWeights[optionId];
+    if (!competencyWeights) return;
+    Object.entries(competencyWeights).forEach(([competency, value]) => {
+      addCompetencyScore(competency, ((Number(value) - 1) / 4) * 100, weight, competencyTotals);
+    });
+  });
+}
+
 function checkValidityFlags(responses, questions, startedAt, completedAt) {
   const flags = [];
   const likertAnswers = responses.filter((r) => {
@@ -199,6 +222,11 @@ export function generateResult(assessment, student, responses, startedAt, comple
   responses.forEach((response) => {
     const question = questions.find((q) => q.id === response.questionId);
     if (!question) return;
+
+    if (String(assessment.version).startsWith("5")) {
+      scoreOptionWeights(response.answer, question, competencyTotals);
+      return;
+    }
 
     const { questionType, options, hiddenCompetencies, suggestedWeight } = question;
     const weight = suggestedWeight || 1;
