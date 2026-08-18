@@ -6,6 +6,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import assessmentV4 from "@/CareerDNACursor/data/assessment-v4.json";
+import assessmentV5 from "@/CareerDNACursor/data/assessment-v5.json";
 
 type QuestionType = "Likert" | "Multiple Choice" | "Ranking" | "Situational Judgement" | "Short Answer";
 
@@ -15,6 +17,26 @@ type Question = {
   prompt: string;
   type: QuestionType;
   options: string[];
+};
+
+type AssessmentQuestion = {
+  id: string;
+  section: string;
+  questionType: string;
+  question: string;
+  options: string[];
+};
+
+type AssessmentDefinition = {
+  version: string;
+  assessmentTitle: string;
+  recommendedDurationMinutes: number;
+  questionBank: AssessmentQuestion[][];
+};
+
+const assessments: Record<"4" | "5", AssessmentDefinition> = {
+  "4": assessmentV4 as unknown as AssessmentDefinition,
+  "5": assessmentV5 as unknown as AssessmentDefinition,
 };
 
 const assessmentQuestions: Question[] = [
@@ -108,13 +130,17 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const storageKey = "careerdna-assessment-mvp";
+function storageKey(version: "4" | "5") {
+  return `careerdna-assessment-v${version}`;
+}
 
 export default function AssessmentPage() {
-  const randomized = useMemo(() => [...assessmentQuestions], []);
+  const [assessmentVersion, setAssessmentVersion] = useState<"4" | "5">("4");
+  const assessment = assessments[assessmentVersion];
+  const randomized = useMemo(() => assessment.questionBank.flat(), [assessment]);
   const [index, setIndex] = useState(0);
-  const [secondsLeft, setSecondsLeft] = useState(30 * 60);
-  const { register, watch, setValue, handleSubmit } = useForm<FormValues>({
+  const [secondsLeft, setSecondsLeft] = useState(assessment.recommendedDurationMinutes * 60);
+  const { register, watch, setValue, reset, handleSubmit } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       student: { firstName: "", lastName: "", email: "", mobile: "", grade: "9" },
@@ -123,24 +149,34 @@ export default function AssessmentPage() {
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
+    reset({
+      student: { firstName: "", lastName: "", email: "", mobile: "", grade: "9" },
+      answers: {},
+    });
+    const saved = localStorage.getItem(storageKey(assessmentVersion));
     if (saved) {
       const parsed = JSON.parse(saved) as FormValues;
       Object.entries(parsed.student ?? {}).forEach(([key, value]) => setValue(`student.${key as keyof FormValues["student"]}`, String(value ?? "")));
       Object.entries(parsed.answers ?? {}).forEach(([key, value]) => setValue(`answers.${key}`, value));
     }
-  }, [setValue]);
+  }, [assessmentVersion, reset, setValue]);
 
   const values = watch();
 
   useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(values));
-  }, [values]);
+    localStorage.setItem(storageKey(assessmentVersion), JSON.stringify(values));
+  }, [assessmentVersion, values]);
 
   useEffect(() => {
     const id = window.setInterval(() => setSecondsLeft((x) => Math.max(x - 1, 0)), 1000);
     return () => window.clearInterval(id);
   }, []);
+
+  const changeAssessmentVersion = (version: "4" | "5") => {
+    setAssessmentVersion(version);
+    setIndex(0);
+    setSecondsLeft(assessments[version].recommendedDurationMinutes * 60);
+  };
 
   const current = randomized[index];
   const progress = Math.round(((index + 1) / randomized.length) * 100);
@@ -149,15 +185,15 @@ export default function AssessmentPage() {
     const payload = {
       student: data.student,
       assessment: {
-        version: "1.0",
+        version: assessment.version,
         submittedAt: new Date().toISOString(),
         questionCount: randomized.length,
       },
       answers: randomized.map((question) => ({
         questionId: question.id,
         section: question.section,
-        prompt: question.prompt,
-        type: question.type,
+        prompt: question.question,
+        type: question.questionType,
         answer: data.answers[String(question.id)] ?? null,
       })),
     };
@@ -182,7 +218,7 @@ export default function AssessmentPage() {
         <Card className="space-y-4 p-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">Student Information</p>
-            <h1 className="mt-1 text-2xl font-semibold">CareerDNA™ Assessment</h1>
+            <h1 className="mt-1 text-2xl font-semibold">{assessment.assessmentTitle}</h1>
             <p className="mt-1 text-sm text-slate-600">Collect the student details first, then complete the questionnaire.</p>
           </div>
 
@@ -212,18 +248,29 @@ export default function AssessmentPage() {
                 <option value="12">12</option>
               </select>
             </label>
+            <label className="space-y-1 text-sm font-medium sm:col-span-2">
+              Assessment version
+              <select
+                className="w-full rounded-lg border border-slate-200 p-3 text-sm"
+                value={assessmentVersion}
+                onChange={(event) => changeAssessmentVersion(event.target.value as "4" | "5")}
+              >
+                <option value="4">Version 4 ({assessments["4"].recommendedDurationMinutes} min)</option>
+                <option value="5">Version 5 ({assessments["5"].recommendedDurationMinutes} min)</option>
+              </select>
+            </label>
           </div>
         </Card>
 
         <Card className="space-y-4 p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">Questionnaire</p>
-          <p className="text-sm text-slate-600">Section: {current.section} · Type: {current.type}</p>
-          <h2 className="text-xl font-semibold">{current.prompt}</h2>
+          <p className="text-sm text-slate-600">Section: {current.section} · Type: {current.questionType}</p>
+          <h2 className="text-xl font-semibold">{current.question}</h2>
 
           <div className="space-y-2">
             {current.options.length > 0 ? current.options.map((option) => (
               <label key={option} className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
-                <input type={current.type === "Multiple Choice" ? "checkbox" : "radio"} value={option} {...register(`answers.${String(current.id)}`)} />
+                <input type={current.questionType === "Multiple Choice" ? "checkbox" : "radio"} value={option} {...register(`answers.${String(current.id)}`)} />
                 <span className="text-sm">{option}</span>
               </label>
             )) : (
@@ -234,7 +281,7 @@ export default function AssessmentPage() {
           <div className="flex flex-wrap gap-2">
             <Button type="button" variant="secondary" onClick={() => setIndex((i) => Math.max(i - 1, 0))}>Previous</Button>
             <Button type="button" onClick={() => setIndex((i) => Math.min(i + 1, randomized.length - 1))}>Next</Button>
-            <Button type="button" variant="ghost" onClick={() => localStorage.setItem(storageKey, JSON.stringify(values))}>Save & Resume Later</Button>
+            <Button type="button" variant="ghost" onClick={() => localStorage.setItem(storageKey(assessmentVersion), JSON.stringify(values))}>Save & Resume Later</Button>
             <Button type="submit" className="ml-auto">Submit JSON</Button>
           </div>
         </Card>
