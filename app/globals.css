@@ -17,6 +17,39 @@ body {
   background: radial-gradient(circle at top, #eff6ff 0%, #f8fafc 35%, #f8fafc 100%);
 }
 
+.dark body {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.dark header,
+.dark footer,
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-slate-50,
+.dark .bg-slate-100,
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover {
+  background-color: #0f172a !important;
+}
+
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark .text-slate-700 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-slate-600,
+.dark .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+.dark .border-slate-200 {
+  border-color: #475569 !important;
+}
+
 .card-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

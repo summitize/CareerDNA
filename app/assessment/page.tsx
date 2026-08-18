@@ -103,7 +103,7 @@ const schema = z.object({
     mobile: z.string().min(8, "Enter a valid mobile number"),
     grade: z.enum(["9", "10", "11", "12"]),
   }),
-  answers: z.record(z.string(), z.string().optional()),
+  answers: z.record(z.string(), z.union([z.string(), z.array(z.string())]).optional()),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -223,7 +223,7 @@ export default function AssessmentPage() {
           <div className="space-y-2">
             {current.options.length > 0 ? current.options.map((option) => (
               <label key={option} className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
-                <input type="radio" value={option} {...register(`answers.${String(current.id)}`)} />
+                <input type={current.type === "Multiple Choice" ? "checkbox" : "radio"} value={option} {...register(`answers.${String(current.id)}`)} />
                 <span className="text-sm">{option}</span>
               </label>
             )) : (
