@@ -34,7 +34,7 @@ const themeToggle = document.getElementById("theme-toggle");
 function setTheme(theme) {
   const isDark = theme === "dark";
   document.documentElement.classList.toggle("dark", isDark);
-  themeToggle.textContent = isDark ? "Day" : "Night";
+  themeToggle.querySelector(".theme-icon").innerHTML = isDark ? "&#9728;" : "&#9790;";
   themeToggle.setAttribute("aria-label", isDark ? "Switch to day mode" : "Switch to night mode");
   themeToggle.title = isDark ? "Switch to day mode" : "Switch to night mode";
   localStorage.setItem("careerdna-theme", theme);

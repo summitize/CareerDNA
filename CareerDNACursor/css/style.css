@@ -74,6 +74,16 @@ body {
   cursor: pointer;
 }
 
+.theme-toggle {
+  display: inline-grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  padding: 0;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
 .header-button:hover, .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
 
 .user-menu {
