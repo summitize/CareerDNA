@@ -184,7 +184,9 @@ function updateUserMenu() {
   userMenu.innerHTML = `
     ${state.user.picture ? `<img class="user-avatar" src="${escapeAttr(state.user.picture)}" alt="${escapeAttr(displayName)}" />` : ""}
     <span class="user-name" title="${escapeAttr(state.user.email)}">${escapeHtml(displayName)}</span>
-    <button class="btn btn-secondary btn-logout" id="logout-btn">Logout</button>
+    <button class="logout-icon-btn" id="logout-btn" type="button" aria-label="Log out" title="Log out">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+    </button>
   `;
   document.getElementById("logout-btn").onclick = async () => {
     if (state.view === "question" && state.hasUnsavedChanges) {

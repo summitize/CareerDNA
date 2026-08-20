@@ -4,7 +4,7 @@
   "version": "5.0",
   "status": "production-candidate",
   "targetGroup": "Students studying in Grades 9-12 across ICSE, CBSE, ISC and State Boards",
-  "recommendedDurationMinutes": 60,
+  "recommendedDurationMinutes": 40,
   "totalQuestions": 124,
   "coreQuestions": 103,
   "validityAndReverseScoredQuestions": 10,

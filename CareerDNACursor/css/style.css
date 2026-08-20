@@ -110,9 +110,63 @@ body {
   white-space: nowrap;
 }
 
-.btn-logout {
+.logout-icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.logout-icon-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+.dark .logout-icon-btn:hover {
+  background: #451a1a;
+  color: #fca5a5;
+  border-color: #f87171;
+}
+
+.site-footer {
+  max-width: 760px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+  padding: 1.25rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
   font-size: 0.8rem;
-  padding: 0.35rem 0.65rem;
+}
+
+.footer-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.footer-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.dark .footer-link {
+  color: #60a5fa;
+}
+
+.dark .footer-link:hover {
+  color: #93c5fd;
 }
 
 .login-card {
@@ -309,34 +363,6 @@ body {
   max-width: 760px;
   margin: 0 auto;
   padding: 2rem 1.25rem 4rem;
-}
-
-.site-footer {
-  border-top: 1px solid var(--border);
-  padding: 1.25rem;
-  color: var(--muted);
-  text-align: center;
-  font-size: 0.8rem;
-}
-
-.footer-link {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.15s;
-}
-
-.footer-link:hover {
-  color: var(--primary-dark);
-  text-decoration: underline;
-}
-
-.dark .footer-link {
-  color: #60a5fa;
-}
-
-.dark .footer-link:hover {
-  color: #93c5fd;
 }
 
 .card {
