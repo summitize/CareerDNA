@@ -318,6 +318,26 @@ body {
   font-size: 0.8rem;
 }
 
+.footer-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.footer-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.dark .footer-link {
+  color: #60a5fa;
+}
+
+.dark .footer-link:hover {
+  color: #93c5fd;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
