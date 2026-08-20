@@ -4,7 +4,7 @@
   "version": "5.0",
   "status": "production-candidate",
   "targetGroup": "Students studying in Grades 9-12 across ICSE, CBSE, ISC and State Boards",
-  "recommendedDurationMinutes": 30,
+  "recommendedDurationMinutes": 40,
   "totalQuestions": 124,
   "coreQuestions": 103,
   "validityAndReverseScoredQuestions": 10,
@@ -7992,8 +7992,8 @@
     "note": "Translated versions must preserve intent, reading level and scoring equivalence."
   },
   "timingGuidance": {
-    "estimatedMinutes": 30,
+    "estimatedMinutes": 40,
     "rationale": "Includes time for 124 mixed-format questions and 14 open-text reflections.",
-    "recommendedDelivery": "Allow one 30-minute sitting with response-validity checks."
+    "recommendedDelivery": "Allow one 40-minute sitting with response-validity checks."
   }
 }

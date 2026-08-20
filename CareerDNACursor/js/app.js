@@ -249,7 +249,7 @@ function renderLogin() {
             <input type="radio" name="login-assessment-version" value="5" ${state.assessmentVersion === "5" ? "checked" : ""} />
             <div>
               <strong>Version 5 (V5)</strong>
-              <small>~30 min · 124 questions · Enhanced Weighted Scoring</small>
+              <small>~40 min · 124 questions · Enhanced Weighted Scoring</small>
             </div>
           </label>
         </fieldset>
@@ -352,7 +352,7 @@ async function renderVersionSelect() {
   };
   const v5Info = {
     title: "Version 5 (V5)",
-    duration: "~30 min",
+    duration: "~40 min",
     questions: "124 questions",
     badge: "Enhanced & Weighted",
     desc: "Advanced assessment featuring fine-grained option weighting, enhanced competency mapping, and environmental interest signals.",
@@ -438,7 +438,7 @@ function renderWelcome() {
         <label for="assessment-version">Assessment version</label>
         <select id="assessment-version">
           <option value="4" ${state.assessmentVersion === "4" ? "selected" : ""}>Version 4 (35 min)</option>
-          <option value="5" ${state.assessmentVersion === "5" ? "selected" : ""}>Version 5 (30 min)</option>
+          <option value="5" ${state.assessmentVersion === "5" ? "selected" : ""}>Version 5 (40 min)</option>
         </select>
       </div>
       <div class="info-box">
