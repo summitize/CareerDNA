@@ -86,6 +86,11 @@ async function restoreAssessmentState() {
 }
 
 async function selectAssessmentVersion(version) {
+  if (state.hasUnsavedChanges && state.assessmentVersion !== version) {
+    if (!window.confirm(`You have unsaved changes in Version ${state.assessmentVersion}. Switch to Version ${version} anyway?`)) {
+      return;
+    }
+  }
   state.assessmentVersion = version;
   state.latestResult = null;
   state.student = null;
@@ -93,6 +98,7 @@ async function selectAssessmentVersion(version) {
   state.currentIndex = 0;
   state.startedAt = null;
   state.saveMessage = "";
+  state.hasUnsavedChanges = false;
   await loadAssessment();
   await restoreAssessmentState();
   state.view = state.latestResult ? "completed" : "welcome";
@@ -118,7 +124,7 @@ async function saveProgress(overwrite = false) {
     startedAt: state.startedAt,
     overwrite,
   });
-  const res = await fetch("/api/progress", {
+  const res = await fetch(`/api/progress?version=${encodeURIComponent(state.assessmentVersion)}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: payload,
@@ -320,7 +326,17 @@ function renderMobileForm() {
   };
 }
 
-function renderVersionSelect() {
+async function renderVersionSelect() {
+  const [v4Progress, v5Progress, v4Result, v5Result] = await Promise.all([
+    fetch('/api/progress?version=4').then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('/api/progress?version=5').then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('/api/results/latest?version=4').then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('/api/results/latest?version=5').then(r => r.ok ? r.json() : null).catch(() => null),
+  ]);
+
+  const v4Status = v4Result ? "Completed" : (v4Progress?.startedAt ? "In Progress" : null);
+  const v5Status = v5Result ? "Completed" : (v5Progress?.startedAt ? "In Progress" : null);
+
   const v4Info = {
     title: "Version 4 (V4)",
     duration: "~35 min",
@@ -346,7 +362,7 @@ function renderVersionSelect() {
         <div class="version-card ${state.assessmentVersion === "4" ? "selected" : ""}" data-version="4">
           <div class="version-card-header">
             <span class="version-title">${v4Info.title}</span>
-            <span class="version-badge">${v4Info.badge}</span>
+            <span class="version-badge">${v4Status ? `${v4Info.badge} · <strong>${v4Status}</strong>` : v4Info.badge}</span>
           </div>
           <div class="version-meta-row">
             <span>⏱️ ${v4Info.duration}</span>
@@ -358,7 +374,7 @@ function renderVersionSelect() {
         <div class="version-card ${state.assessmentVersion === "5" ? "selected" : ""}" data-version="5">
           <div class="version-card-header">
             <span class="version-title">${v5Info.title}</span>
-            <span class="version-badge highlight">${v5Info.badge}</span>
+            <span class="version-badge highlight">${v5Status ? `${v5Info.badge} · <strong>${v5Status}</strong>` : v5Info.badge}</span>
           </div>
           <div class="version-meta-row">
             <span>⏱️ ${v5Info.duration}</span>
