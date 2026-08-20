@@ -100,10 +100,11 @@ body {
   border: 2px solid #dbeafe;
 }
 
-.user-email {
-  font-size: 0.8rem;
-  color: var(--muted);
-  max-width: 160px;
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

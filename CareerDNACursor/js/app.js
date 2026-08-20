@@ -179,10 +179,11 @@ function updateUserMenu() {
     return;
   }
 
+  const displayName = state.user.name || state.user.firstName || state.user.email;
   userMenu.classList.remove("hidden");
   userMenu.innerHTML = `
-    ${state.user.picture ? `<img class="user-avatar" src="${escapeAttr(state.user.picture)}" alt="" />` : ""}
-    <span class="user-email">${escapeHtml(state.user.email)}</span>
+    ${state.user.picture ? `<img class="user-avatar" src="${escapeAttr(state.user.picture)}" alt="${escapeAttr(displayName)}" />` : ""}
+    <span class="user-name" title="${escapeAttr(state.user.email)}">${escapeHtml(displayName)}</span>
     <button class="btn btn-secondary btn-logout" id="logout-btn">Logout</button>
   `;
   document.getElementById("logout-btn").onclick = async () => {
