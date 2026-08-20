@@ -86,7 +86,6 @@ async function restoreAssessmentState() {
 }
 
 async function selectAssessmentVersion(version) {
-  if (version === state.assessmentVersion) return;
   state.assessmentVersion = version;
   state.latestResult = null;
   state.student = null;
@@ -224,6 +223,25 @@ function renderLogin() {
         <p class="eyebrow login-eyebrow">YOUR CAREER JOURNEY STARTS HERE</p>
         <h1>Discover the path that fits you</h1>
         <p class="subtitle">Sign in to begin a thoughtful career discovery assessment built for students in grades 9-12.</p>
+
+        <fieldset class="assessment-version-picker">
+          <legend>PRE-SELECT ASSESSMENT VERSION</legend>
+          <label class="version-option ${state.assessmentVersion === "4" ? "selected" : ""}">
+            <input type="radio" name="login-assessment-version" value="4" ${state.assessmentVersion === "4" ? "checked" : ""} />
+            <div>
+              <strong>Version 4 (V4)</strong>
+              <small>~35 min · 120 questions · Standard</small>
+            </div>
+          </label>
+          <label class="version-option ${state.assessmentVersion === "5" ? "selected" : ""}">
+            <input type="radio" name="login-assessment-version" value="5" ${state.assessmentVersion === "5" ? "checked" : ""} />
+            <div>
+              <strong>Version 5 (V5)</strong>
+              <small>~60 min · 124 questions · Enhanced Weighted Scoring</small>
+            </div>
+          </label>
+        </fieldset>
+
         <div id="google-signin-btn"></div>
         <p class="login-note">Your saved progress is available whenever you sign in again.</p>
         <div id="login-error" class="error hidden"></div>
@@ -231,14 +249,19 @@ function renderLogin() {
     </section>
   `;
 
+  document.querySelectorAll('input[name="login-assessment-version"]').forEach((radio) => {
+    radio.addEventListener("change", (e) => {
+      state.assessmentVersion = e.target.value;
+      document.querySelectorAll(".version-option").forEach((opt) => opt.classList.remove("selected"));
+      e.target.closest(".version-option")?.classList.add("selected");
+    });
+  });
+
   signInWithGoogle()
     .then(async (user) => {
       state.user = user;
       if (user.profileComplete) {
-        await selectResumeAssessmentVersion();
-        await loadAssessment();
-        await restoreAssessmentState();
-        state.view = state.latestResult ? "completed" : "welcome";
+        state.view = "version-select";
       } else {
         state.view = "mobile";
       }
@@ -288,12 +311,89 @@ function renderMobileForm() {
 
     try {
       state.user = await saveMobileNumber(mobile);
-      state.view = "welcome";
+      state.view = "version-select";
       render();
     } catch (err) {
       errorEl.textContent = err.message;
       errorEl.classList.remove("hidden");
     }
+  };
+}
+
+function renderVersionSelect() {
+  const v4Info = {
+    title: "Version 4 (V4)",
+    duration: "~35 min",
+    questions: "120 questions",
+    badge: "Standard Assessment",
+    desc: "Comprehensive evaluation of personality, interests, thinking style, emotional intelligence, and career suitability.",
+  };
+  const v5Info = {
+    title: "Version 5 (V5)",
+    duration: "~60 min",
+    questions: "124 questions",
+    badge: "Enhanced & Weighted",
+    desc: "Advanced assessment featuring fine-grained option weighting, enhanced competency mapping, and environmental interest signals.",
+  };
+
+  main.innerHTML = `
+    <div class="card version-select-card">
+      <p class="eyebrow">CAREERDNA ASSESSMENT VERSION</p>
+      <h1>Select Assessment Version</h1>
+      <p class="subtitle">Welcome, ${escapeHtml(state.user?.firstName || "Student")}! Choose which assessment version you would like to take.</p>
+      
+      <div class="version-select-grid">
+        <div class="version-card ${state.assessmentVersion === "4" ? "selected" : ""}" data-version="4">
+          <div class="version-card-header">
+            <span class="version-title">${v4Info.title}</span>
+            <span class="version-badge">${v4Info.badge}</span>
+          </div>
+          <div class="version-meta-row">
+            <span>⏱️ ${v4Info.duration}</span>
+            <span>📝 ${v4Info.questions}</span>
+          </div>
+          <p class="version-desc">${v4Info.desc}</p>
+        </div>
+
+        <div class="version-card ${state.assessmentVersion === "5" ? "selected" : ""}" data-version="5">
+          <div class="version-card-header">
+            <span class="version-title">${v5Info.title}</span>
+            <span class="version-badge highlight">${v5Info.badge}</span>
+          </div>
+          <div class="version-meta-row">
+            <span>⏱️ ${v5Info.duration}</span>
+            <span>📝 ${v5Info.questions}</span>
+          </div>
+          <p class="version-desc">${v5Info.desc}</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-secondary" id="logout-select-btn">Logout</button>
+        <button class="btn btn-primary" id="confirm-version-btn">Continue to Assessment</button>
+      </div>
+    </div>
+  `;
+
+  document.querySelectorAll(".version-card").forEach((card) => {
+    card.onclick = () => {
+      document.querySelectorAll(".version-card").forEach((c) => c.classList.remove("selected"));
+      card.classList.add("selected");
+      state.assessmentVersion = card.dataset.version;
+    };
+  });
+
+  document.getElementById("logout-select-btn").onclick = async () => {
+    await logout();
+    state.user = null;
+    state.student = null;
+    state.answers = {};
+    state.view = "login";
+    render();
+  };
+
+  document.getElementById("confirm-version-btn").onclick = async () => {
+    await selectAssessmentVersion(state.assessmentVersion);
   };
 }
 
@@ -899,6 +999,7 @@ function render() {
   if (state.view === "loading") return;
   if (state.view === "login") renderLogin();
   else if (state.view === "mobile") renderMobileForm();
+  else if (state.view === "version-select") renderVersionSelect();
   else if (state.view === "welcome") renderWelcome();
   else if (state.view === "completed") renderCompletedAssessment();
   else if (state.view === "contact") renderContact();
