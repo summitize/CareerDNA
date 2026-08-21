@@ -295,6 +295,13 @@ function renderLogin() {
               <small>~40 min · 124 questions · Enhanced Weighted Scoring</small>
             </div>
           </label>
+          <label class="version-option ${state.assessmentVersion === "6" ? "selected" : ""}">
+            <input type="radio" name="login-assessment-version" value="6" ${state.assessmentVersion === "6" ? "checked" : ""} />
+            <div>
+              <strong>Version 6 (V6) — Recommended</strong>
+              <small>~45 min · 138 questions · 19 career clusters + career exploration map</small>
+            </div>
+          </label>
         </fieldset>
 
         <div id="google-signin-btn"></div>

@@ -54,7 +54,17 @@ function progressStorageError(err) {
 }
 
 app.use(express.json({ limit: "2mb" }));
-app.use(express.static(ROOT));
+app.use(express.static(ROOT, {
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, filePath) => {
+    // Always revalidate app code/styles so UI updates (like new assessment
+    // versions) are picked up without requiring a hard refresh.
+    if (/\.(js|css|html)$/i.test(filePath)) {
+      res.setHeader("Cache-Control", "no-cache");
+    }
+  },
+}));
 
 function parseCookies(req) {
   const header = req.headers.cookie || "";
