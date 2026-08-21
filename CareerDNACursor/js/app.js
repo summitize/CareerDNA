@@ -27,6 +27,7 @@ const main = document.getElementById("main");
 const progressBar = document.getElementById("progress-bar");
 const progressFill = document.getElementById("progress-fill");
 const progressLabel = document.getElementById("progress-label");
+const userMenu = document.getElementById("user-menu");
 const themeSlider = document.getElementById("theme-slider");
 const themeSliderLabel = document.getElementById("theme-slider-label");
 const contactButton = document.getElementById("contact-btn");
