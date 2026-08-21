@@ -55,7 +55,7 @@ With those variables present, Google profiles are stored in `students` and compl
 | `POST /api/auth/profile` | Save mobile number (first login) |
 | `POST /api/auth/theme` | Save the user's preferred theme (footer slider) |
 | `POST /api/auth/logout` | End session |
-| `GET /api/assessment` | Version 4 assessment JSON |
+| `GET /api/assessment` | Assessment JSON (`version` query: 4, 5 or 6 — v6 is the default) |
 | `GET /api/assessment/resume` | Returns the current v4 assessment for a signed-in user |
 | `POST /api/submit` | Save result JSON (requires auth) |
 
@@ -72,6 +72,20 @@ Run the updated `supabase-schema.sql` before deploying this change. Assessment p
 ## Theming
 
 The footer slider switches between 8 themes (Day, Sunset, Light Pink, Light Blue, Neon, Emerald, Sapphire, Night). For signed-in users the choice is saved to `students.theme` via `POST /api/auth/theme` and re-applied on the next login; anonymous users keep it in `localStorage` (`careerdna-theme`).
+
+## Assessment versions
+
+- **V4** — original 120-question assessment.
+- **V5** — 124 questions with per-option competency weights.
+- **V6** (default) — 138 questions: V5 plus a 14-question **Interest Explorer** section, **19 career clusters** (adds Sports & Esports, Defence, Agriculture, Hospitality, Architecture, Finance, Skilled Trades, and splits Design/Media), JSON-driven `careerClusterSignals` scoring, a `careerCatalog` of 114 real careers (subjects, exams, first steps, outlook) rendered as a **Career Exploration Map**, and `gradeAwareGuidance` for grades 9-10 vs 11-12.
+
+Regenerate V6 data after editing `scripts/v6-interest-questions.mjs` or `scripts/v6-career-data.mjs`:
+
+```bash
+node scripts/build-assessment-v6.mjs
+```
+
+Run the updated `supabase-schema.sql` before deploying: it adds the `students.theme` column and allows assessment version `'6'` in `assessment_progress`.
 
 ## Note
 

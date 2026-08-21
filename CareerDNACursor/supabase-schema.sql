@@ -30,7 +30,7 @@ create index if not exists assessment_results_student_email_created_at_idx
 
 create table if not exists public.assessment_progress (
   student_email text not null references public.students(email) on delete cascade,
-  assessment_version text not null default '4' check (assessment_version in ('3', '4', '5')),
+  assessment_version text not null default '6' check (assessment_version in ('3', '4', '5', '6')),
   student jsonb not null,
   answers jsonb not null default '{}'::jsonb,
   current_index integer not null default 0 check (current_index >= 0),
@@ -43,7 +43,7 @@ create table if not exists public.assessment_progress (
 alter table public.assessment_progress add column if not exists assessment_version text not null default '4';
 update public.assessment_progress set assessment_version = '3' where assessment_version in ('1', '3.0-final');
 alter table public.assessment_progress drop constraint if exists assessment_progress_assessment_version_check;
-alter table public.assessment_progress add constraint assessment_progress_assessment_version_check check (assessment_version in ('3', '4', '5'));
+alter table public.assessment_progress add constraint assessment_progress_assessment_version_check check (assessment_version in ('3', '4', '5', '6'));
 alter table public.assessment_progress drop constraint if exists assessment_progress_pkey;
 alter table public.assessment_progress add primary key (student_email, assessment_version);
 

@@ -10,7 +10,7 @@ import {
 
 const state = {
   assessment: null,
-  assessmentVersion: "4",
+  assessmentVersion: "6",
   questions: [],
   user: null,
   student: null,
@@ -377,15 +377,18 @@ function renderMobileForm() {
 }
 
 async function renderVersionSelect() {
-  const [v4Progress, v5Progress, v4Result, v5Result] = await Promise.all([
+  const [v4Progress, v5Progress, v6Progress, v4Result, v5Result, v6Result] = await Promise.all([
     fetch('/api/progress?version=4').then(r => r.ok ? r.json() : null).catch(() => null),
     fetch('/api/progress?version=5').then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('/api/progress?version=6').then(r => r.ok ? r.json() : null).catch(() => null),
     fetch('/api/results/latest?version=4').then(r => r.ok ? r.json() : null).catch(() => null),
     fetch('/api/results/latest?version=5').then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('/api/results/latest?version=6').then(r => r.ok ? r.json() : null).catch(() => null),
   ]);
 
   const v4Status = v4Result ? "Completed" : (v4Progress?.startedAt ? "In Progress" : null);
   const v5Status = v5Result ? "Completed" : (v5Progress?.startedAt ? "In Progress" : null);
+  const v6Status = v6Result ? "Completed" : (v6Progress?.startedAt ? "In Progress" : null);
 
   const v4Info = {
     title: "Version 4 (V4)",
@@ -400,6 +403,13 @@ async function renderVersionSelect() {
     questions: "124 questions",
     badge: "Enhanced & Weighted",
     desc: "Advanced assessment featuring fine-grained option weighting, enhanced competency mapping, and environmental interest signals.",
+  };
+  const v6Info = {
+    title: "Version 6 (V6)",
+    duration: "~45 min",
+    questions: "138 questions",
+    badge: "New · Recommended",
+    desc: "Adds an Interest Explorer, 19 career clusters (sports, defence, agriculture, design, finance and more), and a personalised career map with real roles, exams and first steps.",
   };
 
   main.innerHTML = `
@@ -424,13 +434,25 @@ async function renderVersionSelect() {
         <div class="version-card ${state.assessmentVersion === "5" ? "selected" : ""}" data-version="5">
           <div class="version-card-header">
             <span class="version-title">${v5Info.title}</span>
-            <span class="version-badge highlight">${v5Status ? `${v5Info.badge} · <strong>${v5Status}</strong>` : v5Info.badge}</span>
+            <span class="version-badge">${v5Status ? `${v5Info.badge} · <strong>${v5Status}</strong>` : v5Info.badge}</span>
           </div>
           <div class="version-meta-row">
             <span>⏱️ ${v5Info.duration}</span>
             <span>📝 ${v5Info.questions}</span>
           </div>
           <p class="version-desc">${v5Info.desc}</p>
+        </div>
+
+        <div class="version-card ${state.assessmentVersion === "6" ? "selected" : ""}" data-version="6">
+          <div class="version-card-header">
+            <span class="version-title">${v6Info.title}</span>
+            <span class="version-badge highlight">${v6Status ? `${v6Info.badge} · <strong>${v6Status}</strong>` : v6Info.badge}</span>
+          </div>
+          <div class="version-meta-row">
+            <span>⏱️ ${v6Info.duration}</span>
+            <span>📝 ${v6Info.questions}</span>
+          </div>
+          <p class="version-desc">${v6Info.desc}</p>
         </div>
       </div>
 
@@ -483,6 +505,7 @@ function renderWelcome() {
         <select id="assessment-version">
           <option value="4" ${state.assessmentVersion === "4" ? "selected" : ""}>Version 4 (35 min)</option>
           <option value="5" ${state.assessmentVersion === "5" ? "selected" : ""}>Version 5 (40 min)</option>
+          <option value="6" ${state.assessmentVersion === "6" ? "selected" : ""}>Version 6 — New (45 min)</option>
         </select>
       </div>
       <div class="info-box">
@@ -957,6 +980,30 @@ function renderResult() {
         </ul>
       </div>
 
+      ${(r.careerExploration?.length || r.careersToExplore?.length) ? `
+        <div class="result-section">
+          <h3>Career Exploration Map</h3>
+          ${r.careerExploration?.length ? r.careerExploration.map((c) => `
+            <div class="info-box">
+              <strong>${escapeHtml(c.cluster)} <span class="score-pill">${c.matchScore}% match</span></strong>
+              <ul class="cluster-list">
+                ${c.careers.map((career) => `
+                  <li>
+                    <strong>${escapeHtml(career.title)}</strong> — ${escapeHtml(career.what)}<br />
+                    <small>Subjects: ${escapeHtml(career.subjects)} · Exams: ${escapeHtml(career.exams)} · Outlook: ${escapeHtml(career.outlook)}<br />
+                    Start now: ${escapeHtml(career.firstStep)}</small>
+                  </li>
+                `).join("")}
+              </ul>
+            </div>
+          `).join("") : `
+            <ul class="cluster-list">
+              ${(r.careersToExplore || []).map((c) => `<li>${escapeHtml(c)}</li>`).join("")}
+            </ul>
+          `}
+        </div>
+      ` : ""}
+
       ${r.validityFlags?.length ? `
         <div class="result-section">
           <h3>Response Quality Notes</h3>
@@ -1043,6 +1090,15 @@ function downloadResultPdf(result) {
   addText(result.learningStyle);
   addText("Suggested Career Clusters", 14, true);
   (result.suggestedCareerClusters || []).forEach((cluster) => addText(`${cluster.cluster}: ${cluster.matchScore}% match`));
+  if (result.careerExploration?.length) {
+    addText("Career Exploration Map", 14, true);
+    result.careerExploration.forEach((cluster) => {
+      addText(`${cluster.cluster} (${cluster.matchScore}% match)`, 11, true);
+      cluster.careers.forEach((career) =>
+        addText(`  ${career.title} — ${career.what}. Subjects: ${career.subjects}; Exams: ${career.exams}; Start now: ${career.firstStep}`)
+      );
+    });
+  }
 
   pdf.save(`career-dna-result-${result.student.firstName}-${Date.now()}.pdf`);
 }

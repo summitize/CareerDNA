@@ -6,19 +6,22 @@ const LIKERT_VALUES = {
   "Strongly Agree": 5,
 };
 
+// Competency names MUST match the names produced by the question bank's
+// optionWeights / hiddenCompetencies. Mismatched names are silently dropped
+// by mapCareerClusters and weaken that cluster's match score.
 const CAREER_CLUSTER_MAP = {
-  "Engineering & Technology": ["Logical Thinking", "Scientific Thinking", "Innovation", "Spatial Thinking", "Systems Thinking"],
+  "Engineering & Technology": ["Logical Reasoning", "Scientific Thinking", "Innovation", "Spatial Thinking", "Critical Thinking"],
   "Medicine & Health Sciences": ["Empathy", "Service Orientation", "Discipline", "Resilience", "Scientific Thinking"],
   "Business, Commerce & Entrepreneurship": ["Commercial Orientation", "Entrepreneurship", "Communication", "Risk Taking", "Decision Making"],
   "Design, Media & Creative Arts": ["Creativity", "Innovation", "Communication", "Adaptability"],
-  "Law, Governance & Public Policy": ["Decision Making", "Communication", "Verbal Reasoning", "Integrity"],
-  "Psychology, Counselling & Human Behaviour": ["Empathy", "Communication", "Social Awareness", "Self-awareness"],
+  "Law, Governance & Public Policy": ["Decision Making", "Communication", "Critical Thinking", "Integrity"],
+  "Psychology, Counselling & Human Behaviour": ["Empathy", "Communication", "Social Awareness", "Self Awareness"],
   "Education, Training & Social Impact": ["Communication", "Empathy", "Service Orientation", "Leadership"],
-  "Data, Research & Analytics": ["Analytical Thinking", "Research Orientation", "Logical Thinking", "Attention to Detail"],
-  "AI, Digital & Future Technologies": ["AI Readiness", "Innovation", "Learning Agility", "Systems Thinking"],
-  "Sustainability, Environment & Civic Innovation": ["Service Orientation", "Innovation", "Systems Thinking", "Future Orientation"],
-  "Communication, Journalism & Humanities": ["Communication", "Verbal Reasoning", "Creativity", "Research Orientation"],
-  "Operations, Management & Organisational Roles": ["Leadership", "Discipline", "Execution Reliability", "Decision Making"],
+  "Data, Research & Analytics": ["Analytical Thinking", "Research Orientation", "Logical Reasoning", "Attention to Detail"],
+  "AI, Digital & Future Technologies": ["AI Readiness", "Innovation", "Learning Agility", "Technology Orientation"],
+  "Sustainability, Environment & Civic Innovation": ["Service Orientation", "Innovation", "Environmental Awareness", "Future Orientation"],
+  "Communication, Journalism & Humanities": ["Communication", "Critical Thinking", "Creativity", "Research Orientation"],
+  "Operations, Management & Organisational Roles": ["Leadership", "Discipline", "Execution", "Decision Making"],
 };
 
 function getBand(score, bands) {
@@ -137,10 +140,28 @@ function checkValidityFlags(responses, questions, startedAt, completedAt) {
   return flags;
 }
 
-function mapCareerClusters(competencyScores) {
-  return Object.entries(CAREER_CLUSTER_MAP)
-    .map(([cluster, comps]) => {
-      const scores = comps
+function mapCareerClusters(competencyScores, assessment) {
+  // Prefer JSON-driven weighted signals (v6+) so the career taxonomy can
+  // evolve without code changes; fall back to the built-in map for v4/v5.
+  const signals = assessment?.careerClusterSignals;
+  const clusterNames = signals
+    ? Object.keys(signals)
+    : Object.keys(CAREER_CLUSTER_MAP);
+
+  return clusterNames
+    .map((cluster) => {
+      if (signals) {
+        let total = 0;
+        let weight = 0;
+        signals[cluster].forEach(({ name, weight: w }) => {
+          const score = competencyScores[name]?.score;
+          if (score === undefined) return;
+          total += score * w;
+          weight += w;
+        });
+        return { cluster, matchScore: weight > 0 ? Math.round(total / weight) : 0 };
+      }
+      const scores = CAREER_CLUSTER_MAP[cluster]
         .map((c) => competencyScores[c]?.score)
         .filter((s) => s !== undefined);
       const avg = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
@@ -156,7 +177,7 @@ function buildInsights(competencyScores, topStrengths) {
     { name: "Analytical Thinking", score: get("Analytical Thinking") },
     { name: "Creativity", score: get("Creativity") },
     { name: "Scientific Thinking", score: get("Scientific Thinking") },
-    { name: "Logical Thinking", score: get("Logical Thinking") },
+    { name: "Logical Reasoning", score: get("Logical Reasoning") },
   ].sort((a, b) => b.score - a.score);
 
   const learning = [
@@ -167,7 +188,7 @@ function buildInsights(competencyScores, topStrengths) {
 
   const work = [
     { name: "Discipline", score: get("Discipline") },
-    { name: "Execution Reliability", score: get("Execution Reliability") },
+    { name: "Execution", score: get("Execution") },
     { name: "Collaboration", score: get("Collaboration") },
   ].sort((a, b) => b.score - a.score);
 
@@ -223,7 +244,10 @@ export function generateResult(assessment, student, responses, startedAt, comple
     const question = questions.find((q) => q.id === response.questionId);
     if (!question) return;
 
-    if (String(assessment.version).startsWith("5")) {
+    if (
+      String(assessment.version).startsWith("5") ||
+      String(assessment.version).startsWith("6")
+    ) {
       scoreOptionWeights(response.answer, question, competencyTotals);
       return;
     }
@@ -254,11 +278,18 @@ export function generateResult(assessment, student, responses, startedAt, comple
     .map(([name, data]) => ({ name, ...data }))
     .sort((a, b) => b.score - a.score);
 
-  const careerClusters = mapCareerClusters(competencyScores);
+  const careerClusters = mapCareerClusters(competencyScores, assessment);
   const validityFlags = checkValidityFlags(responses, questions, startedAt, completedAt);
   const insights = buildInsights(competencyScores, topStrengths);
 
   const durationMs = new Date(completedAt) - new Date(startedAt);
+
+  const catalog = assessment?.careerCatalog || {};
+  const careerExploration = careerClusters.slice(0, 3).map((c) => ({
+    cluster: c.cluster,
+    matchScore: c.matchScore,
+    careers: (catalog[c.cluster] || []).slice(0, 5),
+  })).filter((c) => c.careers.length > 0);
 
   return {
     assessmentTitle: assessment.assessmentTitle,
@@ -279,9 +310,13 @@ export function generateResult(assessment, student, responses, startedAt, comple
       matchScore: c.matchScore,
       note: "These career clusters may be worth exploring based on your response patterns.",
     })),
-    careersToExplore: careerClusters.slice(0, 3).flatMap((c) => [
-      `${c.cluster} — explore related roles through internships, shadowing, or school projects`,
-    ]),
+    careerExploration,
+    careersToExplore: careerClusters.slice(0, 3).map((c) => {
+      const roles = (catalog[c.cluster] || []).slice(0, 5).map((career) => career.title);
+      return roles.length
+        ? `${c.cluster} — roles to explore: ${roles.join(", ")}`
+        : `${c.cluster} — explore related roles through internships, shadowing, or school projects`;
+    }),
     ...insights,
     resultGuidelines: {
       doNotGiveRigidCareerLabels: assessment.resultOutputGuidelines.doNotGiveRigidCareerLabels,

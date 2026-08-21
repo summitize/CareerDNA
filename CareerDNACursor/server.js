@@ -19,8 +19,8 @@ const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_K
 const usersFile = path.join(ROOT, "data", "users.json");
 const sessions = new Map();
 const progressSessions = new Map();
-const ASSESSMENT_VERSIONS = new Set(["4", "4.0", "5", "5.0"]);
-const DEFAULT_ASSESSMENT_VERSION = "4";
+const ASSESSMENT_VERSIONS = new Set(["4", "4.0", "5", "5.0", "6", "6.0"]);
+const DEFAULT_ASSESSMENT_VERSION = "6";
 const ALLOWED_THEMES = new Set([
   "light",
   "theme-sunset",
