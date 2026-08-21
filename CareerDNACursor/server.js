@@ -414,6 +414,49 @@ app.get("/api/assessment/resume", requireAuth, async (req, res) => {
   }
 });
 
+app.get("/api/assessment/history", requireAuth, async (req, res) => {
+  // Which versions has this student used? Drives the UI rule: new takers get
+  // V6 only; students who started V4/V5 earlier may still choose them.
+  const versions = ["4", "5", "6"];
+  const history = {};
+
+  if (!supabase) {
+    versions.forEach((v) => {
+      if (progressSessions.has(progressKey(req.user.email, v))) {
+        history[v] = { inProgress: true, completed: false };
+      }
+    });
+    return res.json(history);
+  }
+
+  try {
+    const { data: progressRows, error } = await supabase
+      .from("assessment_progress")
+      .select("assessment_version")
+      .eq("student_email", req.user.email);
+    if (error) throw error;
+    progressRows.forEach((r) => {
+      const v = assessmentVersion(r.assessment_version);
+      if (versions.includes(v)) history[v] = { ...(history[v] || {}), inProgress: true };
+    });
+
+    const { data: resultRows, error: resultError } = await supabase
+      .from("assessment_results")
+      .select("assessment_version")
+      .eq("student_email", req.user.email);
+    if (resultError) throw resultError;
+    resultRows.forEach((r) => {
+      const v = assessmentVersion(r.assessment_version);
+      if (versions.includes(v)) history[v] = { ...(history[v] || {}), completed: true };
+    });
+
+    res.json(history);
+  } catch (err) {
+    console.error("Could not load assessment history:", err.message);
+    res.status(500).json({ error: "Could not load assessment history." });
+  }
+});
+
 app.get("/api/progress", requireAuth, async (req, res) => {
   try {
     const version = assessmentVersion(req.query.version);

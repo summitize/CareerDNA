@@ -11,6 +11,9 @@ import {
 const state = {
   assessment: null,
   assessmentVersion: "6",
+  // Versions the signed-in student may choose from. New takers only ever see
+  // V6; students who started V4/V5 earlier also get those back.
+  availableVersions: ["6"],
   questions: [],
   user: null,
   student: null,
@@ -115,11 +118,29 @@ async function loadLatestResult() {
   return res.json();
 }
 
-async function selectResumeAssessmentVersion() {
-  const res = await fetch("/api/assessment/resume");
-  if (!res.ok) return;
-  const resume = await res.json();
-  if (resume?.version) state.assessmentVersion = resume.version;
+async function fetchVersionHistory() {
+  const res = await fetch("/api/assessment/history").catch(() => null);
+  if (!res?.ok) return {};
+  return res.json().catch(() => ({}));
+}
+
+// Routing after login/session-restore:
+// - Students with V4/V5 history get a chooser (V6 + their legacy versions).
+// - Everyone else goes straight into V6 with no version selection at all.
+async function routeAuthenticatedUser() {
+  const history = await fetchVersionHistory();
+  const legacy = ["4", "5"].filter((v) => history[v]?.inProgress || history[v]?.completed);
+  state.availableVersions = ["6", ...legacy];
+
+  await loadAssessment(); // loads the current default (V6)
+
+  if (legacy.length) {
+    state.view = "version-select";
+    return;
+  }
+
+  await restoreAssessmentState(); // V6 progress/result only
+  state.view = state.latestResult ? "completed" : "welcome";
 }
 
 async function restoreAssessmentState() {
@@ -279,31 +300,6 @@ function renderLogin() {
         <h1>Discover the path that fits you</h1>
         <p class="subtitle">Sign in to begin a thoughtful career discovery assessment built for students in grades 9-12.</p>
 
-        <fieldset class="assessment-version-picker">
-          <legend>PRE-SELECT ASSESSMENT VERSION</legend>
-          <label class="version-option ${state.assessmentVersion === "4" ? "selected" : ""}">
-            <input type="radio" name="login-assessment-version" value="4" ${state.assessmentVersion === "4" ? "checked" : ""} />
-            <div>
-              <strong>Version 4 (V4)</strong>
-              <small>~35 min · 120 questions · Standard</small>
-            </div>
-          </label>
-          <label class="version-option ${state.assessmentVersion === "5" ? "selected" : ""}">
-            <input type="radio" name="login-assessment-version" value="5" ${state.assessmentVersion === "5" ? "checked" : ""} />
-            <div>
-              <strong>Version 5 (V5)</strong>
-              <small>~40 min · 124 questions · Enhanced Weighted Scoring</small>
-            </div>
-          </label>
-          <label class="version-option ${state.assessmentVersion === "6" ? "selected" : ""}">
-            <input type="radio" name="login-assessment-version" value="6" ${state.assessmentVersion === "6" ? "checked" : ""} />
-            <div>
-              <strong>Version 6 (V6) — Recommended</strong>
-              <small>~30 min · 88 questions · 19 career clusters + career exploration map</small>
-            </div>
-          </label>
-        </fieldset>
-
         <div id="google-signin-btn"></div>
         <p class="login-note">Your saved progress is available whenever you sign in again.</p>
         <div id="login-error" class="error hidden"></div>
@@ -311,20 +307,12 @@ function renderLogin() {
     </section>
   `;
 
-  document.querySelectorAll('input[name="login-assessment-version"]').forEach((radio) => {
-    radio.addEventListener("change", (e) => {
-      state.assessmentVersion = e.target.value;
-      document.querySelectorAll(".version-option").forEach((opt) => opt.classList.remove("selected"));
-      e.target.closest(".version-option")?.classList.add("selected");
-    });
-  });
-
   signInWithGoogle()
     .then(async (user) => {
       state.user = user;
       if (user.theme) applyTheme(user.theme);
       if (user.profileComplete) {
-        state.view = "version-select";
+        await routeAuthenticatedUser();
       } else {
         state.view = "mobile";
       }
@@ -374,7 +362,7 @@ function renderMobileForm() {
 
     try {
       state.user = await saveMobileNumber(mobile);
-      state.view = "version-select";
+      await routeAuthenticatedUser();
       render();
     } catch (err) {
       errorEl.textContent = err.message;
@@ -384,83 +372,65 @@ function renderMobileForm() {
 }
 
 async function renderVersionSelect() {
-  const [v4Progress, v5Progress, v6Progress, v4Result, v5Result, v6Result] = await Promise.all([
-    fetch('/api/progress?version=4').then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch('/api/progress?version=5').then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch('/api/progress?version=6').then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch('/api/results/latest?version=4').then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch('/api/results/latest?version=5').then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch('/api/results/latest?version=6').then(r => r.ok ? r.json() : null).catch(() => null),
+  // Only versions the student may use: V6 always, plus legacy V4/V5 they
+  // started earlier. New takers never reach this page at all.
+  const versions = state.availableVersions?.length ? state.availableVersions : ["6"];
+  const [progresses, results] = await Promise.all([
+    Promise.all(versions.map((v) => fetch(`/api/progress?version=${v}`).then((r) => (r.ok ? r.json() : null)).catch(() => null))),
+    Promise.all(versions.map((v) => fetch(`/api/results/latest?version=${v}`).then((r) => (r.ok ? r.json() : null)).catch(() => null))),
   ]);
+  const statusFor = (i) => (results[i] ? "Completed" : progresses[i]?.startedAt ? "In Progress" : null);
 
-  const v4Status = v4Result ? "Completed" : (v4Progress?.startedAt ? "In Progress" : null);
-  const v5Status = v5Result ? "Completed" : (v5Progress?.startedAt ? "In Progress" : null);
-  const v6Status = v6Result ? "Completed" : (v6Progress?.startedAt ? "In Progress" : null);
-
-  const v4Info = {
-    title: "Version 4 (V4)",
-    duration: "~35 min",
-    questions: "120 questions",
-    badge: "Standard Assessment",
-    desc: "Comprehensive evaluation of personality, interests, thinking style, emotional intelligence, and career suitability.",
-  };
-  const v5Info = {
-    title: "Version 5 (V5)",
-    duration: "~40 min",
-    questions: "124 questions",
-    badge: "Enhanced & Weighted",
-    desc: "Advanced assessment featuring fine-grained option weighting, enhanced competency mapping, and environmental interest signals.",
-  };
-  const v6Info = {
-    title: "Version 6 (V6)",
-    duration: "~30 min",
-    questions: "88 questions",
-    badge: "New · Recommended",
-    desc: "The optimised assessment: Interest Explorer, 19 career clusters (sports, defence, agriculture, design, finance and more), and a personalised career map with real roles, exams and first steps — in 30 minutes.",
+  const infoMap = {
+    "4": {
+      title: "Version 4 (V4)",
+      duration: "~35 min",
+      questions: "120 questions",
+      badge: "Standard Assessment",
+      desc: "Comprehensive evaluation of personality, interests, thinking style, emotional intelligence, and career suitability.",
+    },
+    "5": {
+      title: "Version 5 (V5)",
+      duration: "~40 min",
+      questions: "124 questions",
+      badge: "Enhanced & Weighted",
+      desc: "Advanced assessment featuring fine-grained option weighting, enhanced competency mapping, and environmental interest signals.",
+    },
+    "6": {
+      title: "Version 6 (V6)",
+      duration: "~30 min",
+      questions: "88 questions",
+      badge: "New · Recommended",
+      desc: "The optimised assessment: Interest Explorer, 19 career clusters (sports, defence, agriculture, design, finance and more), and a personalised career map with real roles, exams and first steps — in 30 minutes.",
+    },
   };
 
+  const solo = versions.length === 1;
   main.innerHTML = `
     <div class="card version-select-card">
       <p class="eyebrow">CAREERDNA ASSESSMENT VERSION</p>
-      <h1>Select Assessment Version</h1>
-      <p class="subtitle">Welcome, ${escapeHtml(state.user?.firstName || "Student")}! Choose which assessment version you would like to take.</p>
-      
+      <h1>${solo ? "Begin Your Assessment" : "Select Assessment Version"}</h1>
+      <p class="subtitle">Welcome, ${escapeHtml(state.user?.firstName || "Student")}! ${solo
+        ? "You'll take our latest Version 6 assessment."
+        : "You can continue a previous version or start the latest Version 6."}</p>
+
       <div class="version-select-grid">
-        <div class="version-card ${state.assessmentVersion === "4" ? "selected" : ""}" data-version="4">
+        ${versions.map((v, i) => {
+          const info = infoMap[v];
+          const status = statusFor(i);
+          return `
+        <div class="version-card ${state.assessmentVersion === v ? "selected" : ""}" data-version="${v}">
           <div class="version-card-header">
-            <span class="version-title">${v4Info.title}</span>
-            <span class="version-badge">${v4Status ? `${v4Info.badge} · <strong>${v4Status}</strong>` : v4Info.badge}</span>
+            <span class="version-title">${info.title}</span>
+            <span class="version-badge ${v === "6" ? "highlight" : ""}">${status ? `${info.badge} · <strong>${status}</strong>` : info.badge}</span>
           </div>
           <div class="version-meta-row">
-            <span>⏱️ ${v4Info.duration}</span>
-            <span>📝 ${v4Info.questions}</span>
+            <span>⏱️ ${info.duration}</span>
+            <span>📝 ${info.questions}</span>
           </div>
-          <p class="version-desc">${v4Info.desc}</p>
-        </div>
-
-        <div class="version-card ${state.assessmentVersion === "5" ? "selected" : ""}" data-version="5">
-          <div class="version-card-header">
-            <span class="version-title">${v5Info.title}</span>
-            <span class="version-badge">${v5Status ? `${v5Info.badge} · <strong>${v5Status}</strong>` : v5Info.badge}</span>
-          </div>
-          <div class="version-meta-row">
-            <span>⏱️ ${v5Info.duration}</span>
-            <span>📝 ${v5Info.questions}</span>
-          </div>
-          <p class="version-desc">${v5Info.desc}</p>
-        </div>
-
-        <div class="version-card ${state.assessmentVersion === "6" ? "selected" : ""}" data-version="6">
-          <div class="version-card-header">
-            <span class="version-title">${v6Info.title}</span>
-            <span class="version-badge highlight">${v6Status ? `${v6Info.badge} · <strong>${v6Status}</strong>` : v6Info.badge}</span>
-          </div>
-          <div class="version-meta-row">
-            <span>⏱️ ${v6Info.duration}</span>
-            <span>📝 ${v6Info.questions}</span>
-          </div>
-          <p class="version-desc">${v6Info.desc}</p>
-        </div>
+          <p class="version-desc">${info.desc}</p>
+        </div>`;
+        }).join("")}
       </div>
 
       <div class="actions">
@@ -507,14 +477,16 @@ function renderWelcome() {
       </div>
     </div>
     <div class="card welcome-card">
+      ${state.availableVersions?.length > 1 ? `
       <div class="form-group">
         <label for="assessment-version">Assessment version</label>
         <select id="assessment-version">
-          <option value="4" ${state.assessmentVersion === "4" ? "selected" : ""}>Version 4 (35 min)</option>
-          <option value="5" ${state.assessmentVersion === "5" ? "selected" : ""}>Version 5 (40 min)</option>
-          <option value="6" ${state.assessmentVersion === "6" ? "selected" : ""}>Version 6 — New (30 min)</option>
+          ${state.availableVersions.map((v) => {
+            const labels = { "4": "Version 4 (35 min)", "5": "Version 5 (40 min)", "6": "Version 6 — New (30 min)" };
+            return `<option value="${v}" ${state.assessmentVersion === v ? "selected" : ""}>${labels[v] || `Version ${v}`}</option>`;
+          }).join("")}
         </select>
-      </div>
+      </div>` : ""}
       <div class="info-box">
         <strong>Designed for reflection, not right answers</strong>
         ${a.assessmentDisclaimer}
@@ -538,9 +510,12 @@ function renderWelcome() {
       </div>
     </div>
   `;
-  document.getElementById("assessment-version").onchange = async (event) => {
-    await selectAssessmentVersion(event.target.value);
-  };
+  const versionSelect = document.getElementById("assessment-version");
+  if (versionSelect) {
+    versionSelect.onchange = async (event) => {
+      await selectAssessmentVersion(event.target.value);
+    };
+  }
   document.getElementById("start-btn").onclick = () => {
     state.view = hasProgress ? "question" : "student";
     render();
@@ -1147,10 +1122,7 @@ async function init() {
       state.user = session;
       if (session.theme) applyTheme(session.theme);
       if (session.profileComplete) {
-        await selectResumeAssessmentVersion();
-        await loadAssessment();
-        await restoreAssessmentState();
-        state.view = state.latestResult ? "completed" : "welcome";
+        await routeAuthenticatedUser();
       } else {
         state.view = "mobile";
       }

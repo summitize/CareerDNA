@@ -79,6 +79,10 @@ The footer slider switches between 8 themes (Day, Sunset, Light Pink, Light Blue
 - **V5** — 124 questions with per-option competency weights.
 - **V6** (default) — **88 questions, ~30 min**: a coverage-optimised bank that keeps every section, question type, validity check and all 19 clusters of the full V6, but trims over-measured competencies to ~4 measurements each. Adds the 14-question **Interest Explorer**, JSON-driven `careerClusterSignals`, a `careerCatalog` of 114 real careers rendered as a **Career Exploration Map**, and `gradeAwareGuidance` for grades 9-10 vs 11-12. Build with `node scripts/build-assessment-v6.mjs` (add `--full` for the unpruned 138-question bank).
 
+### Version access rule
+
+New takers always get **V6 only** — there is no version selection on the login page or anywhere else. Students who **started (or completed) V4/V5 earlier** see a chooser after login offering V6 plus exactly those legacy versions they used (`GET /api/assessment/history` drives this). The welcome-page version dropdown also appears only for such students.
+
 ### How V6 was optimised
 
 Analysis showed the repetition was not in wording but in competency over-measurement (Communication was measured by 36 questions, Creativity by 28, while some cluster signals had only 1-2). The build script selects questions greedily by competency-coverage deficit: mandatory keeps (Interest Explorer, validity/reverse items, ranking, ethics and scenario questions), the 6 reflections with the widest competency spread, a pre-pass ensuring every career-cluster signal is measured at least twice, then a greedy fill to 88 questions targeting ~4 measurements per competency. Result: 92/93 competencies still measured, all 19 cluster signals ≥ 2, every section retained, 36% fewer questions.
