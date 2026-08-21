@@ -29,10 +29,13 @@ const progressFill = document.getElementById("progress-fill");
 const progressLabel = document.getElementById("progress-label");
 const themeSlider = document.getElementById("theme-slider");
 const themeSliderLabel = document.getElementById("theme-slider-label");
+const contactButton = document.getElementById("contact-btn");
 
 const THEMES = [
   { id: "light", name: "Day ☀️" },
   { id: "theme-sunset", name: "Sunset 🌅" },
+  { id: "theme-rose", name: "Light Pink 🌸" },
+  { id: "theme-sky", name: "Light Blue 🌊" },
   { id: "theme-cyberpunk", name: "Neon ⚡" },
   { id: "theme-emerald", name: "Emerald 🌿" },
   { id: "theme-sapphire", name: "Sapphire 🌌" },
@@ -66,11 +69,14 @@ if (themeSlider) {
     applyTheme(selectedTheme.id);
   };
 }
-contactButton.onclick = () => {
-  state.previousView = state.view;
-  state.view = "contact";
-  render();
-};
+
+if (contactButton) {
+  contactButton.onclick = () => {
+    state.previousView = state.view;
+    state.view = "contact";
+    render();
+  };
+}
 
 async function loadAssessment() {
   let res = await fetch(`/api/assessment?version=${encodeURIComponent(state.assessmentVersion)}`).catch(() => null);
