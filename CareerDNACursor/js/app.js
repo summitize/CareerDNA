@@ -299,7 +299,7 @@ function renderLogin() {
             <input type="radio" name="login-assessment-version" value="6" ${state.assessmentVersion === "6" ? "checked" : ""} />
             <div>
               <strong>Version 6 (V6) — Recommended</strong>
-              <small>~45 min · 138 questions · 19 career clusters + career exploration map</small>
+              <small>~30 min · 88 questions · 19 career clusters + career exploration map</small>
             </div>
           </label>
         </fieldset>
@@ -413,10 +413,10 @@ async function renderVersionSelect() {
   };
   const v6Info = {
     title: "Version 6 (V6)",
-    duration: "~45 min",
-    questions: "138 questions",
+    duration: "~30 min",
+    questions: "88 questions",
     badge: "New · Recommended",
-    desc: "Adds an Interest Explorer, 19 career clusters (sports, defence, agriculture, design, finance and more), and a personalised career map with real roles, exams and first steps.",
+    desc: "The optimised assessment: Interest Explorer, 19 career clusters (sports, defence, agriculture, design, finance and more), and a personalised career map with real roles, exams and first steps — in 30 minutes.",
   };
 
   main.innerHTML = `
@@ -512,7 +512,7 @@ function renderWelcome() {
         <select id="assessment-version">
           <option value="4" ${state.assessmentVersion === "4" ? "selected" : ""}>Version 4 (35 min)</option>
           <option value="5" ${state.assessmentVersion === "5" ? "selected" : ""}>Version 5 (40 min)</option>
-          <option value="6" ${state.assessmentVersion === "6" ? "selected" : ""}>Version 6 — New (45 min)</option>
+          <option value="6" ${state.assessmentVersion === "6" ? "selected" : ""}>Version 6 — New (30 min)</option>
         </select>
       </div>
       <div class="info-box">
