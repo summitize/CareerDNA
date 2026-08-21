@@ -25,7 +25,14 @@
     <main id="main" class="main"></main>
     <footer class="site-footer">
       <span>&copy; 2026 Summitize. All rights reserved. &middot; <a href="#" id="contact-btn" class="footer-link">Contact Us</a></span>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to night mode" title="Switch to night mode"><span aria-hidden="true" class="theme-icon">&#9790;</span></button>
+      <div class="theme-slider-container" title="Slide to change theme">
+        <span class="theme-slider-label" id="theme-slider-label">Light</span>
+        <div class="theme-slider-track-wrapper">
+          <span class="theme-slider-icon left-icon">☀️</span>
+          <input type="range" id="theme-slider" class="theme-slider" min="0" max="5" step="1" value="0" aria-label="Select color theme (Day, Sunset, Neon, Emerald, Sapphire, Night)" />
+          <span class="theme-slider-icon right-icon">🌙</span>
+        </div>
+      </div>
     </footer>
   </div>
 
