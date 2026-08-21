@@ -21,6 +21,17 @@ const sessions = new Map();
 const progressSessions = new Map();
 const ASSESSMENT_VERSIONS = new Set(["4", "4.0", "5", "5.0"]);
 const DEFAULT_ASSESSMENT_VERSION = "4";
+const ALLOWED_THEMES = new Set([
+  "light",
+  "theme-sunset",
+  "theme-rose",
+  "theme-sky",
+  "theme-cyberpunk",
+  "theme-emerald",
+  "theme-sapphire",
+  "dark",
+]);
+const DEFAULT_THEME = "light";
 
 function assessmentVersion(value) {
   const version = String(value);
@@ -84,6 +95,7 @@ async function findUser(email) {
     mobileNumber: data.mobile_number,
     grade: data.grade,
     school: data.school,
+    theme: data.theme || "",
     createdAt: data.created_at,
     updatedAt: data.updated_at,
     lastLoginAt: data.last_login_at,
@@ -98,7 +110,7 @@ async function saveUser(user) {
     return user;
   }
 
-  const { error } = await supabase.from("students").upsert({
+  const payload = {
     email: user.email,
     name: user.name,
     picture: user.picture || null,
@@ -109,8 +121,22 @@ async function saveUser(user) {
     created_at: user.createdAt,
     updated_at: user.updatedAt,
     last_login_at: user.lastLoginAt,
-  });
-  if (error) throw error;
+  };
+
+  // Only write the theme column when a valid theme is set, so databases that
+  // have not run the theme migration yet keep working.
+  const { error } = await supabase.from("students").upsert(
+    ALLOWED_THEMES.has(user.theme) ? { ...payload, theme: user.theme } : payload
+  );
+  if (error) {
+    if (error.code === "42703" || /\btheme\b/i.test(error.message || "")) {
+      // Theme column missing (migration not applied): save without it.
+      const { error: retryError } = await supabase.from("students").upsert(payload);
+      if (retryError) throw retryError;
+      return user;
+    }
+    throw error;
+  }
   return user;
 }
 
@@ -214,6 +240,7 @@ function publicUser(user) {
     mobileNumber: user.mobileNumber || "",
     grade: user.grade || "",
     school: user.school || "",
+    theme: ALLOWED_THEMES.has(user.theme) ? user.theme : DEFAULT_THEME,
     profileComplete: Boolean(user.mobileNumber),
     isFirstLogin: !user.mobileNumber,
   };
@@ -279,6 +306,7 @@ app.post("/api/auth/google", async (req, res) => {
       mobileNumber: existing?.mobileNumber || "",
       grade: existing?.grade || "",
       school: existing?.school || "",
+      theme: existing?.theme || "",
       createdAt: existing?.createdAt || now,
       updatedAt: now,
       lastLoginAt: now,
@@ -310,6 +338,27 @@ app.post("/api/auth/profile", requireAuth, async (req, res) => {
   updateSessionUser(req, user);
 
   res.json(publicUser(user));
+});
+
+app.post("/api/auth/theme", requireAuth, async (req, res) => {
+  const theme = String(req.body.theme || "").trim();
+  if (!ALLOWED_THEMES.has(theme)) {
+    return res.status(400).json({ error: "Unknown theme." });
+  }
+
+  try {
+    const user = {
+      ...req.user,
+      theme,
+      updatedAt: new Date().toISOString(),
+    };
+    await saveUser(user);
+    updateSessionUser(req, user);
+    res.json({ success: true, theme });
+  } catch (err) {
+    console.error("Could not save theme preference:", err.message);
+    res.status(500).json({ error: "Could not save theme preference." });
+  }
 });
 
 app.post("/api/auth/logout", (req, res) => {

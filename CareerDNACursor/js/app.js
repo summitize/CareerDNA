@@ -4,6 +4,7 @@ import {
   getSession,
   signInWithGoogle,
   saveMobileNumber,
+  saveThemePreference,
   logout,
 } from "./auth.js";
 
@@ -68,7 +69,22 @@ if (themeSlider) {
   themeSlider.oninput = (e) => {
     const selectedTheme = THEMES[parseInt(e.target.value, 10)] || THEMES[0];
     applyTheme(selectedTheme.id);
+    queueThemeSync(selectedTheme.id);
   };
+}
+
+// Persist the theme against the signed-in user (debounced so dragging the
+// slider does not spam the API). localStorage already covers anonymous users.
+let themeSyncTimer = null;
+function queueThemeSync(themeId) {
+  if (!state.user) return;
+  clearTimeout(themeSyncTimer);
+  themeSyncTimer = setTimeout(() => {
+    saveThemePreference(themeId).catch(() => {
+      // Keep the local preference even if the server sync fails; it will be
+      // retried the next time the slider moves.
+    });
+  }, 600);
 }
 
 if (contactButton) {
@@ -299,6 +315,7 @@ function renderLogin() {
   signInWithGoogle()
     .then(async (user) => {
       state.user = user;
+      if (user.theme) applyTheme(user.theme);
       if (user.profileComplete) {
         state.view = "version-select";
       } else {
@@ -1065,6 +1082,7 @@ async function init() {
     const session = await getSession().catch(() => null);
     if (session) {
       state.user = session;
+      if (session.theme) applyTheme(session.theme);
       if (session.profileComplete) {
         await selectResumeAssessmentVersion();
         await loadAssessment();

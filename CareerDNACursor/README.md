@@ -53,6 +53,7 @@ With those variables present, Google profiles are stored in `students` and compl
 | `GET /api/auth/session` | Current logged-in user |
 | `POST /api/auth/google` | Verify Google ID token, create session |
 | `POST /api/auth/profile` | Save mobile number (first login) |
+| `POST /api/auth/theme` | Save the user's preferred theme (footer slider) |
 | `POST /api/auth/logout` | End session |
 | `GET /api/assessment` | Version 4 assessment JSON |
 | `GET /api/assessment/resume` | Returns the current v4 assessment for a signed-in user |
@@ -66,7 +67,11 @@ With those variables present, Google profiles are stored in `students` and compl
 
 ## Database migration
 
-Run the updated `supabase-schema.sql` before deploying this change. Assessment progress is stored against version 4 and must be saved explicitly from the assessment screen.
+Run the updated `supabase-schema.sql` before deploying this change. Assessment progress is stored against version 4 and must be saved explicitly from the assessment screen. The migration also adds a `theme` column to `students` so each user's footer-slider theme choice is persisted server-side and restored on sign-in (falls back to `localStorage` for anonymous visitors).
+
+## Theming
+
+The footer slider switches between 8 themes (Day, Sunset, Light Pink, Light Blue, Neon, Emerald, Sapphire, Night). For signed-in users the choice is saved to `students.theme` via `POST /api/auth/theme` and re-applied on the next login; anonymous users keep it in `localStorage` (`careerdna-theme`).
 
 ## Note
 

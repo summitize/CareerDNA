@@ -12,6 +12,10 @@ create table if not exists public.students (
 alter table public.students add column if not exists grade text;
 alter table public.students add column if not exists school text;
 
+-- Store each user's preferred UI theme (footer slider). Values match the
+-- client-side THEMES list in js/app.js.
+alter table public.students add column if not exists theme text;
+
 create table if not exists public.assessment_results (
   id uuid primary key default gen_random_uuid(),
   student_email text not null references public.students(email) on delete cascade,

@@ -89,6 +89,19 @@ export async function saveMobileNumber(mobileNumber) {
   return res.json();
 }
 
+export async function saveThemePreference(theme) {
+  const res = await fetch("/api/auth/theme", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ theme }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Could not save theme preference.");
+  }
+  return res.json();
+}
+
 export async function logout() {
   await fetch("/api/auth/logout", { method: "POST" });
 }
