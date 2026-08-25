@@ -191,13 +191,16 @@ function showThemeTip() {
 }
 
 // ---------------------------------------------------------------------------
-// "Dna" 🧬 — the CareerDNA voice assistant. Reads the question shown on the
+// DNA 🧬 — the CareerDNA support assistant. Reads the question shown on the
 // screen aloud (Web Speech synthesis) and collects answers by listening to
 // the student (Web Speech recognition), mapping spoken replies onto the
-// options visible on screen. Degrades gracefully when a browser lacks the
-// Web Speech APIs.
+// options visible on screen. In Hands-free mode it runs the whole interview
+// end-to-end: read → listen → answer → advance, without touching the screen.
+// Degrades gracefully when a browser lacks the Web Speech APIs.
 // ---------------------------------------------------------------------------
 const DNA_AUTO_READ_KEY = "careerdna-dna-autoread";
+const DNA_HANDSFREE_KEY = "careerdna-dna-handsfree";
+const DNA_MAX_MIC_RETRIES = 3;
 const DNA_NUMBER_WORDS = {
   one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
   nine: 9, ten: 10, first: 1, second: 2, third: 3, fourth: 4, fifth: 5,
@@ -210,6 +213,8 @@ const voiceState = {
   mode: "idle", // idle | speaking | listening
   interim: "",
   recognition: null,
+  awaitingSpeech: false, // mic opened but no final answer captured yet
+  micRetries: 0,         // silence-restarts used for the current question
 };
 let assistantFab = null;
 let assistantPanel = null;
@@ -232,6 +237,22 @@ function setDnaAutoRead(enabled) {
   }
 }
 
+function dnaHandsFreeEnabled() {
+  try {
+    return localStorage.getItem(DNA_HANDSFREE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function setDnaHandsFree(enabled) {
+  try {
+    localStorage.setItem(DNA_HANDSFREE_KEY, enabled ? "1" : "0");
+  } catch {
+    // localStorage unavailable — the toggle just won't persist.
+  }
+}
+
 function currentAssistantQuestion() {
   if (state.view !== "question") return null;
   return state.questions[state.currentIndex] || null;
@@ -243,8 +264,9 @@ function ensureAssistantDom() {
   assistantFab = document.createElement("button");
   assistantFab.type = "button";
   assistantFab.className = "dna-fab hidden";
-  assistantFab.setAttribute("aria-label", "Toggle Dna, the voice assistant");
+  assistantFab.setAttribute("aria-label", "Toggle DNA, the support assistant");
   assistantFab.textContent = "🧬";
+  assistantFab.title = "DNA — your hands-free support assistant";
   assistantFab.onclick = () => {
     voiceState.open = !voiceState.open;
     updateAssistantPanel();
@@ -256,7 +278,7 @@ function ensureAssistantDom() {
   assistantPanel.innerHTML = `
     <header class="dna-head">
       <span class="dna-avatar">🧬</span>
-      <div class="dna-name"><strong>Dna</strong><small>Your career buddy</small></div>
+      <div class="dna-name"><strong>DNA</strong><small>Support assistant</small></div>
       <button type="button" class="dna-close" data-dna="close" aria-label="Close assistant">&times;</button>
     </header>
     <div class="dna-body">
@@ -264,9 +286,12 @@ function ensureAssistantDom() {
       <div class="dna-controls">
         <button type="button" class="dna-btn" data-dna="read" id="dna-read-btn">🔊 Read question</button>
         <button type="button" class="dna-btn" data-dna="mic" id="dna-mic-btn">🎤 Speak answer</button>
+      </div>
+      <div class="dna-controls">
+        <button type="button" class="dna-btn dna-btn-accent" data-dna="hands" id="dna-hands-btn">🖐 Hands-free</button>
         <label class="dna-auto"><input type="checkbox" id="dna-auto" /> Auto-read</label>
       </div>
-      <p class="dna-note">Try saying &ldquo;option 3&rdquo;, &ldquo;strongly agree&rdquo;, or &ldquo;next&rdquo;.</p>
+      <p class="dna-note">Hands-free runs the whole interview: DNA reads each question, listens for your answer, then moves on. Say &ldquo;option 3&rdquo;, &ldquo;strongly agree&rdquo;, or &ldquo;next&rdquo;.</p>
     </div>
   `;
   document.body.append(assistantFab, assistantPanel);
@@ -280,6 +305,8 @@ function ensureAssistantDom() {
       readQuestionAloud();
     } else if (action === "mic") {
       toggleAssistantMic();
+    } else if (action === "hands") {
+      toggleHandsFreeMode();
     }
   });
   assistantPanel.addEventListener("change", (event) => {
@@ -293,10 +320,15 @@ function dnaDefaultMessage() {
   }
   const question = currentAssistantQuestion();
   if (!question) {
-    return "Start the assessment and I will read every question aloud and take your answers by voice.";
+    return dnaHandsFreeEnabled()
+      ? "Start the assessment and I will run it end-to-end — reading questions and taking your answers by voice."
+      : "Start the assessment and I will read every question aloud and take your answers by voice.";
   }
   if (isRanking(question.questionType)) {
     return "This one needs the arrow buttons — but I can read it aloud for you!";
+  }
+  if (dnaHandsFreeEnabled()) {
+    return "<strong>Hands-free is on.</strong> Listen to the question, then just say your answer — I'll move on automatically.";
   }
   return 'Tap <strong>Read question</strong> to hear it, or <strong>Speak answer</strong> and tell me your choice.';
 }
@@ -324,6 +356,7 @@ function updateAssistantPanel() {
 
   const readBtn = assistantPanel.querySelector("#dna-read-btn");
   const micBtn = assistantPanel.querySelector("#dna-mic-btn");
+  const handsBtn = assistantPanel.querySelector("#dna-hands-btn");
   const auto = assistantPanel.querySelector("#dna-auto");
   const question = currentAssistantQuestion();
 
@@ -332,6 +365,11 @@ function updateAssistantPanel() {
     micBtn.disabled = !question || !voiceState.sttOk || isRanking(question.questionType);
     micBtn.classList.toggle("recording", voiceState.mode === "listening");
     micBtn.innerHTML = voiceState.mode === "listening" ? "■ Stop" : "🎤 Speak answer";
+  }
+  if (handsBtn) {
+    const on = dnaHandsFreeEnabled();
+    handsBtn.classList.toggle("hands-on", on);
+    handsBtn.innerHTML = on ? "🖐 Hands-free ON" : "🖐 Hands-free";
   }
   if (auto) auto.checked = dnaAutoReadEnabled();
 }
@@ -347,6 +385,7 @@ function stopAssistantListening() {
     try { voiceState.recognition.stop(); } catch { /* already stopped */ }
     voiceState.recognition = null;
   }
+  voiceState.awaitingSpeech = false;
   if (voiceState.mode === "listening") {
     voiceState.mode = "idle";
     voiceState.interim = "";
@@ -396,12 +435,23 @@ function buildQuestionSpeech(question) {
   return `${question.question} You have ${question.options.length} options: ${optionList}.`;
 }
 
-function readQuestionAloud({ thenListen = false } = {}) {
+function readQuestionAloud() {
   const question = currentAssistantQuestion();
   if (!question || !voiceState.ttsOk) return;
   stopAssistantListening();
   const text = buildQuestionSpeech(question);
-  speakAloud(text, thenListen ? () => startAssistantListening() : undefined);
+  speakAloud(text, () => {
+    // Hands-free: roll straight from reading into listening.
+    const freshQuestion = currentAssistantQuestion();
+    if (
+      dnaHandsFreeEnabled() &&
+      freshQuestion &&
+      freshQuestion.id === question.id &&
+      !isRanking(freshQuestion.questionType)
+    ) {
+      startAssistantListening();
+    }
+  });
 }
 
 function normaliseSpeech(text) {
@@ -470,43 +520,114 @@ function applySpokenChoice(question, optionValue) {
 
 function handleAssistantTranscript(transcript) {
   const question = currentAssistantQuestion();
-  if (!question) return;
+  if (!question) return false;
   const said = normaliseSpeech(transcript);
+  const handsFree = dnaHandsFreeEnabled();
 
   // Hands-free navigation.
   if (/\b(next|submit|done)\b/.test(said)) {
     document.getElementById("next-btn")?.click();
-    return;
+    return true;
   }
   if (/\b(previous|go back)\b/.test(said)) {
     document.getElementById("prev-btn")?.click();
-    return;
+    return true;
   }
 
   if (isRanking(question.questionType)) {
     speakAloud("Ranking questions need the arrow buttons on the screen.");
-    return;
+    return true;
   }
 
   if (isReflection(question.questionType)) {
     const field = document.getElementById("answer-input");
-    if (field) {
-      field.value = transcript.trim();
-      field.dispatchEvent(new Event("input"));
-      saveCurrentAnswer();
+    if (!field) return false;
+    field.value = transcript.trim();
+    field.dispatchEvent(new Event("input"));
+    saveCurrentAnswer();
+
+    const longEnough = validateAnswer(question);
+    if (handsFree && !longEnough) {
+      speakAloud("Could you tell me a little more? A few more words, please.");
+      return false;
+    }
+    if (handsFree) {
+      advanceHandsFree();
+    } else {
       speakAloud("Noted! I have typed that for you — review it and press Next when ready.");
     }
-    return;
+    return true;
   }
 
   const optionValue = matchSpokenOption(transcript, question);
   if (!optionValue) {
-    speakAloud("Sorry, I could not match that to an option. Try naming the option, or say option one, two, three.");
-    return;
+    if (!handsFree) {
+      speakAloud("Sorry, I could not match that to an option. Try naming the option, or say option one, two, three.");
+    }
+    return false;
   }
-  if (applySpokenChoice(question, optionValue)) {
+  if (!applySpokenChoice(question, optionValue)) return false;
+
+  if (handsFree) {
+    advanceHandsFree();
+  } else {
     speakAloud(`You chose: ${optionValue}. Say next when you are ready.`);
   }
+  return true;
+}
+
+// Hands-free: confirm the answer visually for a beat, then move on. The next
+// render triggers DNA to read the following question automatically.
+function advanceHandsFree() {
+  setTimeout(() => {
+    if (currentAssistantQuestion()) {
+      document.getElementById("next-btn")?.click();
+    }
+  }, 450);
+}
+
+// Silence/no-match recovery: give the student a few more chances before
+// pausing hands-free and handing control back.
+function queueHandsFreeRetry() {
+  const question = currentAssistantQuestion();
+  if (
+    !dnaHandsFreeEnabled() ||
+    !question ||
+    isRanking(question.questionType) ||
+    voiceState.micRetries >= DNA_MAX_MIC_RETRIES
+  ) {
+    voiceState.micRetries = 0;
+    speakAloud("I'll pause here. Tap the mic button whenever you're ready to continue.");
+    updateAssistantPanel();
+    return;
+  }
+  voiceState.micRetries += 1;
+  setTimeout(() => {
+    if (dnaHandsFreeEnabled() && currentAssistantQuestion()?.id === question.id) {
+      startAssistantListening();
+    }
+  }, 800);
+}
+
+function toggleHandsFreeMode() {
+  const turningOn = !dnaHandsFreeEnabled();
+  setDnaHandsFree(turningOn);
+
+  if (turningOn) {
+    voiceState.micRetries = 0;
+    const question = currentAssistantQuestion();
+    if (question && !isRanking(question.questionType)) {
+      // Kick off the loop: read this question, then listen.
+      readQuestionAloud();
+    } else if (question) {
+      speakAloud("Hands-free is on, but this question needs the arrow buttons.");
+    } else {
+      speakAloud("Hands-free is on! Start the assessment and I'll take it from there.");
+    }
+  } else {
+    stopAssistantListening();
+  }
+  updateAssistantPanel();
 }
 
 function startAssistantListening() {
@@ -524,6 +645,7 @@ function startAssistantListening() {
   voiceState.recognition = recognition;
   voiceState.mode = "listening";
   voiceState.interim = "";
+  voiceState.awaitingSpeech = true;
   updateAssistantPanel();
 
   recognition.onresult = (event) => {
@@ -536,7 +658,8 @@ function startAssistantListening() {
     }
     if (finalText) {
       stopAssistantListening();
-      handleAssistantTranscript(finalText.trim());
+      const handled = handleAssistantTranscript(finalText.trim());
+      if (!handled && dnaHandsFreeEnabled()) queueHandsFreeRetry();
     } else {
       voiceState.interim = interim;
       updateAssistantPanel();
@@ -547,8 +670,17 @@ function startAssistantListening() {
     updateAssistantPanel();
   };
   recognition.onend = () => {
-    stopAssistantListening();
+    // awaitingSpeech is still true when the mic closed without capturing a
+    // final answer (silence / no-speech) — that is the hands-free retry cue.
+    const closedSilently = voiceState.awaitingSpeech;
+    voiceState.recognition = null;
+    voiceState.awaitingSpeech = false;
+    if (voiceState.mode === "listening") {
+      voiceState.mode = "idle";
+      voiceState.interim = "";
+    }
     updateAssistantPanel();
+    if (closedSilently && dnaHandsFreeEnabled()) queueHandsFreeRetry();
   };
 
   try {
@@ -576,12 +708,19 @@ function syncAssistantToView() {
 
   ensureAssistantDom();
 
-  // Auto-read each new question as it appears (only once per question).
+  // Read each new question as it appears — explicitly via Auto-read, or
+  // automatically in Hands-free mode (reading kicks off the listen loop).
+  // Only once per question; also resets the mic-retry budget per question.
   const question = currentAssistantQuestion();
-  if (question && voiceState.ttsOk && dnaAutoReadEnabled()) {
+  if (
+    question &&
+    voiceState.ttsOk &&
+    (dnaAutoReadEnabled() || dnaHandsFreeEnabled())
+  ) {
     const key = `${state.assessmentVersion}:${state.currentIndex}:${question.id}`;
     if (dnaLastAutoReadKey !== key) {
       dnaLastAutoReadKey = key;
+      voiceState.micRetries = 0;
       clearTimeout(dnaSyncTimer);
       dnaSyncTimer = setTimeout(() => readQuestionAloud(), 400);
     }
