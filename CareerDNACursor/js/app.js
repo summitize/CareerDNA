@@ -37,6 +37,13 @@ const themeSliderLabel = document.getElementById("theme-slider-label");
 const contactButton = document.getElementById("contact-btn");
 const whatsNewButton = document.getElementById("whatsnew-btn");
 
+// DNA assistant DOM handles — declared up here because applyTheme() (which
+// runs immediately below at module load) calls updateAssistantAvatars().
+let assistantFab = null;
+let assistantPanel = null;
+let dnaLastAutoReadKey = "";
+let dnaSyncTimer = null;
+
 const THEMES = [
   { id: "light", name: "Day ☀️" },
   { id: "theme-sunset", name: "Sunset 🌅" },
@@ -256,10 +263,6 @@ const voiceState = {
   awaitingSpeech: false, // mic opened but no final answer captured yet
   micRetries: 0,         // silence-restarts used for the current question
 };
-let assistantFab = null;
-let assistantPanel = null;
-let dnaLastAutoReadKey = "";
-let dnaSyncTimer = null;
 
 function dnaAutoReadEnabled() {
   try {
@@ -311,7 +314,7 @@ function currentDnaThemeId() {
 function dnaAvatarMarkup(themeId) {
   const avatar = DNA_THEME_AVATARS[themeId] || DNA_THEME_AVATARS.light;
   return `<img class="dna-avatar-img" src="${avatar.img}" alt="" draggable="false"
-    onerror="this.remove(); this.parentElement && (this.parentElement.textContent = '${avatar.emoji}');" />`;
+    onerror="var p = this.parentElement; this.remove(); if (p) p.textContent = '${avatar.emoji}';" />`;
 }
 
 // Keep the FAB and the panel header mascot in sync with the active theme.
