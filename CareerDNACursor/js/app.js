@@ -55,9 +55,67 @@ const THEMES = [
   { id: "dark", name: "Night 🌙" },
 ];
 
+// ---------------------------------------------------------------------------
+// Client-side settings persistence — important preferences (theme, assistant
+// toggles, dismissed tips) are written to BOTH localStorage and a cookie:
+// localStorage gives instant per-browser reads, the cookie keeps them durable
+// for a year and survives localStorage being cleared.
+// ---------------------------------------------------------------------------
+function setCookie(name, value, days = 365) {
+  try {
+    document.cookie =
+      `${encodeURIComponent(name)}=${encodeURIComponent(value)}` +
+      `; max-age=${Math.round(days * 24 * 60 * 60)}; path=/; SameSite=Lax`;
+  } catch {
+    // Cookies unavailable — the localStorage copy still holds the setting.
+  }
+}
+
+function getCookie(name) {
+  try {
+    const prefix = `${encodeURIComponent(name)}=`;
+    const row = document.cookie
+      .split("; ")
+      .find((entry) => entry.startsWith(prefix));
+    return row ? decodeURIComponent(row.slice(prefix.length)) : null;
+  } catch {
+    return null;
+  }
+}
+
+function readSetting(key) {
+  return getCookie(key) ?? localStorage.getItem(key);
+}
+
+function writeSetting(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // fall through — the cookie copy still persists the value
+  }
+  setCookie(key, value);
+}
+
+// Radiant ripple colour per theme, used by the change animation below.
+const THEME_SWEEP_COLORS = {
+  light: "#bfdbfe",
+  "theme-sunset": "#fdba74",
+  "theme-rose": "#f9a8d4",
+  "theme-sky": "#7dd3fc",
+  "theme-cyberpunk": "#67e8f9",
+  "theme-emerald": "#6ee7b7",
+  "theme-sapphire": "#93c5fd",
+  dark: "#334155",
+};
+let appliedThemeId = null;
+let themeMorphTimer = null;
+
 function applyTheme(themeId) {
   const themeIndex = Math.max(0, THEMES.findIndex(t => t.id === themeId));
   const theme = THEMES[themeIndex] || THEMES[0];
+  // Only animate on genuine user-driven switches — not on first paint.
+  const changed = Boolean(appliedThemeId && appliedThemeId !== theme.id);
+  appliedThemeId = theme.id;
 
   // Clear existing theme classes
   THEMES.forEach(t => {
@@ -70,12 +128,50 @@ function applyTheme(themeId) {
 
   if (themeSlider) themeSlider.value = themeIndex;
   if (themeSliderLabel) themeSliderLabel.textContent = theme.name;
-  localStorage.setItem("careerdna-theme", theme.id);
+  writeSetting("careerdna-theme", theme.id);
+
+  if (changed) {
+    playThemeChangeAnimation(theme.id);
+  }
+
   // DNA wears its theme: swap the assistant's mascot with the look.
   updateAssistantAvatars();
 }
 
-const savedTheme = localStorage.getItem("careerdna-theme") || "light";
+// Theme-switch animation: a soft colour cross-fade across the page plus a
+// radiant ripple blooming out of the footer slider in the new theme's hue.
+function playThemeChangeAnimation(themeId) {
+  document.documentElement.classList.add("theme-morph");
+  clearTimeout(themeMorphTimer);
+  themeMorphTimer = setTimeout(() => {
+    document.documentElement.classList.remove("theme-morph");
+  }, 750);
+
+  let sweep = document.querySelector(".theme-sweep");
+  if (!sweep) {
+    sweep = document.createElement("div");
+    sweep.className = "theme-sweep";
+    document.body.appendChild(sweep);
+  }
+  const anchor = themeSlider?.closest(".theme-slider-container");
+  if (anchor) {
+    const rect = anchor.getBoundingClientRect();
+    sweep.style.setProperty(
+      "--sweep-x",
+      `${Math.round(((rect.left + rect.width / 2) / Math.max(1, window.innerWidth)) * 100)}%`,
+    );
+    sweep.style.setProperty(
+      "--sweep-y",
+      `${Math.round(((rect.top + rect.height / 2) / Math.max(1, window.innerHeight)) * 100)}%`,
+    );
+  }
+  sweep.style.setProperty("--sweep-color", THEME_SWEEP_COLORS[themeId] || "#93c5fd");
+  sweep.classList.remove("active");
+  void sweep.offsetWidth; // restart the CSS animation
+  sweep.classList.add("active");
+}
+
+const savedTheme = readSetting("careerdna-theme") || "light";
 applyTheme(savedTheme);
 
 if (themeSlider) {
@@ -113,19 +209,11 @@ function themeTipStorageKey() {
 }
 
 function hasSeenThemeTip() {
-  try {
-    return localStorage.getItem(themeTipStorageKey()) === "1";
-  } catch {
-    return false;
-  }
+  return readSetting(themeTipStorageKey()) === "1";
 }
 
 function markThemeTipSeen() {
-  try {
-    localStorage.setItem(themeTipStorageKey(), "1");
-  } catch {
-    // localStorage unavailable (private mode) — the tip just reappears next time.
-  }
+  writeSetting(themeTipStorageKey(), "1");
 }
 
 function positionThemeTip() {
@@ -239,35 +327,19 @@ const voiceState = {
 };
 
 function dnaAutoReadEnabled() {
-  try {
-    return localStorage.getItem(DNA_AUTO_READ_KEY) === "1";
-  } catch {
-    return false;
-  }
+  return readSetting(DNA_AUTO_READ_KEY) === "1";
 }
 
 function setDnaAutoRead(enabled) {
-  try {
-    localStorage.setItem(DNA_AUTO_READ_KEY, enabled ? "1" : "0");
-  } catch {
-    // localStorage unavailable — the toggle just won't persist.
-  }
+  writeSetting(DNA_AUTO_READ_KEY, enabled ? "1" : "0");
 }
 
 function dnaHandsFreeEnabled() {
-  try {
-    return localStorage.getItem(DNA_HANDSFREE_KEY) === "1";
-  } catch {
-    return false;
-  }
+  return readSetting(DNA_HANDSFREE_KEY) === "1";
 }
 
 function setDnaHandsFree(enabled) {
-  try {
-    localStorage.setItem(DNA_HANDSFREE_KEY, enabled ? "1" : "0");
-  } catch {
-    // localStorage unavailable — the toggle just won't persist.
-  }
+  writeSetting(DNA_HANDSFREE_KEY, enabled ? "1" : "0");
 }
 
 function currentAssistantQuestion() {
@@ -276,11 +348,7 @@ function currentAssistantQuestion() {
 }
 
 function currentDnaThemeId() {
-  try {
-    return localStorage.getItem("careerdna-theme") || "light";
-  } catch {
-    return "light";
-  }
+  return readSetting("careerdna-theme") || "light";
 }
 
 // Keep the FAB and the panel header mascot in sync with the active theme.

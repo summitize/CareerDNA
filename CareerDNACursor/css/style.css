@@ -690,6 +690,61 @@ body {
   50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
 }
 
+/* ---- Theme-change animation --------------------------------------------- */
+/* While .theme-morph is on <html>, every major surface cross-fades its
+   colours instead of snapping when the palette class swaps. */
+html.theme-morph body,
+html.theme-morph .header,
+html.theme-morph .card,
+html.theme-morph .site-footer,
+html.theme-morph .theme-slider-container,
+html.theme-morph .theme-slider-label,
+html.theme-morph .dna-panel,
+html.theme-morph .dna-msg,
+html.theme-morph .option,
+html.theme-morph input,
+html.theme-morph select,
+html.theme-morph textarea,
+html.theme-morph .btn {
+  transition:
+    background-color 0.55s ease,
+    background-image 0.55s ease,
+    color 0.55s ease,
+    border-color 0.55s ease,
+    box-shadow 0.55s ease !important;
+}
+
+/* Radiant ripple that blooms out of the footer slider in the new hue */
+.theme-sweep {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  pointer-events: none;
+  opacity: 0;
+  --sweep-x: 85%;
+  --sweep-y: 95%;
+  --sweep-color: #93c5fd;
+  background: radial-gradient(
+    circle at var(--sweep-x) var(--sweep-y),
+    var(--sweep-color) 0%,
+    transparent 62%
+  );
+}
+
+.theme-sweep.active {
+  animation: theme-sweep-anim 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes theme-sweep-anim {
+  0% { opacity: 0.5; transform: scale(0.35); }
+  60% { opacity: 0.28; }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-sweep.active { animation: none; }
+}
+
 @keyframes dna-pulse-ring {
   0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
   100% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
