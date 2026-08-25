@@ -240,6 +240,58 @@ body {
   color: #93c5fd;
 }
 
+/* What's New page */
+.whatsnew-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.whatsnew-feature {
+  border: 1px solid var(--border);
+  border-radius: var(--radius, 12px);
+  background: var(--surface);
+  padding: 1.1rem 1.25rem;
+}
+
+.whatsnew-feature-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.whatsnew-feature-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.whatsnew-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.domain-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.domain-list li::marker {
+  color: var(--primary);
+}
+
+
 .login-card {
   align-self: center;
   padding: 2.1rem;

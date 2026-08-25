@@ -35,6 +35,7 @@ const userMenu = document.getElementById("user-menu");
 const themeSlider = document.getElementById("theme-slider");
 const themeSliderLabel = document.getElementById("theme-slider-label");
 const contactButton = document.getElementById("contact-btn");
+const whatsNewButton = document.getElementById("whatsnew-btn");
 
 const THEMES = [
   { id: "light", name: "Day ☀️" },
@@ -94,6 +95,14 @@ if (contactButton) {
   contactButton.onclick = () => {
     state.previousView = state.view;
     state.view = "contact";
+    render();
+  };
+}
+
+if (whatsNewButton) {
+  whatsNewButton.onclick = () => {
+    state.previousView = state.view;
+    state.view = "whatsnew";
     render();
   };
 }
@@ -573,6 +582,72 @@ function renderCompletedAssessment() {
     state.startedAt = null;
     state.latestResult = null;
     state.view = "student";
+    render();
+  };
+}
+
+function renderWhatsNew() {
+  const newDomains = [
+    "Finance, Investment & FinTech",
+    "Design & User Experience",
+    "Media, Creative Arts & Creator Economy",
+    "Sports, Fitness & Esports",
+    "Architecture & Built Environment",
+    "Hospitality, Tourism & Culinary Arts",
+    "Defence & Uniformed Services",
+    "Skilled Trades & Applied Technology",
+  ];
+  const themes = THEMES.map((t) => t.name).join(" · ");
+  const assessment = state.assessment || {};
+  const totalQuestions = assessment.totalQuestions ?? 88;
+  const coreQuestions = assessment.coreQuestions ?? 79;
+  const validityQuestions = assessment.validityAndReverseScoredQuestions ?? 10;
+  const sectionCount = assessment.sections?.length ?? 15;
+  const questionTypes = assessment.questionTypesUsed?.length ?? 9;
+  const clusterCount = assessment.careerClusters?.length ?? 19;
+
+  main.innerHTML = `
+    <section class="card whatsnew-card">
+      <p class="eyebrow">PRODUCT UPDATES</p>
+      <h1>What's New</h1>
+      <p class="subtitle">The latest improvements to the CareerDNA Career Assessment.</p>
+
+      <article class="whatsnew-feature">
+        <div class="whatsnew-feature-head">
+          <span class="whatsnew-badge">Assessment v6</span>
+          <h2>Improvised questions with extended domain coverage</h2>
+        </div>
+        <p>
+          The question bank has been reworked into a coverage-optimised set of
+          ${totalQuestions} questions (${coreQuestions} core + ${validityQuestions} validity checks)
+          across ${sectionCount} sections and ${questionTypes} question types — sharper,
+          more student-friendly items with every section and career domain still covered.
+        </p>
+        <p><strong>Coverage now extends to ${clusterCount} career domains</strong> (up from 12), including these newly added areas:</p>
+        <ul class="domain-list">
+          ${newDomains.map((d) => `<li>${escapeHtml(d)}</li>`).join("")}
+          <li>…plus all earlier domains such as Engineering &amp; Technology, Medicine &amp; Health Sciences, Business &amp; Entrepreneurship, Law &amp; Public Policy, Psychology &amp; Counselling, Data &amp; Analytics and AI &amp; Future Technologies.</li>
+        </ul>
+      </article>
+
+      <article class="whatsnew-feature">
+        <div class="whatsnew-feature-head">
+          <span class="whatsnew-badge">Personalisation</span>
+          <h2>Theme selector slider in the footer</h2>
+        </div>
+        <p>
+          A new slider at the bottom of every page lets you instantly switch between
+          eight colour themes — ${escapeHtml(themes)}. Your choice is remembered on this
+          device and synced to your account when you are signed in.
+        </p>
+      </article>
+
+      <div class="actions"><button class="btn btn-secondary" id="whatsnew-back-btn">Back</button></div>
+    </section>
+  `;
+
+  document.getElementById("whatsnew-back-btn").onclick = () => {
+    state.view = state.previousView === "whatsnew" ? "welcome" : state.previousView;
     render();
   };
 }
@@ -1107,6 +1182,7 @@ function render() {
   else if (state.view === "welcome") renderWelcome();
   else if (state.view === "completed") renderCompletedAssessment();
   else if (state.view === "contact") renderContact();
+  else if (state.view === "whatsnew") renderWhatsNew();
   else if (state.view === "student") renderStudentForm();
   else if (state.view === "question") renderQuestion();
   else if (state.view === "result") renderResult();
