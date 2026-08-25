@@ -64,6 +64,8 @@ function applyTheme(themeId) {
   if (themeSlider) themeSlider.value = themeIndex;
   if (themeSliderLabel) themeSliderLabel.textContent = theme.name;
   localStorage.setItem("careerdna-theme", theme.id);
+  // DNA wears its theme: swap the assistant's mascot with the look.
+  updateAssistantAvatars();
 }
 
 const savedTheme = localStorage.getItem("careerdna-theme") || "light";
@@ -201,6 +203,44 @@ function showThemeTip() {
 const DNA_AUTO_READ_KEY = "careerdna-dna-autoread";
 const DNA_HANDSFREE_KEY = "careerdna-dna-handsfree";
 const DNA_MAX_MIC_RETRIES = 3;
+// Each colour theme gets its own polished cartoon avatar so DNA feels at home
+// in every look. Artwork: DiceBear (https://www.dicebear.com) — original,
+// openly licensed character illustrations served as SVG. The emoji is the
+// offline/no-network fallback.
+const DNA_THEME_AVATARS = {
+  light: {
+    emoji: "🐥",
+    img: "https://api.dicebear.com/9.x/adventurer/svg?seed=Sunny&size=96&backgroundColor=ffd5dc,b6e3f4&radius=50",
+  },
+  "theme-sunset": {
+    emoji: "🦊",
+    img: "https://api.dicebear.com/9.x/dylan/svg?seed=Blaze&size=96&backgroundColor=ffdfbf&radius=50",
+  },
+  "theme-rose": {
+    emoji: "🦩",
+    img: "https://api.dicebear.com/9.x/lorelei/svg?seed=Rosie&size=96&backgroundColor=f5d0fe,fecdd3&radius=50",
+  },
+  "theme-sky": {
+    emoji: "🐬",
+    img: "https://api.dicebear.com/9.x/personas/svg?seed=Wave&size=96&backgroundColor=b6e3f4,c0aede&radius=50",
+  },
+  "theme-cyberpunk": {
+    emoji: "🤖",
+    img: "https://api.dicebear.com/9.x/bottts/svg?seed=Neon&size=96&backgroundType=solid&backgroundColor=7c3aed&radius=50",
+  },
+  "theme-emerald": {
+    emoji: "🐸",
+    img: "https://api.dicebear.com/9.x/pixel-art/svg?seed=Moss&size=96&backgroundType=solid&backgroundColor=10b981&radius=50",
+  },
+  "theme-sapphire": {
+    emoji: "🐳",
+    img: "https://api.dicebear.com/9.x/big-smile/svg?seed=Cove&size=96&backgroundColor=a5b8fa,93c5fd&radius=50",
+  },
+  dark: {
+    emoji: "🦉",
+    img: "https://api.dicebear.com/9.x/notionists/svg?seed=Luna&size=96&backgroundColor=1e293b&radius=50",
+  },
+};
 const DNA_NUMBER_WORDS = {
   one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
   nine: 9, ten: 10, first: 1, second: 2, third: 3, fourth: 4, fifth: 5,
@@ -258,14 +298,49 @@ function currentAssistantQuestion() {
   return state.questions[state.currentIndex] || null;
 }
 
+function currentDnaThemeId() {
+  try {
+    return localStorage.getItem("careerdna-theme") || "light";
+  } catch {
+    return "light";
+  }
+}
+
+// Build the avatar <img> markup with an emoji fallback if the artwork
+// cannot load (e.g. no internet connection).
+function dnaAvatarMarkup(themeId) {
+  const avatar = DNA_THEME_AVATARS[themeId] || DNA_THEME_AVATARS.light;
+  return `<img class="dna-avatar-img" src="${avatar.img}" alt="" draggable="false"
+    onerror="this.remove(); this.parentElement && (this.parentElement.textContent = '${avatar.emoji}');" />`;
+}
+
+// Keep the FAB and the panel header mascot in sync with the active theme.
+function updateAssistantAvatars() {
+  if (!assistantFab || !assistantPanel) return;
+  const themeId = currentDnaThemeId();
+  const emoji = (DNA_THEME_AVATARS[themeId] || DNA_THEME_AVATARS.light).emoji;
+
+  Object.keys(DNA_THEME_AVATARS).forEach((id) => {
+    assistantFab.classList.remove(`dna-av-${id}`);
+  });
+  assistantFab.classList.add(`dna-av-${themeId in DNA_THEME_AVATARS ? themeId : "light"}`);
+  assistantFab.innerHTML = dnaAvatarMarkup(themeId);
+  assistantFab.title = "DNA — your hands-free support assistant";
+
+  const badge = assistantPanel.querySelector("#dna-panel-avatar");
+  if (badge) {
+    badge.className = `dna-avatar-badge dna-av-${themeId}`;
+    badge.innerHTML = dnaAvatarMarkup(themeId);
+  }
+}
+
 function ensureAssistantDom() {
   if (assistantFab) return;
 
   assistantFab = document.createElement("button");
   assistantFab.type = "button";
-  assistantFab.className = "dna-fab hidden";
+  assistantFab.className = "dna-fab hidden dna-av-light";
   assistantFab.setAttribute("aria-label", "Toggle DNA, the support assistant");
-  assistantFab.textContent = "🧬";
   assistantFab.title = "DNA — your hands-free support assistant";
   assistantFab.onclick = () => {
     voiceState.open = !voiceState.open;
@@ -277,7 +352,7 @@ function ensureAssistantDom() {
   assistantPanel.setAttribute("aria-live", "polite");
   assistantPanel.innerHTML = `
     <header class="dna-head">
-      <span class="dna-avatar">🧬</span>
+      <span class="dna-avatar-badge dna-av-light" id="dna-panel-avatar" aria-hidden="true"></span>
       <div class="dna-name"><strong>DNA</strong><small>Support assistant</small></div>
       <button type="button" class="dna-close" data-dna="close" aria-label="Close assistant">&times;</button>
     </header>
@@ -312,6 +387,8 @@ function ensureAssistantDom() {
   assistantPanel.addEventListener("change", (event) => {
     if (event.target.id === "dna-auto") setDnaAutoRead(event.target.checked);
   });
+
+  updateAssistantAvatars();
 }
 
 function dnaDefaultMessage() {
@@ -707,6 +784,7 @@ function syncAssistantToView() {
   }
 
   ensureAssistantDom();
+  updateAssistantAvatars();
 
   // Read each new question as it appears — explicitly via Auto-read, or
   // automatically in Hands-free mode (reading kicks off the listen loop).
