@@ -164,10 +164,13 @@ function showThemeTip() {
   themeTipEl.setAttribute("role", "status");
   themeTipEl.innerHTML = `
     <button type="button" class="theme-tip-close" aria-label="Close">&times;</button>
-    <strong>Welcome, ${escapeHtml(state.user.firstName || "there")}! 👋</strong><br />
-    Make CareerDNA yours — drag the <strong>theme slider</strong> at the bottom of the
-    page to pick your favourite look, from bright Day ☀️ to deep Night 🌙.
-    Your choice is remembered automatically.
+    <div class="theme-tip-head">
+      <span class="theme-tip-icon">🎨</span>
+      <span class="theme-tip-title">Personalise your theme!</span>
+    </div>
+    Welcome${state.user?.firstName ? `, ${escapeHtml(state.user.firstName)}` : ""}! Drag the
+    <strong>theme slider</strong> at the bottom of the page to switch from bright Day ☀️
+    all the way to deep Night 🌙. Your pick is remembered automatically.
     <div class="theme-tip-hint">Give it a slide &darr;</div>
   `;
   document.body.appendChild(themeTipEl);
@@ -185,6 +188,406 @@ function showThemeTip() {
   );
 
   positionThemeTip();
+}
+
+// ---------------------------------------------------------------------------
+// "Dna" 🧬 — the CareerDNA voice assistant. Reads the question shown on the
+// screen aloud (Web Speech synthesis) and collects answers by listening to
+// the student (Web Speech recognition), mapping spoken replies onto the
+// options visible on screen. Degrades gracefully when a browser lacks the
+// Web Speech APIs.
+// ---------------------------------------------------------------------------
+const DNA_AUTO_READ_KEY = "careerdna-dna-autoread";
+const DNA_NUMBER_WORDS = {
+  one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+  nine: 9, ten: 10, first: 1, second: 2, third: 3, fourth: 4, fifth: 5,
+  sixth: 6, seventh: 7, eighth: 8, ninth: 9, tenth: 10,
+};
+const voiceState = {
+  ttsOk: typeof window !== "undefined" && "speechSynthesis" in window,
+  sttOk: typeof window !== "undefined" && Boolean(window.SpeechRecognition || window.webkitSpeechRecognition),
+  open: false,
+  mode: "idle", // idle | speaking | listening
+  interim: "",
+  recognition: null,
+};
+let assistantFab = null;
+let assistantPanel = null;
+let dnaLastAutoReadKey = "";
+let dnaSyncTimer = null;
+
+function dnaAutoReadEnabled() {
+  try {
+    return localStorage.getItem(DNA_AUTO_READ_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function setDnaAutoRead(enabled) {
+  try {
+    localStorage.setItem(DNA_AUTO_READ_KEY, enabled ? "1" : "0");
+  } catch {
+    // localStorage unavailable — the toggle just won't persist.
+  }
+}
+
+function currentAssistantQuestion() {
+  if (state.view !== "question") return null;
+  return state.questions[state.currentIndex] || null;
+}
+
+function ensureAssistantDom() {
+  if (assistantFab) return;
+
+  assistantFab = document.createElement("button");
+  assistantFab.type = "button";
+  assistantFab.className = "dna-fab hidden";
+  assistantFab.setAttribute("aria-label", "Toggle Dna, the voice assistant");
+  assistantFab.textContent = "🧬";
+  assistantFab.onclick = () => {
+    voiceState.open = !voiceState.open;
+    updateAssistantPanel();
+  };
+
+  assistantPanel = document.createElement("section");
+  assistantPanel.className = "dna-panel hidden";
+  assistantPanel.setAttribute("aria-live", "polite");
+  assistantPanel.innerHTML = `
+    <header class="dna-head">
+      <span class="dna-avatar">🧬</span>
+      <div class="dna-name"><strong>Dna</strong><small>Your career buddy</small></div>
+      <button type="button" class="dna-close" data-dna="close" aria-label="Close assistant">&times;</button>
+    </header>
+    <div class="dna-body">
+      <div class="dna-msg" id="dna-msg"></div>
+      <div class="dna-controls">
+        <button type="button" class="dna-btn" data-dna="read" id="dna-read-btn">🔊 Read question</button>
+        <button type="button" class="dna-btn" data-dna="mic" id="dna-mic-btn">🎤 Speak answer</button>
+        <label class="dna-auto"><input type="checkbox" id="dna-auto" /> Auto-read</label>
+      </div>
+      <p class="dna-note">Try saying &ldquo;option 3&rdquo;, &ldquo;strongly agree&rdquo;, or &ldquo;next&rdquo;.</p>
+    </div>
+  `;
+  document.body.append(assistantFab, assistantPanel);
+
+  assistantPanel.addEventListener("click", (event) => {
+    const action = event.target.closest("[data-dna]")?.dataset.dna;
+    if (action === "close") {
+      voiceState.open = false;
+      updateAssistantPanel();
+    } else if (action === "read") {
+      readQuestionAloud();
+    } else if (action === "mic") {
+      toggleAssistantMic();
+    }
+  });
+  assistantPanel.addEventListener("change", (event) => {
+    if (event.target.id === "dna-auto") setDnaAutoRead(event.target.checked);
+  });
+}
+
+function dnaDefaultMessage() {
+  if (!voiceState.ttsOk && !voiceState.sttOk) {
+    return "My voice and ears need Chrome or Edge — you can still answer by tapping the options.";
+  }
+  const question = currentAssistantQuestion();
+  if (!question) {
+    return "Start the assessment and I will read every question aloud and take your answers by voice.";
+  }
+  if (isRanking(question.questionType)) {
+    return "This one needs the arrow buttons — but I can read it aloud for you!";
+  }
+  return 'Tap <strong>Read question</strong> to hear it, or <strong>Speak answer</strong> and tell me your choice.';
+}
+
+function dnaMessageHtml() {
+  if (voiceState.mode === "listening") {
+    return `<span class="dna-mic-rec">● Listening… speak now</span><br /><span class="dna-transcript">${escapeHtml(voiceState.interim || "…")}</span>`;
+  }
+  if (voiceState.mode === "speaking") {
+    return '<span class="dna-status"><span class="dna-eq"><span></span><span></span><span></span><span></span></span> Speaking…</span>';
+  }
+  return dnaDefaultMessage();
+}
+
+function updateAssistantPanel() {
+  if (!assistantFab || !assistantPanel) return;
+
+  const showBuddy = Boolean(state.user);
+  assistantFab.classList.toggle("hidden", !showBuddy);
+  assistantFab.classList.toggle("active", voiceState.mode !== "idle");
+  assistantPanel.classList.toggle("hidden", !showBuddy || !voiceState.open);
+
+  const message = assistantPanel.querySelector("#dna-msg");
+  if (message) message.innerHTML = dnaMessageHtml();
+
+  const readBtn = assistantPanel.querySelector("#dna-read-btn");
+  const micBtn = assistantPanel.querySelector("#dna-mic-btn");
+  const auto = assistantPanel.querySelector("#dna-auto");
+  const question = currentAssistantQuestion();
+
+  if (readBtn) readBtn.disabled = !question || !voiceState.ttsOk;
+  if (micBtn) {
+    micBtn.disabled = !question || !voiceState.sttOk || isRanking(question.questionType);
+    micBtn.classList.toggle("recording", voiceState.mode === "listening");
+    micBtn.innerHTML = voiceState.mode === "listening" ? "■ Stop" : "🎤 Speak answer";
+  }
+  if (auto) auto.checked = dnaAutoReadEnabled();
+}
+
+function stopAssistantSpeaking() {
+  if (!voiceState.ttsOk) return;
+  window.speechSynthesis.cancel();
+  if (voiceState.mode === "speaking") voiceState.mode = "idle";
+}
+
+function stopAssistantListening() {
+  if (voiceState.recognition) {
+    try { voiceState.recognition.stop(); } catch { /* already stopped */ }
+    voiceState.recognition = null;
+  }
+  if (voiceState.mode === "listening") {
+    voiceState.mode = "idle";
+    voiceState.interim = "";
+  }
+}
+
+function stopAssistantActivity() {
+  stopAssistantSpeaking();
+  stopAssistantListening();
+}
+
+function speakAloud(text, onDone) {
+  if (!voiceState.ttsOk) {
+    onDone?.();
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1;
+  utterance.pitch = 1.05;
+  const voices = window.speechSynthesis.getVoices();
+  utterance.voice =
+    voices.find((v) => /en[-_]IN/i.test(v.lang)) ||
+    voices.find((v) => /^en/i.test(v.lang)) ||
+    null;
+  utterance.onstart = () => {
+    voiceState.mode = "speaking";
+    updateAssistantPanel();
+  };
+  utterance.onend = () => {
+    if (voiceState.mode === "speaking") voiceState.mode = "idle";
+    updateAssistantPanel();
+    onDone?.();
+  };
+  utterance.onerror = utterance.onend;
+  window.speechSynthesis.speak(utterance);
+}
+
+function buildQuestionSpeech(question) {
+  if (isReflection(question.questionType)) {
+    return `${question.question} Please type, or speak, a few sentences about yourself.`;
+  }
+  if (isRanking(question.questionType)) {
+    return `${question.question} Rearrange the options with the up and down arrows, most like you first.`;
+  }
+  const optionList = question.options.map((opt, i) => `${i + 1}. ${opt}`).join(". ");
+  return `${question.question} You have ${question.options.length} options: ${optionList}.`;
+}
+
+function readQuestionAloud({ thenListen = false } = {}) {
+  const question = currentAssistantQuestion();
+  if (!question || !voiceState.ttsOk) return;
+  stopAssistantListening();
+  const text = buildQuestionSpeech(question);
+  speakAloud(text, thenListen ? () => startAssistantListening() : undefined);
+}
+
+function normaliseSpeech(text) {
+  return String(text).toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function matchSpokenOption(transcript, question) {
+  const said = normaliseSpeech(transcript);
+  if (!said) return null;
+
+  // 1) Explicit position: "option 3", "choice number two", plain "2"/"three".
+  let index = null;
+  const numbered = said.match(/(?:option|choice|answer|number)\s+(\d+)/);
+  if (numbered) index = parseInt(numbered[1], 10);
+  if (index == null) index = DNA_NUMBER_WORDS[said] ?? null;
+  if (index == null) {
+    for (const [word, n] of Object.entries(DNA_NUMBER_WORDS)) {
+      if (new RegExp(`(?:option|choice|answer|number)\\s+${word}\\b`).test(said)) {
+        index = n;
+        break;
+      }
+    }
+  }
+  if (index != null && index >= 1 && index <= question.options.length) {
+    return question.options[index - 1];
+  }
+
+  // 2) Whole-phrase match against the option labels ("strongly agree").
+  for (const option of question.options) {
+    const label = normaliseSpeech(option);
+    if (
+      label === said ||
+      (said.length > 2 && label.includes(said)) ||
+      (label.length > 2 && said.includes(label))
+    ) {
+      return option;
+    }
+  }
+
+  // 3) Best token-overlap fallback.
+  const saidTokens = new Set(said.split(" "));
+  let best = null;
+  let bestScore = 0;
+  for (const option of question.options) {
+    const labelTokens = normaliseSpeech(option).split(" ").filter(Boolean);
+    if (!labelTokens.length) continue;
+    const score = labelTokens.filter((token) => saidTokens.has(token)).length / labelTokens.length;
+    if (score > bestScore) {
+      bestScore = score;
+      best = option;
+    }
+  }
+  return bestScore >= 0.5 ? best : null;
+}
+
+function applySpokenChoice(question, optionValue) {
+  const label = [...document.querySelectorAll("#options .option")].find(
+    (entry) => entry.querySelector("input")?.value === optionValue,
+  );
+  const input = label?.querySelector("input");
+  if (!input) return false;
+  input.checked = true;
+  input.dispatchEvent(new Event("change"));
+  return true;
+}
+
+function handleAssistantTranscript(transcript) {
+  const question = currentAssistantQuestion();
+  if (!question) return;
+  const said = normaliseSpeech(transcript);
+
+  // Hands-free navigation.
+  if (/\b(next|submit|done)\b/.test(said)) {
+    document.getElementById("next-btn")?.click();
+    return;
+  }
+  if (/\b(previous|go back)\b/.test(said)) {
+    document.getElementById("prev-btn")?.click();
+    return;
+  }
+
+  if (isRanking(question.questionType)) {
+    speakAloud("Ranking questions need the arrow buttons on the screen.");
+    return;
+  }
+
+  if (isReflection(question.questionType)) {
+    const field = document.getElementById("answer-input");
+    if (field) {
+      field.value = transcript.trim();
+      field.dispatchEvent(new Event("input"));
+      saveCurrentAnswer();
+      speakAloud("Noted! I have typed that for you — review it and press Next when ready.");
+    }
+    return;
+  }
+
+  const optionValue = matchSpokenOption(transcript, question);
+  if (!optionValue) {
+    speakAloud("Sorry, I could not match that to an option. Try naming the option, or say option one, two, three.");
+    return;
+  }
+  if (applySpokenChoice(question, optionValue)) {
+    speakAloud(`You chose: ${optionValue}. Say next when you are ready.`);
+  }
+}
+
+function startAssistantListening() {
+  const question = currentAssistantQuestion();
+  if (!question || !voiceState.sttOk) return;
+
+  stopAssistantSpeaking();
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SR();
+  recognition.lang = "en-IN";
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 3;
+  recognition.continuous = false;
+
+  voiceState.recognition = recognition;
+  voiceState.mode = "listening";
+  voiceState.interim = "";
+  updateAssistantPanel();
+
+  recognition.onresult = (event) => {
+    let interim = "";
+    let finalText = "";
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const result = event.results[i];
+      if (result.isFinal) finalText += result[0].transcript;
+      else interim += result[0].transcript;
+    }
+    if (finalText) {
+      stopAssistantListening();
+      handleAssistantTranscript(finalText.trim());
+    } else {
+      voiceState.interim = interim;
+      updateAssistantPanel();
+    }
+  };
+  recognition.onerror = () => {
+    stopAssistantListening();
+    updateAssistantPanel();
+  };
+  recognition.onend = () => {
+    stopAssistantListening();
+    updateAssistantPanel();
+  };
+
+  try {
+    recognition.start();
+  } catch {
+    // start() throws if recognition is already running — safe to ignore.
+    stopAssistantListening();
+    updateAssistantPanel();
+  }
+}
+
+function toggleAssistantMic() {
+  if (voiceState.mode === "listening") stopAssistantListening();
+  else startAssistantListening();
+  updateAssistantPanel();
+}
+
+function syncAssistantToView() {
+  if (!state.user) {
+    stopAssistantActivity();
+    if (assistantFab) assistantFab.classList.add("hidden");
+    if (assistantPanel) assistantPanel.classList.add("hidden");
+    return;
+  }
+
+  ensureAssistantDom();
+
+  // Auto-read each new question as it appears (only once per question).
+  const question = currentAssistantQuestion();
+  if (question && voiceState.ttsOk && dnaAutoReadEnabled()) {
+    const key = `${state.assessmentVersion}:${state.currentIndex}:${question.id}`;
+    if (dnaLastAutoReadKey !== key) {
+      dnaLastAutoReadKey = key;
+      clearTimeout(dnaSyncTimer);
+      dnaSyncTimer = setTimeout(() => readQuestionAloud(), 400);
+    }
+  }
+
+  updateAssistantPanel();
 }
 
 
@@ -1289,6 +1692,8 @@ function render() {
   else if (state.view === "student") renderStudentForm();
   else if (state.view === "question") renderQuestion();
   else if (state.view === "result") renderResult();
+
+  syncAssistantToView();
 }
 
 async function init() {

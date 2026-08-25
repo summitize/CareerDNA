@@ -163,26 +163,62 @@ body {
   transition: transform 0.15s ease, background 0.2s ease;
 }
 
-/* Retro "old times" tooltip popout inviting theme personalisation */
+/* Retro-meets-polished tooltip popout inviting theme personalisation */
 .theme-tip {
   position: fixed;
   z-index: 1200;
-  max-width: 270px;
-  padding: 0.8rem 1.5rem 0.9rem 1rem;
-  background: #ffffe1;
-  color: #111111;
-  border: 1px solid #000000;
-  border-radius: 3px;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.28);
+  max-width: 300px;
+  padding: 0.95rem 2.2rem 1rem 1.1rem;
+  background: linear-gradient(175deg, #fffdf2 0%, #fff7d1 55%, #ffeeaa 100%);
+  color: #4a3800;
+  border: 1px solid #c9a227;
+  border-radius: 14px;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.65),
+    0 4px 0 rgba(201, 162, 39, 0.35),
+    0 16px 32px rgba(0, 0, 0, 0.22);
   font-family: Tahoma, Verdana, Geneva, sans-serif;
-  font-size: 0.78rem;
-  line-height: 1.45;
-  animation: theme-tip-in 0.18s ease-out;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  animation: theme-tip-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes theme-tip-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes theme-tip-pop {
+  0% { opacity: 0; transform: translateY(14px) scale(0.85); }
+  60% { opacity: 1; transform: translateY(-3px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.theme-tip-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.theme-tip-icon {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
+  animation: theme-tip-wave 2.6s ease-in-out infinite;
+  transform-origin: 70% 70%;
+}
+
+@keyframes theme-tip-wave {
+  0%, 100% { transform: rotate(0deg); }
+  8% { transform: rotate(-16deg); }
+  16% { transform: rotate(12deg); }
+  24% { transform: rotate(-8deg); }
+  32% { transform: rotate(0deg); }
+}
+
+.theme-tip-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+}
+
+.theme-tip strong {
+  color: #3d2f00;
 }
 
 /* Arrow pointing down at the theme slider */
@@ -191,9 +227,9 @@ body {
   content: "";
   position: absolute;
   left: 50%;
-  margin-left: -10px;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
+  margin-left: -11px;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
 }
 
 .theme-tip::after,
@@ -201,43 +237,50 @@ body {
   content: "";
   position: absolute;
   left: 50%;
-  margin-left: -8px;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
+  margin-left: -9px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
 }
 
-.theme-tip::before { bottom: -10px; border-top: 10px solid #000000; }
-.theme-tip::after { bottom: -8px; border-top: 8px solid #ffffe1; }
+.theme-tip::before { bottom: -12px; border-top: 12px solid #c9a227; }
+.theme-tip::after { bottom: -10px; border-top: 10px solid #fff7d1; }
 
 /* Flipped variant when there is no room above the slider */
-.theme-tip.below::before { top: -10px; bottom: auto; border-bottom: 10px solid #000000; }
-.theme-tip.below::after { top: -8px; bottom: auto; border-bottom: 8px solid #ffffe1; }
+.theme-tip.below::before { top: -12px; bottom: auto; border-bottom: 12px solid #c9a227; }
+.theme-tip.below::after { top: -10px; bottom: auto; border-bottom: 10px solid #fff7d1; }
 
 .theme-tip-close {
   position: absolute;
-  top: 2px;
-  right: 4px;
-  border: none;
-  background: transparent;
-  color: #444444;
-  font-size: 1rem;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #c9a227;
+  border-radius: 50%;
+  background: #fffdf2;
+  color: #8a6d00;
+  font-size: 0.9rem;
   font-weight: 700;
   line-height: 1;
-  padding: 2px 5px;
   cursor: pointer;
-  font-family: inherit;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
 .theme-tip-close:hover {
-  color: #000000;
-  background: rgba(0, 0, 0, 0.12);
+  transform: rotate(90deg) scale(1.08);
+  background: #c9a227;
+  color: #ffffff;
 }
 
 .theme-tip-hint {
-  margin-top: 0.4rem;
+  margin-top: 0.5rem;
   text-align: center;
-  font-size: 0.72rem;
-  color: #666666;
+  font-size: 0.74rem;
+  color: #8a6d00;
+  font-style: italic;
   letter-spacing: 0.02em;
 }
 
@@ -367,6 +410,229 @@ body {
 
 .domain-list li::marker {
   color: var(--primary);
+}
+
+/* ---- Dna 🧬, the CareerDNA voice assistant ------------------------------ */
+.dna-fab {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 1150;
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.65rem;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dna-fab:hover {
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.55);
+}
+
+.dna-fab.active {
+  animation: dna-bob 1.8s ease-in-out infinite;
+}
+
+.dna-fab.hidden {
+  display: none;
+}
+
+@keyframes dna-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.dna-panel {
+  position: fixed;
+  left: 18px;
+  bottom: 86px;
+  z-index: 1160;
+  width: min(330px, calc(100vw - 36px));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+  animation: dna-slide-up 0.22s ease-out;
+  font-size: 0.83rem;
+}
+
+.dna-panel.hidden {
+  display: none;
+}
+
+@keyframes dna-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+.dna-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #ffffff;
+}
+
+.dna-avatar {
+  font-size: 1.45rem;
+  animation: dna-bob 2.4s ease-in-out infinite;
+}
+
+.dna-name {
+  flex: 1;
+  line-height: 1.25;
+}
+
+.dna-name strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.dna-name small {
+  opacity: 0.85;
+  font-size: 0.72rem;
+}
+
+.dna-close {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.dna-close:hover {
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.dna-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.dna-msg {
+  min-height: 3em;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.07);
+  line-height: 1.5;
+}
+
+.dna-transcript {
+  font-style: italic;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+
+.dna-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dna-mic-rec {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.dna-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 13px;
+}
+
+.dna-eq span {
+  width: 3px;
+  height: 5px;
+  border-radius: 2px;
+  background: #7c3aed;
+  animation: dna-eq 0.9s ease-in-out infinite;
+}
+
+.dna-eq span:nth-child(2) { animation-delay: 0.15s; }
+.dna-eq span:nth-child(3) { animation-delay: 0.3s; }
+.dna-eq span:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes dna-eq {
+  0%, 100% { height: 4px; }
+  50% { height: 13px; }
+}
+
+.dna-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dna-btn {
+  padding: 0.42rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dna-btn:hover:not(:disabled) {
+  border-color: #7c3aed;
+  color: #7c3aed;
+}
+
+.dna-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dna-btn.recording {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: #ffffff;
+  animation: dna-pulse-ring 1.3s infinite;
+}
+
+@keyframes dna-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
+  100% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+}
+
+.dna-auto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  font-size: 0.76rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dna-note {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.4;
 }
 
 
