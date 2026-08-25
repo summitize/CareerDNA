@@ -91,6 +91,103 @@ function queueThemeSync(themeId) {
   }, 600);
 }
 
+// ---------------------------------------------------------------------------
+// Retro "old times" tooltip popout: after sign-in, nudge the student to
+// personalise their theme with the slider in the footer. Shown once per user
+// per browser; closed via the cross button, Escape, or by using the slider.
+// ---------------------------------------------------------------------------
+const THEME_TIP_SEEN_KEY = "careerdna-theme-tip-seen";
+let themeTipEl = null;
+
+function themeTipStorageKey() {
+  return `${THEME_TIP_SEEN_KEY}:${state.user?.email || "anon"}`;
+}
+
+function hasSeenThemeTip() {
+  try {
+    return localStorage.getItem(themeTipStorageKey()) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markThemeTipSeen() {
+  try {
+    localStorage.setItem(themeTipStorageKey(), "1");
+  } catch {
+    // localStorage unavailable (private mode) — the tip just reappears next time.
+  }
+}
+
+function positionThemeTip() {
+  if (!themeTipEl || !themeSlider) return;
+  const anchor = themeSlider.closest(".theme-slider-container");
+  if (!anchor) return;
+  const rect = anchor.getBoundingClientRect();
+  const tipRect = themeTipEl.getBoundingClientRect();
+
+  let left = rect.left + rect.width / 2 - tipRect.width / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
+
+  let top = rect.top - tipRect.height - 14; // leave room for the arrow
+  themeTipEl.classList.remove("below");
+  if (top < 8) {
+    // Not enough room above — flip the bubble below the slider instead.
+    top = rect.bottom + 14;
+    themeTipEl.classList.add("below");
+  }
+
+  themeTipEl.style.left = `${Math.round(left)}px`;
+  themeTipEl.style.top = `${Math.round(top)}px`;
+}
+
+function dismissThemeTip(markSeen = true) {
+  if (!themeTipEl) return;
+  const el = themeTipEl;
+  themeTipEl = null;
+  window.removeEventListener("resize", positionThemeTip);
+  window.removeEventListener("scroll", positionThemeTip, true);
+  document.removeEventListener("keydown", onThemeTipKeydown);
+  el.remove();
+  if (markSeen) markThemeTipSeen();
+}
+
+function onThemeTipKeydown(e) {
+  if (e.key === "Escape") dismissThemeTip();
+}
+
+function showThemeTip() {
+  if (!state.user || hasSeenThemeTip() || !themeSlider || themeTipEl) return;
+
+  themeTipEl = document.createElement("div");
+  themeTipEl.className = "theme-tip";
+  themeTipEl.setAttribute("role", "status");
+  themeTipEl.innerHTML = `
+    <button type="button" class="theme-tip-close" aria-label="Close">&times;</button>
+    <strong>Welcome, ${escapeHtml(state.user.firstName || "there")}! 👋</strong><br />
+    Make CareerDNA yours — drag the <strong>theme slider</strong> at the bottom of the
+    page to pick your favourite look, from bright Day ☀️ to deep Night 🌙.
+    Your choice is remembered automatically.
+    <div class="theme-tip-hint">Give it a slide &darr;</div>
+  `;
+  document.body.appendChild(themeTipEl);
+
+  window.addEventListener("resize", positionThemeTip);
+  window.addEventListener("scroll", positionThemeTip, true);
+  document.addEventListener("keydown", onThemeTipKeydown);
+  themeTipEl.querySelector(".theme-tip-close").onclick = () => dismissThemeTip();
+
+  // Actually trying the slider counts as personalising — retire the tip.
+  themeSlider.addEventListener(
+    "input",
+    () => dismissThemeTip(),
+    { once: true },
+  );
+
+  positionThemeTip();
+}
+
+
 if (contactButton) {
   contactButton.onclick = () => {
     state.previousView = state.view;
@@ -276,6 +373,7 @@ function updateUserMenu() {
       }
     }
     await logout();
+    dismissThemeTip(false);
     state.user = null;
     state.student = null;
     state.answers = {};
@@ -326,6 +424,8 @@ function renderLogin() {
         state.view = "mobile";
       }
       render();
+      // Nudge the freshly signed-in student to personalise their theme.
+      if (state.view !== "mobile") setTimeout(showThemeTip, 600);
     })
     .catch((err) => {
       const errorEl = document.getElementById("login-error");
@@ -373,6 +473,8 @@ function renderMobileForm() {
       state.user = await saveMobileNumber(mobile);
       await routeAuthenticatedUser();
       render();
+      // First-time login just completed the profile — offer the theme nudge.
+      setTimeout(showThemeTip, 600);
     } catch (err) {
       errorEl.textContent = err.message;
       errorEl.classList.remove("hidden");
@@ -459,6 +561,7 @@ async function renderVersionSelect() {
 
   document.getElementById("logout-select-btn").onclick = async () => {
     await logout();
+    dismissThemeTip(false);
     state.user = null;
     state.student = null;
     state.answers = {};
@@ -1207,6 +1310,8 @@ async function init() {
     }
 
     render();
+    // Returning session: still offer the theme personalisation nudge (once).
+    if (state.user?.profileComplete) setTimeout(showThemeTip, 600);
   } catch (err) {
     main.innerHTML = `
       <div class="card">

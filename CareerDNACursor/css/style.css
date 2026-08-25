@@ -163,6 +163,84 @@ body {
   transition: transform 0.15s ease, background 0.2s ease;
 }
 
+/* Retro "old times" tooltip popout inviting theme personalisation */
+.theme-tip {
+  position: fixed;
+  z-index: 1200;
+  max-width: 270px;
+  padding: 0.8rem 1.5rem 0.9rem 1rem;
+  background: #ffffe1;
+  color: #111111;
+  border: 1px solid #000000;
+  border-radius: 3px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.28);
+  font-family: Tahoma, Verdana, Geneva, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  animation: theme-tip-in 0.18s ease-out;
+}
+
+@keyframes theme-tip-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Arrow pointing down at the theme slider */
+.theme-tip::before,
+.theme-tip.below::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  margin-left: -10px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+
+.theme-tip::after,
+.theme-tip.below::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  margin-left: -8px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+
+.theme-tip::before { bottom: -10px; border-top: 10px solid #000000; }
+.theme-tip::after { bottom: -8px; border-top: 8px solid #ffffe1; }
+
+/* Flipped variant when there is no room above the slider */
+.theme-tip.below::before { top: -10px; bottom: auto; border-bottom: 10px solid #000000; }
+.theme-tip.below::after { top: -8px; bottom: auto; border-bottom: 8px solid #ffffe1; }
+
+.theme-tip-close {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  border: none;
+  background: transparent;
+  color: #444444;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 5px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.theme-tip-close:hover {
+  color: #000000;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.theme-tip-hint {
+  margin-top: 0.4rem;
+  text-align: center;
+  font-size: 0.72rem;
+  color: #666666;
+  letter-spacing: 0.02em;
+}
+
 .user-menu {
   display: flex;
   align-items: center;
