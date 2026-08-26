@@ -1,0 +1,299 @@
+======================================================================
+BANK STATEMENTS PARSED
+  April2025  txns= 89  credits=Rs 1,538,362.20  debits=Rs   719,740.00
+  May2025    txns= 55  credits=Rs   820,361.27  debits=Rs   958,489.00
+  June2025   txns= 35  credits=Rs   287,575.57  debits=Rs   518,517.00
+  July2025   txns= 35  credits=Rs   302,787.18  debits=Rs   498,649.00
+  Aug2025    txns= 30  credits=Rs   799,536.00  debits=Rs   706,403.00
+  Sept2025   txns= 32  credits=Rs   225,423.68  debits=Rs   355,522.00
+  Oct2025    txns= 81  credits=Rs 1,578,600.00  debits=Rs 1,235,624.00
+  Nov2025    txns= 61  credits=Rs 1,059,388.31  debits=Rs 1,122,192.00
+  Dec2025    txns= 36  credits=Rs   721,393.39  debits=Rs   310,990.00
+  Jan2026    txns= 30  credits=Rs   321,741.70  debits=Rs   699,367.00
+  Feb2026    txns= 27  credits=Rs   344,192.50  debits=Rs   480,667.00
+  Mar2026    txns= 28  credits=Rs   326,160.00  debits=Rs   353,444.00
+  TOTAL      credits=Rs 8,325,521.80   debits=Rs 7,959,604.00
+
+BALANCE CONTINUITY CHECK
+  April2025  implied opening=Rs     52801.32  closing=Rs    871423.52
+  May2025    implied opening=Rs    871423.52  closing=Rs    733295.79
+  June2025   implied opening=Rs    733295.79  closing=Rs    502354.36
+  July2025   implied opening=Rs    502354.36  closing=Rs    306492.54
+  Aug2025    implied opening=Rs    306492.54  closing=Rs    399625.54
+  Sept2025   implied opening=Rs    399625.54  closing=Rs    269527.22
+  Oct2025    implied opening=Rs    269527.22  closing=Rs    612503.22
+  Nov2025    implied opening=Rs    612503.22  closing=Rs    549699.53
+  Dec2025    implied opening=Rs    549699.53  closing=Rs    960102.92
+  Jan2026    implied opening=Rs    960102.92  closing=Rs    582477.62
+  Feb2026    implied opening=Rs    582477.62  closing=Rs    446003.12
+  Mar2026    implied opening=Rs    446003.12  closing=Rs    418719.12
+  Continuity: OK
+
+======================================================================
+DUES COLLECTION: 196 receipts, total Rs 4,984,128.31
+
+DUES <-> BANK CREDIT MATCHING
+  Matched groups : 167  covering receipts worth Rs 4,229,734.64
+  Cash receipts  : Rs 376.34 (expected - never hits this bank a/c)
+  Unmatched dues : 29 items worth Rs 754,393.67
+
+  UNMATCHED RECEIPTS:
+    Rcpt#1316   2025-05-06 B-601   Rs  24,500.00  [UTR 0000000000 NOT FOUND in bank statements]
+    Rcpt#1361   2025-10-27 A-1002  Rs  32,400.00  [UTR 000000000047 NOT FOUND in bank statements]
+    Rcpt#1419   2025-12-08 A-401   Rs  30,000.00  [UTR 000000548085 NOT FOUND in bank statements]
+    Rcpt#1278   2025-04-28 B-304   Rs  24,500.00  [UTR 0001 NOT FOUND in bank statements]
+    Rcpt#1325   2025-07-05 B-702   Rs  25,720.44  [UTR 000131990203 NOT FOUND in bank statements]
+    Rcpt#1326   2025-07-25 B-701   Rs  32,587.56  [UTR 000131990203 NOT FOUND in bank statements]
+    Rcpt#1276   2025-04-26 B-604   Rs  26,500.00  [UTR 000223664899 NOT FOUND in bank statements]
+    Rcpt#1277   2025-04-28 B-102   Rs  24,500.00  [UTR 000806943945 NOT FOUND in bank statements]
+    Rcpt#1398   2025-10-31 B-604   Rs  32,000.00  [UTR 001023725775 NOT FOUND in bank statements]
+    Rcpt#1399   2025-10-31 B-604   Rs     400.00  [UTR 001024002600 NOT FOUND in bank statements]
+    Rcpt#1320   2025-05-20 A-301   Rs  26,500.00  [UTR 01849, NOT FOUND in bank statements]
+    Rcpt#1413   2025-11-18 A-301   Rs  32,400.00  [UTR 14926, NOT FOUND in bank statements]
+    Rcpt#1429   2025-10-28 A-302   Rs  32,400.00  [UTR 361642 NOT FOUND in bank statements]
+    Rcpt#1279   2025-04-28 A-1002  Rs  26,500.00  [UTR 367906968700 NOT FOUND in bank statements]
+    Rcpt#1315   2025-04-25 A-302   Rs  26,500.00  [UTR 390887, NOT FOUND in bank statements]
+    Rcpt#1410   2025-11-06 B-701   Rs   7,200.00  [UTR 50200033875780 NOT FOUND in bank statements]
+    Rcpt#1312   2025-05-02 B-1003  Rs  26,529.51  [UTR 512213780201 NOT FOUND in bank statements]
+    Rcpt#1323   2025-07-02 B-601   Rs  24,500.00  [UTR 512589061653 NOT FOUND in bank statements]
+    Rcpt#1396   2025-10-04 A-102   Rs  32,000.00  [UTR 527709153899 NOT FOUND in bank statements]
+    Rcpt#1401   2025-10-31 B-601   Rs  30,400.00  [UTR 530410745085 NOT FOUND in bank statements]
+    Rcpt#1397   2025-11-01 A-204   Rs  32,400.00  [UTR 530412129246 NOT FOUND in bank statements]
+    Rcpt#1427   2025-12-19 B-702   Rs  31,143.25  [UTR 535314197527 NOT FOUND in bank statements]
+    Rcpt#1428   2025-12-19 B-701   Rs  32,075.75  [UTR 535314197527 NOT FOUND in bank statements]
+    Rcpt#1412   2025-11-14 A-P04   Rs  32,660.82  [UTR IN42531952099692 NOT FOUND in bank statements]
+    Rcpt#1360   2025-10-22 A-201   Rs  30,000.00  [UTR MB22105559037T33432807 NOT FOUND in bank statements]
+    Rcpt#1302   2025-04-30 A-204   Rs  26,500.00  [UTR UPI Txn ID 512074206135 NOT FOUND in bank statements]
+    Rcpt#1303   2025-04-29 B-104   Rs  25,600.00  [UTR UTR 507796757959 NOT FOUND in bank statements]
+    Rcpt#1317   2025-05-19 B-P02   Rs  25,600.00  [UTR YESB51404958035 NOT FOUND in bank statements]
+    Rcpt#1280   2025-04-01 A-201   Rs     376.34  [no UTR/reference (cash or manual)]
+
+  BANK CREDITS WITHOUT ANY RECEIPT (81, Rs 4,095,787.16):
+    FD auto-renewal (principal+interest re-deposit)     10 items  Rs 2,500,000.00
+    Cheque/CTS deposit                                  12 items  Rs 669,299.00
+    Other                                               12 items  Rs 365,966.00
+    UPI settlement (petty receipt)                      27 items  Rs 239,409.34
+    NEFT credit                                          7 items  Rs 171,360.82
+    IMPS credit                                          3 items  Rs 121,749.00
+    FD interest credit                                  10 items  Rs 28,003.00
+
+  Detail (non-FD items):
+    02/04/25 Rs  26,500.00  [NEFT credit] NEFT CR-YESB0000001-VIVISH TECHNOLOGIES PVT LTD-MONT VERT BIARRITZ CO OP HOUSING
+    02/04/25 Rs  26,500.00  [NEFT credit] NEFT CR-YESB0000001-VIVISH TECHNOLOGIES PVT LTD-MONT VERT BIARRITZ CO OP HOUSING
+    02/04/25 Rs  24,500.00  [NEFT credit] NEFT CR-YESB0000001-VIVISH TECHNOLOGIES PVT LTD-MONT VERT BIARRITZ CO OP HOUSING
+    02/04/25 Rs  24,500.00  [NEFT credit] NEFT CR-YESB0000001-VIVISH TECHNOLOGIES PVT LTD-MONT VERT BIARRITZ CO OP HOUSING
+    24/04/25 Rs  26,500.00  [Cheque/CTS deposit] CHQ DEP MICR8 CLG MODEL COLONY - MICR 8: KULBHUSHAN KHANNA :STATE BANK OF INDIA
+    26/04/25 Rs  26,500.00  [Other] 00071050099168-TPT-B604 APR SEP25 MAINTENANCE CHARGES-VISHWANATH SHARANAPPA LING
+    28/04/25 Rs  24,500.00  [Other] 01491000070878-TPT-B102 APR-SEPT 25-SONAL AMIT JOGLEKAR
+    28/04/25 Rs  24,500.00  [Other] CASH DEPOSIT BY - ANIL CHAUDHURI - PASHAN - PUNE
+    28/04/25 Rs  26,500.00  [Other] UPI-AASHISH HEMENDRA SIN-9552555009@YBL-HDFC0000052-367906968700-PAYMENT FROM PH
+    01/05/25 Rs  26,124.76  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 01/05/25
+    02/05/25 Rs  26,530.00  [IMPS credit] IMPS-512213780201-PRATIMASHAILENDRAKAW-UTIB-XXXXXXXXXXX5548-OTHERSPRATIMAKAWADEM
+    05/05/25 Rs   1,300.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 05/05/25
+    06/05/25 Rs  32,750.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 06/05/25
+    07/05/25 Rs     100.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 07/05/25
+    19/05/25 Rs  26,500.00  [Cheque/CTS deposit] CHQ DEP MICR8 CLG MODEL COLONY - MICR 8: JAYVEER    A  YADAV :NORTH KANARA G.S.B
+    20/05/25 Rs  25,600.00  [NEFT credit] NEFT CR-YESB0000001-VIVISH TECHNOLOGIES PVT LTD-MONT VERT BIARRITZ CO OP HOUSING
+    21/05/25 Rs   2,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 21/05/25
+    27/05/25 Rs  26,500.00  [Cheque/CTS deposit] CHQ DEP MICR8 CLG MODEL COLONY - MICR 8: JAYVEER YADAV :NORTH KANARA G.S.B. COOP
+    31/05/25 Rs     825.00  [FD interest credit] INTEREST CREDIT 50301146438020
+    04/06/25 Rs   2,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 04/06/25
+    08/06/25 Rs   7,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 08/06/25
+    11/06/25 Rs   8,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 11/06/25
+    19/06/25 Rs   1,500.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 19/06/25
+    22/06/25 Rs   7,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 22/06/25
+    25/06/25 Rs   2,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 25/06/25
+    30/06/25 Rs   1,800.00  [FD interest credit] INTEREST CREDIT 50301146438375
+    05/07/25 Rs  58,308.00  [Other] 50200033875780-TPT-B 701 702-SAICON CONSTRUCTIONS AND INFRA LLP
+    06/07/25 Rs   2,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 06/07/25
+    13/07/25 Rs   2,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 13/07/25
+    15/07/25 Rs   8,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 15/07/25
+    26/07/25 Rs   1,971.68  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 26/07/25
+    31/07/25 Rs   2,244.00  [FD interest credit] INTEREST CREDIT 50301152472182
+    02/08/25 Rs   2,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 02/08/25
+    04/08/25 Rs 101,658.00  [Other] CASH DEPOSIT BY - DEEPAK GAIKWAD - PASHAN - PUNE
+    05/08/25 Rs 300,000.00  [Cheque/CTS deposit] CHQ DEP MICR8 CLG MODEL COLONY - MICR 8: MONT VERT BIARRITZ CO OP HSG SOC LTD :S
+    06/08/25 Rs  25,600.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 06/08/25
+    11/08/25 Rs 159,294.00  [Cheque/CTS deposit] I/W CHQ RET-AMOUNTS IN WORDS AND FIGURES
+    12/08/25 Rs   8,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 12/08/25
+    30/08/25 Rs   2,984.00  [FD interest credit] INTEREST CREDIT 50301152473159
+    01/09/25 Rs   1,971.68  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 01/09/25
+    02/09/25 Rs   6,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 02/09/25
+    05/09/25 Rs   2,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 05/09/25
+    14/09/25 Rs   8,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 14/09/25
+    16/09/25 Rs   2,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 16/09/25
+    27/09/25 Rs   3,452.00  [FD interest credit] INTEREST CREDIT 50301157693611
+    04/10/25 Rs  32,000.00  [IMPS credit] IMPS-527709153899-HARSHAD SURESH DIXIT-ICIC-XXXXXXXX0509-INVOIEC 1781
+    09/10/25 Rs   5,000.00  [Cheque/CTS deposit] I/W CHQ RET-JOINT SIGNATURE REQUIRED
+    22/10/25 Rs  30,000.00  [Other] 02231610017226-TPT-A201 JULIAN SOCIETY MAINTENANCE-MATHEW GEORGINA
+    27/10/25 Rs  32,400.00  [Other] FT - CR - 00521000095939 - SUMANLATA HEMENDRA SINGH
+    27/10/25 Rs   5,000.00  [Cheque/CTS deposit] I/W CHQ RET-INSTRUMENT POST DATED
+    28/10/25 Rs  32,400.00  [Cheque/CTS deposit] CHQ DEP MICR8 CLG MODEL COLONY - CTS CLG: KUL B KHNNA :PUNJAB NATIONAL BANK
+    31/10/25 Rs  32,000.00  [Other] 00071050099168-TPT-B604 OCT MAR26 MAINT-VISHWANATH SHARANAPPA LINGAYAT
+    31/10/25 Rs     400.00  [Other] 00071050099168-TPT-B604 BILL OCCUPANCY-VISHWANATH SHARANAPPA LINGAYAT
+    01/11/25 Rs  63,841.22  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 01/11/25
+    02/11/25 Rs   7,200.00  [Other] 50200033875780-TPT-PARKING-SAICON CONSTRUCTIONS AND INFRA LLP
+    06/11/25 Rs   5,000.00  [Cheque/CTS deposit] I/W CHQ RET-INSTRUMENT POST DATED
+    15/11/25 Rs   2,000.00  [Other] UPI-MR ABHINAV KUMAR JAI-ABHINAVCANDO-2@OKAXIS-MAHB0001144-531953744522-UPI
+    15/11/25 Rs  32,660.82  [NEFT credit] NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MONTVERTBIARRITZCOOPHOUS
+    19/11/25 Rs  32,400.00  [Cheque/CTS deposit] CHQ DEP MICR8 CLG MODEL COLONY - CTS CLG: JAIVEER A YADAV :NORTH KANARA G.S.B. C
+    30/11/25 Rs   1,886.00  [FD interest credit] INTEREST CREDIT 50301228184812
+    08/12/25 Rs  30,000.00  [Cheque/CTS deposit] CHQ DEP MICR8 CLG MODEL COLONY - CTS CLG: BRIJESH SINGH :STATE BANK OF INDIA
+    13/12/25 Rs   8,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 13/12/25
+    19/12/25 Rs  63,219.00  [IMPS credit] IMPS-535314197527-SAICON CONSTRUCTIONS AND INFRA LLP-HDFC-XXXXXXXXXX5780-B701/70
+    31/12/25 Rs   2,236.00  [FD interest credit] INTEREST CREDIT 50301237435966
+    19/01/26 Rs  11,100.00  [NEFT credit] NEFT CR-SBIN0004266-ITDTAX REFUND 2025 26 AACAM3922EIT-MONT VERT BIARRITZ CO OP 
+    30/01/26 Rs   3,214.00  [FD interest credit] INTEREST CREDIT 50301238374562
+    11/02/26 Rs   8,000.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 11/02/26
+    28/02/26 Rs   4,157.00  [FD interest credit] INTEREST CREDIT 50301239902714
+    14/03/26 Rs     250.00  [UPI settlement (pett] UPI SETTLEMENT -DKB258- 14/03/26
+    30/03/26 Rs   5,205.00  [FD interest credit] INTEREST CREDIT 50301239905456
+    30/03/26 Rs  20,705.00  [Cheque/CTS deposit] I/W CHQ RET-ALTERATION REQUIRE DRAWER AU
+
+======================================================================
+EXPENSE REPORT: 189 bills, net payable Rs 2,992,823.84, settled Rs 2,173,537.78, unpaid balance Rs 819,286.06
+
+EXPENSES <-> BANK DEBIT MATCHING (exact amount, +/-45 days)
+  Matched   : Rs 1,510,696.00
+  Unmatched : 43 payments worth Rs 662,841.78
+  Bank debits with no bill match: 200 items worth Rs 6,448,908.00
+
+  SETTLED PAYMENTS NOT TRACED TO A BANK DEBIT:
+    V#1202   2025-11-20 Kone Elevator India Pvt. Ltd             Rs 127,896.86
+    V#1140   2025-06-09 Kone Elevator India Pvt. Ltd             Rs 124,659.92
+    V#1152   2025-07-03 SHAURYA GROUP                            Rs  57,420.00
+    V#1191   2025-08-21 MUSKAN SALES                             Rs  41,250.00
+    V#1116   2025-04-23 MUSKAN SALES                             Rs  41,250.00
+    V#1244   2026-03-04 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1208   2026-01-01 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1206   2025-12-01 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1176   2025-09-02 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1166   2025-08-01 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1146   2025-07-03 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1132   2025-06-03 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1117   2025-05-02 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1109   2025-04-01 Deepak B Gaikwad (Society Manager)       Rs  21,500.00
+    V#1320   2026-03-31 C N PETROLEUM                            Rs  10,954.00
+    V#1332   2026-03-19 RAJESH ELECTRIC TRADING CO               Rs   6,750.00
+    V#1163   2025-07-23 Deepak B Gaikwad (Society Manager)       Rs   5,500.00
+    V#1199   2025-10-03 Deepak B Gaikwad (Society Manager)       Rs   3,880.00
+    V#1325   2025-12-12 RATAN ENGINEERS                          Rs   3,600.00
+    V#1160   2025-07-23 Deepak B Gaikwad (Society Manager)       Rs   3,600.00
+    V#1126   2025-05-07 Deepak B Gaikwad (Society Manager)       Rs   3,150.00
+    V#1249   2026-03-04 Deepak B Gaikwad (Society Manager)       Rs   3,000.00
+    V#1210   2026-01-01 Deepak B Gaikwad (Society Manager)       Rs   3,000.00
+    V#1207   2025-12-01 Deepak B Gaikwad (Society Manager)       Rs   3,000.00
+    V#1177   2025-09-02 Deepak B Gaikwad (Society Manager)       Rs   3,000.00
+    V#1167   2025-08-01 Deepak B Gaikwad (Society Manager)       Rs   3,000.00
+    V#1133   2025-06-03 Deepak B Gaikwad (Society Manager)       Rs   3,000.00
+    V#1127   2025-05-07 Deepak B Gaikwad (Society Manager)       Rs   3,000.00
+    V#1124   2025-05-07 SAGAR NAVGARE                            Rs   3,000.00
+    V#1118   2025-05-02 Deepak B Gaikwad (Society Manager)       Rs   3,000.00
+    V#1159   2025-07-23 Deepak B Gaikwad (Society Manager)       Rs   2,000.00
+    V#1125   2025-05-07 Deepak B Gaikwad (Society Manager)       Rs   1,900.00
+    V#1328   2026-03-26 SATYAM TRADELINKS                        Rs   1,628.00
+    V#1326   2025-08-19 NEW BALAJI HARDWARE @ ELECTRICAL         Rs   1,473.00
+    V#1333   2026-01-30 JAYHIND XEROX @ STATIONARY               Rs   1,180.00
+    V#1164   2025-04-19 Deepak B Gaikwad (Society Manager)       Rs     660.00
+    V#1324   2025-12-16 ESEM INFOTECH PVT LTD                    Rs     600.00
+    V#1327   2025-09-11 NEW BALAJI HARDWARE @ ELECTRICAL         Rs     600.00
+    V#1329   2026-01-15 GHANSHAM HARDWARE @ ELECTRICALS          Rs     590.00
+    V#1330   2025-10-09 GHANSHAM HARDWARE @ ELECTRICALS          Rs     540.00
+
+  BANK DEBITS WITH NO MATCHING BILL (sample):
+    05/04/25 Rs  24,500.00  CHQ PAID-MICR CTS-MU-DEEPAN GAISURAD
+    08/04/25 Rs   3,900.00  VYANKATI MADHUKAR KORDE - CHQ PAID - PASHAN - PUN
+    14/04/25 Rs  16,220.00  7968231515615/SBIEPYHIGHTENSIONHTP
+    14/04/25 Rs   4,410.00  1583160080735/SBIEPYHIGHTENSIONHTP
+    14/04/25 Rs   6,050.00  8048012995835/SBIEPYHIGHTENSIONHTP
+    14/04/25 Rs  46,620.00  5777014652515/SBIEPYHIGHTENSIONHTP
+    14/04/25 Rs   5,030.00  5394341814215/SBIEPYHIGHTENSIONHTP
+    14/04/25 Rs   8,730.00  6690171919319/SBIEPYHIGHTENSIONHTP
+    14/04/25 Rs   5,310.00  8459380057119/SBIEPYHIGHTENSIONHTP
+    18/04/25 Rs 200,000.00  FD THROUGH NET-50301146438020:MONT VERT BIARRITZ CO OP HOUSING SOC LTD
+    18/04/25 Rs 200,000.00  FD THROUGH NET-50301146438375:MONT VERT BIARRITZ CO OP HOUSING SOC LTD
+    20/04/25 Rs   1,730.00  9156021819555/SBIEPYHIGHTENSIONHTP
+    20/04/25 Rs   2,360.00  3590938594235/SBIEPYHIGHTENSIONHTP
+    20/04/25 Rs     130.00  5106035932615/SBIEPYHIGHTENSIONHTP
+    20/04/25 Rs     320.00  0996002596817/SBIEPYHIGHTENSIONHTP
+    20/04/25 Rs     350.00  1432452435946/SBIEPYHIGHTENSIONHTP
+    22/04/25 Rs  12,700.00  FT - DR - 50100151656531 - SOMANATH MOHANTY
+    23/04/25 Rs  13,260.00  CHQ PAID-MICR CTS-MU-NEW BALAJI HARDWARE
+    25/04/25 Rs  43,270.00  3785162047555/SBIEPYHIGHTENSIONHTP
+    29/04/25 Rs   3,295.00  CBDT/BANK REFERENCE NO:K2511933474453/CIN NO:25042900713379HDFC/ONLINE
+    01/05/25 Rs 200,000.00  FD THROUGH NET-50301152472182:MONT VERT BIARRITZ CO OP HOUSING SOC LTD
+    01/05/25 Rs 200,000.00  FD THROUGH NET-50301152473159:MONT VERT BIARRITZ CO OP HOUSING SOC LTD
+    02/05/25 Rs  18,249.00  BHDFW2R0JTZDJX/BILLDKPUNEMUNICIPALC
+    06/05/25 Rs  10,000.00  SELF - CHQ PAID - PASHAN - PUN
+    08/05/25 Rs  24,500.00  CHQ PAID-MICR CTS-RK-DEEPAK QUINAS
+    09/05/25 Rs   8,050.00  DEEPAK B GAIKWAD - CHQ PAID - PASHAN - PUN
+    10/05/25 Rs 200,000.00  FD THROUGH NET-50301157693611:MONT VERT BIARRITZ CO OP HOUSING SOC LTD
+    10/05/25 Rs  17,510.00  6708596435527/SBIEPYHIGHTENSIONHTP
+    10/05/25 Rs   4,350.00  4752055076127/SBIEPYHIGHTENSIONHTP
+    11/05/25 Rs   5,500.00  7772259136217/SBIEPYHIGHTENSIONHTP
+    11/05/25 Rs  52,480.00  0690634461117/SBIEPYHIGHTENSIONHTP
+    11/05/25 Rs   4,610.00  4884842733337/SBIEPYHIGHTENSIONHTP
+    11/05/25 Rs   6,740.00  6177425551037/SBIEPYHIGHTENSIONHTP
+    11/05/25 Rs   4,030.00  1595180605519/SBIEPYHIGHTENSIONHTP
+    11/05/25 Rs  35,070.00  9344622480529/SBIEPYHIGHTENSIONHTP
+    11/05/25 Rs   1,690.00  6553099005129/SBIEPYHIGHTENSIONHTP
+    20/05/25 Rs  26,500.00  CHQ DEP RET- ACCOUNT BLOCKED
+    06/06/25 Rs  24,500.00  CHQ PAID-MICR CTS-MU-DEENAN GEEKWAT
+    12/06/25 Rs  44,288.00  CHQ PAID-MICR CTS-MU-NARETYAN V GAVWAWAD
+    12/06/25 Rs  53,064.00  FT - DR - 50200082477018 - SANGARSH ENTERPRISES
+
+======================================================================
+SUMMARY
+  Total bank credits : Rs 8,325,521.80
+  Total bank debits  : Rs 7,959,604.00
+  Net movement       : Rs 365,917.80
+
+======================================================================
+SECONDARY TRACE OF UNMATCHED RECEIPTS (by exact amount, +/-15 days)
+  TRACED   Rcpt#1316   B-601   Rs  24,500.00 -> bank 28/04/25 01491000070878-TPT-B102 APR-SEPT 25-SONAL AMIT JOGLEKAR
+  TRACED   Rcpt#1361   A-1002  Rs  32,400.00 -> bank 27/10/25 FT - CR - 00521000095939 - SUMANLATA HEMENDRA SINGH
+  TRACED   Rcpt#1419   A-401   Rs  30,000.00 -> bank 08/12/25 CHQ DEP MICR8 CLG MODEL COLONY - CTS CLG: BRIJESH SINGH :STA
+  TRACED   Rcpt#1278   B-304   Rs  24,500.00 -> bank 28/04/25 CASH DEPOSIT BY - ANIL CHAUDHURI - PASHAN - PUNE
+  TRACED   Rcpt#1276   B-604   Rs  26,500.00 -> bank 24/04/25 CHQ DEP MICR8 CLG MODEL COLONY - MICR 8: KULBHUSHAN KHANNA :
+  TRACED   Rcpt#1398   B-604   Rs  32,000.00 -> bank 31/10/25 00071050099168-TPT-B604 OCT MAR26 MAINT-VISHWANATH SHARANAPP
+  TRACED   Rcpt#1399   B-604   Rs     400.00 -> bank 31/10/25 00071050099168-TPT-B604 BILL OCCUPANCY-VISHWANATH SHARANAPPA
+  TRACED   Rcpt#1320   A-301   Rs  26,500.00 -> bank 19/05/25 CHQ DEP MICR8 CLG MODEL COLONY - MICR 8: JAYVEER    A  YADAV
+  TRACED   Rcpt#1413   A-301   Rs  32,400.00 -> bank 19/11/25 CHQ DEP MICR8 CLG MODEL COLONY - CTS CLG: JAIVEER A YADAV :N
+  TRACED   Rcpt#1429   A-302   Rs  32,400.00 -> bank 28/10/25 CHQ DEP MICR8 CLG MODEL COLONY - CTS CLG: KUL B KHNNA :PUNJA
+  TRACED   Rcpt#1279   A-1002  Rs  26,500.00 -> bank 26/04/25 00071050099168-TPT-B604 APR SEP25 MAINTENANCE CHARGES-VISHWA
+  TRACED   Rcpt#1315   A-302   Rs  26,500.00 -> bank 28/04/25 UPI-AASHISH HEMENDRA SIN-9552555009@YBL-HDFC0000052-36790696
+  TRACED   Rcpt#1410   B-701   Rs   7,200.00 -> bank 02/11/25 50200033875780-TPT-PARKING-SAICON CONSTRUCTIONS AND INFRA LL
+  TRACED   Rcpt#1396   A-102   Rs  32,000.00 -> bank 04/10/25 IMPS-527709153899-HARSHAD SURESH DIXIT-ICIC-XXXXXXXX0509-INV
+  TRACED   Rcpt#1412   A-P04   Rs  32,660.82 -> bank 15/11/25 NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MONT
+  TRACED   Rcpt#1360   A-201   Rs  30,000.00 -> bank 22/10/25 02231610017226-TPT-A201 JULIAN SOCIETY MAINTENANCE-MATHEW GE
+  TRACED   Rcpt#1317   B-P02   Rs  25,600.00 -> bank 20/05/25 NEFT CR-YESB0000001-VIVISH TECHNOLOGIES PVT LTD-MONT VERT BI
+  Traced by amount/date : Rs 442,060.82
+  GENUINELY UNTRACED    : 12 receipts worth Rs 312,332.85
+    Rcpt#1280   2025-04-01 A-201   Rs     376.34  [no UTR/reference (cash or manual)]
+    Rcpt#1325   2025-07-05 B-702   Rs  25,720.44  [UTR 000131990203 NOT FOUND in bank statements]
+    Rcpt#1326   2025-07-25 B-701   Rs  32,587.56  [UTR 000131990203 NOT FOUND in bank statements]
+    Rcpt#1277   2025-04-28 B-102   Rs  24,500.00  [UTR 000806943945 NOT FOUND in bank statements]
+    Rcpt#1312   2025-05-02 B-1003  Rs  26,529.51  [UTR 512213780201 NOT FOUND in bank statements]
+    Rcpt#1323   2025-07-02 B-601   Rs  24,500.00  [UTR 512589061653 NOT FOUND in bank statements]
+    Rcpt#1401   2025-10-31 B-601   Rs  30,400.00  [UTR 530410745085 NOT FOUND in bank statements]
+    Rcpt#1397   2025-11-01 A-204   Rs  32,400.00  [UTR 530412129246 NOT FOUND in bank statements]
+    Rcpt#1427   2025-12-19 B-702   Rs  31,143.25  [UTR 535314197527 NOT FOUND in bank statements]
+    Rcpt#1428   2025-12-19 B-701   Rs  32,075.75  [UTR 535314197527 NOT FOUND in bank statements]
+    Rcpt#1302   2025-04-30 A-204   Rs  26,500.00  [UTR UPI Txn ID 512074206135 NOT FOUND in bank statements]
+    Rcpt#1303   2025-04-29 B-104   Rs  25,600.00  [UTR UTR 507796757959 NOT FOUND in bank statements]
+
+======================================================================
+BANK DEBITS WITH NO VENDOR BILL, CLASSIFIED
+  Fixed Deposits (placements/renewals)        10 items  Rs  2,500,000.00
+  Cheque payments (vendors)                   60 items  Rs  1,706,774.00
+  Electricity bills (MSEB)                   110 items  Rs  1,555,570.00
+  Other                                        3 items  Rs    358,645.00
+  Fund transfers (NEFT/FT/IMPS)                6 items  Rs    258,215.00
+  Inward cheque RETURNS (bounced)              6 items  Rs     26,795.00
+  Income tax / TDS                             4 items  Rs     24,660.00
+  Municipal / property taxes                   1 items  Rs     18,249.00
+
+DUES REPORT RECONCILIATION STATUS (as recorded by society software)
+  Unreconciled                             111 receipts  Rs  2,923,807.54
+  Reconciled                                84 receipts  Rs  2,059,944.43
+  NA                                         1 receipts  Rs        376.34
