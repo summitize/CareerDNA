@@ -2,6 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { readSaved, saveDurable } from "@/lib/client-persistence";
 
 const storageKey = "careerdna-theme";
 
@@ -9,7 +10,7 @@ export function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem(storageKey);
+    const savedTheme = readSaved(storageKey);
     const useDarkTheme = savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches);
     document.documentElement.classList.toggle("dark", useDarkTheme);
     setIsDark(useDarkTheme);
@@ -18,7 +19,7 @@ export function ThemeToggle() {
   function toggleTheme() {
     const nextTheme = !isDark;
     document.documentElement.classList.toggle("dark", nextTheme);
-    window.localStorage.setItem(storageKey, nextTheme ? "dark" : "light");
+    saveDurable(storageKey, nextTheme ? "dark" : "light");
     setIsDark(nextTheme);
   }
 

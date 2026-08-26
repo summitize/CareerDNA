@@ -6,6 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { readSaved, saveDurable } from "@/lib/client-persistence";
 import assessmentV4 from "@/CareerDNACursor/data/assessment-v4.json";
 import assessmentV5 from "@/CareerDNACursor/data/assessment-v5.json";
 
@@ -153,7 +154,7 @@ export default function AssessmentPage() {
       student: { firstName: "", lastName: "", email: "", mobile: "", grade: "9" },
       answers: {},
     });
-    const saved = localStorage.getItem(storageKey(assessmentVersion));
+    const saved = readSaved(storageKey(assessmentVersion));
     if (saved) {
       const parsed = JSON.parse(saved) as FormValues;
       Object.entries(parsed.student ?? {}).forEach(([key, value]) => setValue(`student.${key as keyof FormValues["student"]}`, String(value ?? "")));
@@ -164,7 +165,7 @@ export default function AssessmentPage() {
   const values = watch();
 
   useEffect(() => {
-    localStorage.setItem(storageKey(assessmentVersion), JSON.stringify(values));
+    saveDurable(storageKey(assessmentVersion), JSON.stringify(values));
   }, [assessmentVersion, values]);
 
   useEffect(() => {
@@ -281,7 +282,7 @@ export default function AssessmentPage() {
           <div className="flex flex-wrap gap-2">
             <Button type="button" variant="secondary" onClick={() => setIndex((i) => Math.max(i - 1, 0))}>Previous</Button>
             <Button type="button" onClick={() => setIndex((i) => Math.min(i + 1, randomized.length - 1))}>Next</Button>
-            <Button type="button" variant="ghost" onClick={() => localStorage.setItem(storageKey(assessmentVersion), JSON.stringify(values))}>Save & Resume Later</Button>
+            <Button type="button" variant="ghost" onClick={() => saveDurable(storageKey(assessmentVersion), JSON.stringify(values))}>Save & Resume Later</Button>
             <Button type="submit" className="ml-auto">Submit JSON</Button>
           </div>
         </Card>
